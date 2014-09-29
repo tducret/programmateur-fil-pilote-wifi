@@ -20,3 +20,7 @@ Idées d'applications
 - Coupure du chauffage automatique en cas de consommation électrique trop importante (délestage)
 - Lancement du chauffage en partant du travail à partir de votre smartphone
 - Et bien d'autres...
+
+Licence
+-------
+Les fichiers sont distribués sous la licence [Creative Commons Attribution-ShareAlike 4.0](http://creativecommons.org/licenses/by-sa/4.0/)
