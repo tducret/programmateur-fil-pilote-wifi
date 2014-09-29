@@ -2,8 +2,8 @@ Le programmateur fil pilote WiFi open source
 ============================================
 
 Avec de simples requêtes HTTP, vous allez pouvoir :
-- Contrôler vos chauffages électriques (7 zones / 4 ordres fil pilote)
-- Récupérer votre consommation électrique (et toutes les informations du compteur électrique)
+- **Contrôler vos chauffages électriques** (7 zones / 4 ordres fil pilote)
+- **Récupérer votre consommation électrique** (et toutes les informations du compteur électrique)
 
 Les applications sont nombreuses :
 - Contrôle de la température de chaque pièce via votre box domotique
