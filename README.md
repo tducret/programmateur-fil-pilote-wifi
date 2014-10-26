@@ -23,4 +23,5 @@ Idées d'applications
 
 Licence
 -------
-Les fichiers sont distribués sous la licence [Creative Commons Attribution-ShareAlike 4.0](http://creativecommons.org/licenses/by-sa/4.0/)
+Les codes sources sont distribués sous la licence MIT
+Les autres éléments sont distribués sous la licence [Creative Commons Attribution-ShareAlike 4.0](http://creativecommons.org/licenses/by-sa/4.0/)
