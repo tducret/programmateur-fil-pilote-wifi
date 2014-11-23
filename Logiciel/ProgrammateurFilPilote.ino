@@ -9,12 +9,16 @@ Licence MIT
 
 // Defines
 #define NB_FILS_PILOTES 7
+#define ISOUSCRITE 30
+#define DELESTAGE_RATIO 0.9 //ratio en % => 90%
 #define IMAX 35
 
 // ======== MAIN ============
 
 // Fils pilotes
 int SortiesFP[NB_FILS_PILOTES*2] = { D6,D7,D4,D5,D2,D3,A6,A7,A4,A5,A2,A3,A0,A1 };
+int isousc = ISOUSCRITE;
+float ratio_intensite = DELESTAGE_RATIO;
 
 void initCdeFilsPilotes();
 int fpControl(String command);
@@ -33,6 +37,9 @@ unsigned int mypApp = TELEINFO_UINT_INVALIDE;
 unsigned int myiInst = TELEINFO_UINT_INVALIDE;
 unsigned int myindexHC = TELEINFO_UINT_INVALIDE;
 unsigned int myindexHP = TELEINFO_UINT_INVALIDE;
+unsigned int myisousc = TELEINFO_UINT_INVALIDE; // pour calculer la limite de délestage
+float myDelestLimit = 0.0;
+boolean init_teleinfo = false;
 char etatFP[20] = "";
 
 void setup()
@@ -56,7 +63,24 @@ void setup()
 
 void loop()
 {
+  updateTeleinfo();
+	if (myiInst >= myDelestLimit) {
   
+  
+          if (delestageEnCours == 0)
+          {
+            //delestageEnCours ne passe jamais à 1 ???
+			nbDelestage += 1; // on vient juste de passer en délestage
+      	    delestage();
+          }
+	}
+	else {
+		delestageEnCours = 0; // Pas de délestage
+	}
+}
+
+void updateTeleinfo() {
+
   while (Serial1.available())
   {
     c = (Serial1.read() & 0x7F);
@@ -67,18 +91,12 @@ void loop()
       myiInst=ti.iInst();
       myindexHC=ti.indexHC();
       myindexHP=ti.indexHP();
-      if (myiInst >= IMAX) // Attention! Courant > Max
-      {
-          if (delestageEnCours == 0)
-          {
-            nbDelestage += 1; // on vient juste de passer en délestage
-      	    delestage();
-          }
-      }
-      else
-      {
-        delestageEnCours = 0; // Pas de délestage
-      }
+	  
+	  if(!init_teleinfo) {
+		myisousc = ti.iSousc();
+		myDelestLimit = myisousc * ratio_intensite;
+		init_teleinfo = true;
+	  }
     }
   }
 
@@ -104,38 +122,17 @@ int fpControl(String command)
 // CAAAAAA => Tous OFF sauf le fil pilote 1
 
 	unsigned int i;
+	char cOrdre;
 	int returnValue = -1; // Init à -1 => Erreur
+	
+	command.trim();
+	command.toUpperCase();
 	
 	if (command.length() == NB_FILS_PILOTES) // Vérifier que l'on a la commande de tous les fils pilotes
 	{
-	    command.toCharArray(etatFP,sizeof(etatFP));
-		for (i=0; i<NB_FILS_PILOTES; i+=1)
+		for (i=1; i<=NB_FILS_PILOTES; i+=1)
 		{
-			
-			 if (command.substring(i,i+1) == "C") // Confort => Commande 0/0
-			 {
-			 	digitalWrite(SortiesFP[2*i], LOW);
-			 	digitalWrite(SortiesFP[(2*i)+1], LOW);
-			 	//etatFP[i]="C";
-			 }
-			 else if (command.substring(i,i+1) == "E") // Eco => Commande 1/1
-			 {
-			 	digitalWrite(SortiesFP[2*i], HIGH);
-			 	digitalWrite(SortiesFP[(2*i)+1], HIGH);
-			 	//etatFP.setCharAt(i,"E");
-			 }
-			 else if (command.substring(i,i+1) == "H") // Hors gel => Commande 1/0
-			 {
-			 	digitalWrite(SortiesFP[2*i], HIGH);
-			 	digitalWrite(SortiesFP[(2*i)+1], LOW);
-			 	//etatFP.setCharAt(i,"H");
-			 }
-			 else // Arrêt => Commande 0/1
-			 {
-			 	digitalWrite(SortiesFP[2*i], LOW);
-			 	digitalWrite(SortiesFP[(2*i)+1], HIGH);
-			 	//etatFP.setCharAt(i,"A");
-			 }
+			fpC(i, command.charAt(i-1)); //charAt(i-1) car l'index de "command" commence à 0
 		}
 		returnValue = 0; // OK
 	}
@@ -154,45 +151,49 @@ int setFP(String command)
 	
 	command.trim();
 	command.toUpperCase();
-    
-	command.toCharArray(&cOrdre,sizeof(cOrdre));
 	
 	if (command.length() == 2) // Vérifier que l'on a la commande d'un seul fil pilote
 	{
-		i = command.substring(0,1).toInt(); // numéro du fil pilote concerné
-		returnValue = fpC(i, cOrdre);
+		i = command.charAt(0) - '0'; // numéro du fil pilote concerné, avec conversion ASCII > entier
+		returnValue = fpC(i, command.charAt(1));
 	}
 	return returnValue;
 }
 
 int fpC(int i, char cOrdre)
 {
-// i => numéro du fil pilote
+// i => numéro du fil pilote (de 1 à NB_FILS_PILOTE)
 // cOrdre => C = Confort, A = Arrêt, E = Eco, H = Hors gel
 
 	int returnValue = -1; // Init à -1 => Erreur
 	
-	if (i >= NB_FILS_PILOTES) // Vérifier que l'on a la commande de tous les fils pilotes
+	i = i-1; // On commence à 0
+	
+	if (i >= 0 && i < NB_FILS_PILOTES) // Vérifier que le numéro du fil pilote ne dépasse le MAX
 	{		
 		if (cOrdre == 'C') // Confort => Commande 0/0
 		{
 			digitalWrite(SortiesFP[2*i], LOW);
 			digitalWrite(SortiesFP[(2*i)+1], LOW);
+			etatFP[i]='C';
 	 	}
 		else if (cOrdre == 'E') // Eco => Commande 1/1
 		{
 			digitalWrite(SortiesFP[2*i], HIGH);
 			digitalWrite(SortiesFP[(2*i)+1], HIGH);
+			etatFP[i]='E';
 		}
 		else if (cOrdre == 'H') // Hors gel => Commande 1/0
 		{
 			digitalWrite(SortiesFP[2*i], HIGH);
 			digitalWrite(SortiesFP[(2*i)+1], LOW);
+			etatFP[i]='H';
 		}
 		else // Arrêt => Commande 0/1
 		{
 			digitalWrite(SortiesFP[2*i], LOW);
 			digitalWrite(SortiesFP[(2*i)+1], HIGH);
+			etatFP[i]='A';
 	 	}
 	 	returnValue = 0; // OK
 	}
@@ -202,12 +203,11 @@ int fpC(int i, char cOrdre)
 void delestage()
 {
 	unsigned int i;
-	String command;
 	
-	for (i=0; i<NB_FILS_PILOTES; i+=1)
+	for (i=1; i<=NB_FILS_PILOTES; i+=1)
 	{
-		strncpy(&etatFP[i],"H",1);
+		fpC(i,'H');
 	}
-	command = etatFP;
-  	fpControl(command); // Hors gel
+	
+	return;
 }
