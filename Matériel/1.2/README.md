@@ -17,16 +17,16 @@ Description Détaillée
 =====================
 
 **Schematic**  
-![schematic](https://raw.github.com/thibdct/programmateur-fil-pilote-wifi/master/Mat%C3%A9riel/1.2/schematic.png)
+![schematic](https://raw.github.com/thibdct/programmateur-fil-pilote-wifi/master/Mat%C3%A9riel/1.2/ProgrammateurFilPilote_1.2_Schematic.png)
 
 
 **Boards**  
-<img src="https://raw.github.com/thibdct/programmateur-fil-pilote-wifi/master/Mat%C3%A9riel/1.2/board.png" alt="board" width="30%" height="30%">&nbsp;
+<img src="https://raw.github.com/thibdct/programmateur-fil-pilote-wifi/master/Mat%C3%A9riel/1.2/ProgrammateurFilPilote_1.2_Board.png" alt="board" width="30%" height="30%">&nbsp;
 <img src="https://raw.github.com/thibdct/programmateur-fil-pilote-wifi/master/Mat%C3%A9riel/1.2/ProgrammateurFilPilote_1.2_Recto.png" alt="top" width="30%" height="30%">&nbsp;
 <img src="https://raw.github.com/thibdct/programmateur-fil-pilote-wifi/master/Mat%C3%A9riel/1.2/ProgrammateurFilPilote_1.2_Verso.png" alt="bottom" width="30%" height="30%">
 
 
 [1]: https://github.com/thibdct/programmateur-fil-pilote-wifi/blob/master/README.md
 [2]: http://www.ebay.com/itm/291216700457
-[3}: http://www.ebay.com/itm/141371873602
+[3]: http://www.ebay.com/itm/141371873602
 
