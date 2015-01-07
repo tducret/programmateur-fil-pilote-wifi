@@ -1,20 +1,23 @@
-Version matérielle 1.2
+Version matÃ©rielle 1.2
 ======================
 
 Modifications
 -------------
-Cette version reprend toutes les caractéristiques de la version [initiale][1] en y ajoutant les fonctionnalités suivantes :
+Cette version reprend toutes les caractÃ©ristiques de la version [initiale][1] en y ajoutant les fonctionnalitÃ©s suivantes :
 
-- Ajout d'un contrôleur d'entrées sortie I2C [MCP23017][10] pour libérer les I/O du Spark Core
-- Possibilité de mettre deux types de relais dont un [avec contact NO + NF][5]
-- Possibilité de mettre un emetteur récepteur sans fil de type [RFM12B][6], [RFM69CW][7], [RFM69HW][8] ou [RFM69CW][9] 433Mhz ou 868MHz
-- Possibilité de mettre un [récepteur 433MHz][4] pour récupérer par exemple les trames des capteurs de température Orégon Scientific
+- Ajout d'un contrÃ´leur d'entrÃ©es sortie I2C [MCP23017][10] pour libÃ©rer les I/O du Spark Core
+- PossibilitÃ© de mettre deux types de relais dont un [avec contact NO + NF][5]
+- PossibilitÃ© de mettre un emetteur rÃ©cepteur sans fil de type [RFM12B][6], [RFM69CW][7], [RFM69HW][8] ou [RFM69CW][9] 433Mhz ou 868MHz
+- PossibilitÃ© de mettre un [rÃ©cepteur 433MHz][4] pour rÃ©cupÃ©rer par exemple les trames des capteurs de tempÃ©rature OrÃ©gon Scientific
 - Ajout d'un connecteur I2C ET SPI pour des afficheurs OLED de type [I2C][2] ou [SPI][3]
 - Ajout d'un connecteur de type Grove I2C
-- Ajout d'une LED 3mm (déportable ou non) sur le boitier 
+- Ajout d'une LED 3mm (dÃ©portable ou non) sur le boitier 
 - Ajout de pin out disponibles sur toutes les pattes du Spark Core
 
-Description Détaillée
+Attention, une petite erreur est prÃ©sente sur le PCB, le dessin sur le PCB du connecteur grove est inversÃ©, donc si vous souhaitez le souder, il faut le faire dans le sens inversÃ© par rapport au dessin du PCB (mais toujours Ã  souder sur le dessus).
+
+
+Description DÃ©taillÃ©e
 =====================
 
 **Schematic**  
