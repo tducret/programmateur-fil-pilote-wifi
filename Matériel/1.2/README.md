@@ -14,7 +14,9 @@ Cette version reprend toutes les caractéristiques de la version [initiale][1] e
 - Ajout d'une LED 3mm (déportable ou non) sur le boitier 
 - Ajout de pin out disponibles sur toutes les pattes du Spark Core
 
-Attention, une petite erreur est présente sur le PCB, le dessin sur le PCB du connecteur grove est inversé, donc si vous souhaitez le souder, il faut le faire dans le sens inversé par rapport au dessin du PCB (mais toujours à souder sur le dessus).
+Attention, deux erreurs sont présentes sur le PCB (corrigées dans la revision 1.2b) :
+- le dessin sur le PCB du connecteur grove est inversé, donc si vous souhaitez le souder, il faut le faire dans le sens inversé par rapport au dessin du PCB (mais toujours à souder sur le dessus).
+- la diode D14 est inversée, il faut donc la souder dans le sens inverse de ce qui est indiqué sur le PCB
 
 
 Description Détaillée
