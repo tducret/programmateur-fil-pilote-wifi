@@ -9757,11 +9757,12 @@ DIN A3, portrait</description>
 <sheet>
 <plain>
 <text x="-35.56" y="-106.68" size="2.54" layer="94">7 Fils pilotes + 2 type de relais (au choix)</text>
-<text x="54.102" y="-131.064" size="3.81" layer="94">A</text>
+<text x="54.102" y="-131.064" size="3.81" layer="94">B</text>
 <text x="-91.44" y="-91.44" size="1.778" layer="94">Module au choix, RFM12B, RFM69CW</text>
 <text x="-91.44" y="-99.06" size="1.778" layer="94">Ou RFM69HW</text>
 <text x="-180.34" y="-96.52" size="1.778" layer="94">Récepteur 433MHz</text>
 <text x="-35.56" y="-111.76" size="2.54" layer="94">Double Récepteur RFM69 ou RFM12B + 433MHz</text>
+<text x="-93.98" y="-53.34" size="2.54" layer="94">Revision B</text>
 </plain>
 <instances>
 <instance part="R1" gate="G$1" x="-185.42" y="218.44" smashed="yes" rot="R270">
@@ -9923,10 +9924,10 @@ DIN A3, portrait</description>
 <instance part="D11" gate="D" x="1.27" y="25.4" rot="R180"/>
 <instance part="D12" gate="D" x="1.27" y="5.08"/>
 <instance part="D13" gate="D" x="1.27" y="-15.24" rot="R180"/>
-<instance part="D14" gate="D" x="1.27" y="-35.56" rot="R180"/>
-<instance part="J2" gate="J" x="-186.69" y="-72.39" smashed="yes" rot="R180">
-<attribute name="NAME" x="-186.69" y="-66.04" size="1.27" layer="95" ratio="10" rot="R180"/>
-<attribute name="VALUE" x="-196.088" y="-77.978" size="1.778" layer="96" ratio="10" rot="MR180"/>
+<instance part="D14" gate="D" x="1.27" y="-35.56"/>
+<instance part="J2" gate="J" x="-190.5" y="-72.39" smashed="yes">
+<attribute name="NAME" x="-190.5" y="-66.04" size="1.27" layer="95" ratio="10"/>
+<attribute name="VALUE" x="-183.642" y="-79.502" size="1.778" layer="96" ratio="10" rot="MR0"/>
 </instance>
 <instance part="FRAME1" gate="G$1" x="-200.66" y="-137.16"/>
 <instance part="FRAME1" gate="G$2" x="-38.1" y="-137.16"/>
@@ -10208,10 +10209,11 @@ DIN A3, portrait</description>
 <label x="-170.18" y="-58.42" size="1.778" layer="95"/>
 <label x="-167.64" y="-73.66" size="1.778" layer="95"/>
 <wire x1="-180.34" y1="-73.66" x2="-182.88" y2="-76.2" width="0.1524" layer="91"/>
-<pinref part="J2" gate="J" pin="1"/>
-<wire x1="-182.88" y1="-76.2" x2="-191.77" y2="-76.2" width="0.1524" layer="91"/>
 <wire x1="-170.18" y1="-73.66" x2="-180.34" y2="-73.66" width="0.1524" layer="91"/>
 <junction x="-170.18" y="-73.66"/>
+<pinref part="J2" gate="J" pin="4"/>
+<wire x1="-182.88" y1="-76.2" x2="-185.42" y2="-76.2" width="0.1524" layer="91"/>
+<junction x="-185.42" y="-76.2"/>
 </segment>
 <segment>
 <pinref part="JP3" gate="G$1" pin="11"/>
@@ -10305,11 +10307,12 @@ DIN A3, portrait</description>
 <label x="-167.64" y="-71.12" size="1.778" layer="95"/>
 <pinref part="I2C_OLED" gate="G$1" pin="3"/>
 <wire x1="-170.18" y1="-71.12" x2="-162.56" y2="-71.12" width="0.1524" layer="91"/>
-<pinref part="J2" gate="J" pin="4"/>
-<wire x1="-191.77" y1="-68.58" x2="-182.88" y2="-68.58" width="0.1524" layer="91"/>
 <wire x1="-182.88" y1="-68.58" x2="-180.34" y2="-71.12" width="0.1524" layer="91"/>
 <wire x1="-180.34" y1="-71.12" x2="-170.18" y2="-71.12" width="0.1524" layer="91"/>
 <junction x="-170.18" y="-71.12"/>
+<pinref part="J2" gate="J" pin="1"/>
+<wire x1="-182.88" y1="-68.58" x2="-185.42" y2="-68.58" width="0.1524" layer="91"/>
+<junction x="-185.42" y="-68.58"/>
 </segment>
 <segment>
 <wire x1="-127" y1="12.7" x2="-137.16" y2="12.7" width="0.1524" layer="91"/>
@@ -10362,11 +10365,12 @@ DIN A3, portrait</description>
 <junction x="-152.4" y="-55.88"/>
 <label x="-170.18" y="-55.88" size="1.778" layer="95"/>
 <label x="-167.64" y="-76.2" size="1.778" layer="95"/>
-<pinref part="J2" gate="J" pin="2"/>
-<wire x1="-191.77" y1="-73.66" x2="-182.88" y2="-73.66" width="0.1524" layer="91"/>
 <wire x1="-182.88" y1="-73.66" x2="-180.34" y2="-76.2" width="0.1524" layer="91"/>
 <wire x1="-180.34" y1="-76.2" x2="-170.18" y2="-76.2" width="0.1524" layer="91"/>
 <junction x="-170.18" y="-76.2"/>
+<pinref part="J2" gate="J" pin="3"/>
+<wire x1="-182.88" y1="-73.66" x2="-185.42" y2="-73.66" width="0.1524" layer="91"/>
+<junction x="-185.42" y="-73.66"/>
 </segment>
 <segment>
 <pinref part="JP4" gate="G$1" pin="12"/>
@@ -10412,9 +10416,10 @@ DIN A3, portrait</description>
 <wire x1="-170.18" y1="-68.58" x2="-162.56" y2="-68.58" width="0.1524" layer="91"/>
 <wire x1="-170.18" y1="-68.58" x2="-180.34" y2="-68.58" width="0.1524" layer="91"/>
 <wire x1="-180.34" y1="-68.58" x2="-182.88" y2="-71.12" width="0.1524" layer="91"/>
-<pinref part="J2" gate="J" pin="3"/>
-<wire x1="-182.88" y1="-71.12" x2="-191.77" y2="-71.12" width="0.1524" layer="91"/>
 <junction x="-170.18" y="-68.58"/>
+<pinref part="J2" gate="J" pin="2"/>
+<wire x1="-182.88" y1="-71.12" x2="-185.42" y2="-71.12" width="0.1524" layer="91"/>
+<junction x="-185.42" y="-71.12"/>
 </segment>
 <segment>
 <wire x1="-127" y1="15.24" x2="-137.16" y2="15.24" width="0.1524" layer="91"/>
@@ -10890,23 +10895,21 @@ DIN A3, portrait</description>
 <net name="FP7" class="0">
 <segment>
 <wire x1="5.08" y1="-15.24" x2="12.7" y2="-15.24" width="0.1524" layer="91"/>
-<wire x1="5.08" y1="-35.56" x2="12.7" y2="-35.56" width="0.1524" layer="91"/>
 <wire x1="12.7" y1="-35.56" x2="12.7" y2="-15.24" width="0.1524" layer="91"/>
 <wire x1="27.94" y1="-15.24" x2="12.7" y2="-15.24" width="0.1524" layer="91"/>
 <junction x="12.7" y="-15.24"/>
 <pinref part="FILPILOTE" gate="-7" pin="KL"/>
 <label x="20.32" y="-15.24" size="1.778" layer="95"/>
 <pinref part="D13" gate="D" pin="+"/>
-<pinref part="D14" gate="D" pin="+"/>
+<pinref part="D14" gate="D" pin="-"/>
+<wire x1="5.08" y1="-35.56" x2="12.7" y2="-35.56" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="S$11" class="0">
 <segment>
-<wire x1="-22.86" y1="-35.56" x2="-24.13" y2="-35.56" width="0.1524" layer="91"/>
 <pinref part="OP14" gate="G$1" pin="4"/>
-<wire x1="-24.13" y1="-35.56" x2="-2.54" y2="-35.56" width="0.1524" layer="91"/>
-<junction x="-24.13" y="-35.56"/>
-<pinref part="D14" gate="D" pin="-"/>
+<pinref part="D14" gate="D" pin="+"/>
+<wire x1="-2.54" y1="-35.56" x2="-24.13" y2="-35.56" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="RX" class="0">
