@@ -19,6 +19,7 @@ Changements apportés dans la révision 1.2c
 - Déplacement connecteur grove pour ne pas géner en cas d'insertion un module grove
 - Déplacement de la LED pour qu'elle ne soit plus située sous le LCD
 - Agrandissement des PAD des optos pour une soudure plus aisée
+- Inversion des plots 3.3V et GND afin de pouvoir souder un double plot uniquement (5V+GND), les triples étant moins facile à trouver et je suis pas certain que le 3.3V soit utilisé (mais il reste disponible)
 
 Attention, deux erreurs étaient présentes sur le PCB 1.2 original (corrigées dans la revision 1.2c) :
 - le dessin sur le PCB du connecteur grove est inversé, donc si vous souhaitez le souder, il faut le faire dans le sens inversé par rapport au dessin du PCB (mais toujours à souder sur le dessus).
