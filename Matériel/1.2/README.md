@@ -14,7 +14,13 @@ Cette version reprend toutes les caractéristiques de la version [initiale][1] e
 - Ajout d'une LED 3mm (déportable ou non) sur le boitier 
 - Ajout de pin out disponibles sur toutes les pattes du Spark Core
 
-Attention, deux erreurs sont présentes sur le PCB (corrigées dans la revision 1.2b) :
+changement version 1.2c 
+- correction silk au niveau du connecteur grove
+- Déplacement connecteur grove pour ne pas géner en cas d'insertion un module grove
+- Déplacement LED pour qu'elle ne soit plus située sous le LCD
+- Agradissement des PAD des optos, plus facile à souder
+
+Attention, deux erreurs sont présentes sur le PCB 1.2 original (corrigées dans la revision 1.2c) :
 - le dessin sur le PCB du connecteur grove est inversé, donc si vous souhaitez le souder, il faut le faire dans le sens inversé par rapport au dessin du PCB (mais toujours à souder sur le dessus).
 - la diode D14 est inversée, il faut donc la souder dans le sens inverse de ce qui est indiqué sur le PCB
 
