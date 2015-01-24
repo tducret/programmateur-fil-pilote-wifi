@@ -8,24 +8,24 @@
 </settings>
 <grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
-<layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
-<layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
-<layer number="3" name="Route3" color="4" fill="3" visible="no" active="no"/>
-<layer number="14" name="Route14" color="1" fill="6" visible="no" active="no"/>
-<layer number="15" name="Route15" color="4" fill="6" visible="no" active="no"/>
-<layer number="16" name="Bottom" color="1" fill="1" visible="no" active="no"/>
-<layer number="17" name="Pads" color="2" fill="1" visible="no" active="no"/>
-<layer number="18" name="Vias" color="2" fill="1" visible="no" active="no"/>
-<layer number="19" name="Unrouted" color="13" fill="1" visible="no" active="no"/>
-<layer number="20" name="Dimension" color="15" fill="1" visible="no" active="no"/>
-<layer number="21" name="tPlace" color="7" fill="1" visible="no" active="no"/>
-<layer number="22" name="bPlace" color="3" fill="1" visible="no" active="no"/>
-<layer number="23" name="tOrigins" color="15" fill="1" visible="no" active="no"/>
-<layer number="24" name="bOrigins" color="3" fill="1" visible="no" active="no"/>
-<layer number="25" name="tNames" color="7" fill="1" visible="no" active="no"/>
-<layer number="26" name="bNames" color="3" fill="1" visible="no" active="no"/>
-<layer number="27" name="tValues" color="7" fill="1" visible="no" active="no"/>
-<layer number="28" name="bValues" color="3" fill="1" visible="no" active="no"/>
+<layer number="1" name="Top" color="4" fill="1" visible="yes" active="no"/>
+<layer number="2" name="Route2" color="1" fill="3" visible="yes" active="no"/>
+<layer number="3" name="Route3" color="4" fill="3" visible="yes" active="no"/>
+<layer number="14" name="Route14" color="1" fill="6" visible="yes" active="no"/>
+<layer number="15" name="Route15" color="4" fill="6" visible="yes" active="no"/>
+<layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="no"/>
+<layer number="17" name="Pads" color="2" fill="1" visible="yes" active="no"/>
+<layer number="18" name="Vias" color="2" fill="1" visible="yes" active="no"/>
+<layer number="19" name="Unrouted" color="13" fill="1" visible="yes" active="no"/>
+<layer number="20" name="Dimension" color="15" fill="1" visible="yes" active="no"/>
+<layer number="21" name="tPlace" color="7" fill="1" visible="yes" active="no"/>
+<layer number="22" name="bPlace" color="3" fill="1" visible="yes" active="no"/>
+<layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="no"/>
+<layer number="24" name="bOrigins" color="3" fill="1" visible="yes" active="no"/>
+<layer number="25" name="tNames" color="7" fill="1" visible="yes" active="no"/>
+<layer number="26" name="bNames" color="3" fill="1" visible="yes" active="no"/>
+<layer number="27" name="tValues" color="7" fill="1" visible="yes" active="no"/>
+<layer number="28" name="bValues" color="3" fill="1" visible="yes" active="no"/>
 <layer number="29" name="tStop" color="7" fill="3" visible="no" active="no"/>
 <layer number="30" name="bStop" color="7" fill="6" visible="no" active="no"/>
 <layer number="31" name="tCream" color="7" fill="4" visible="no" active="no"/>
@@ -34,8 +34,8 @@
 <layer number="34" name="bFinish" color="6" fill="6" visible="no" active="no"/>
 <layer number="35" name="tGlue" color="7" fill="4" visible="no" active="no"/>
 <layer number="36" name="bGlue" color="7" fill="5" visible="no" active="no"/>
-<layer number="37" name="tTest" color="7" fill="1" visible="no" active="no"/>
-<layer number="38" name="bTest" color="7" fill="1" visible="no" active="no"/>
+<layer number="37" name="tTest" color="7" fill="1" visible="yes" active="no"/>
+<layer number="38" name="bTest" color="7" fill="1" visible="yes" active="no"/>
 <layer number="39" name="tKeepout" color="4" fill="11" visible="no" active="no"/>
 <layer number="40" name="bKeepout" color="1" fill="11" visible="no" active="no"/>
 <layer number="41" name="tRestrict" color="4" fill="10" visible="no" active="no"/>
@@ -43,17 +43,17 @@
 <layer number="43" name="vRestrict" color="2" fill="10" visible="no" active="no"/>
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="no"/>
 <layer number="45" name="Holes" color="7" fill="1" visible="no" active="no"/>
-<layer number="46" name="Milling" color="3" fill="1" visible="no" active="no"/>
-<layer number="47" name="Measures" color="7" fill="1" visible="no" active="no"/>
-<layer number="48" name="Document" color="7" fill="1" visible="no" active="no"/>
-<layer number="49" name="Reference" color="7" fill="1" visible="no" active="no"/>
-<layer number="50" name="dxf" color="7" fill="1" visible="no" active="no"/>
-<layer number="51" name="tDocu" color="7" fill="1" visible="no" active="no"/>
-<layer number="52" name="bDocu" color="3" fill="1" visible="no" active="no"/>
-<layer number="53" name="tGND_GNDA" color="7" fill="9" visible="no" active="no"/>
-<layer number="54" name="bGND_GNDA" color="1" fill="9" visible="no" active="no"/>
-<layer number="56" name="wert" color="7" fill="1" visible="no" active="no"/>
-<layer number="57" name="tCAD" color="7" fill="1" visible="no" active="no"/>
+<layer number="46" name="Milling" color="3" fill="1" visible="yes" active="no"/>
+<layer number="47" name="Measures" color="7" fill="1" visible="yes" active="no"/>
+<layer number="48" name="Document" color="7" fill="1" visible="yes" active="no"/>
+<layer number="49" name="Reference" color="7" fill="1" visible="yes" active="no"/>
+<layer number="50" name="dxf" color="7" fill="1" visible="yes" active="no"/>
+<layer number="51" name="tDocu" color="7" fill="1" visible="yes" active="no"/>
+<layer number="52" name="bDocu" color="3" fill="1" visible="yes" active="no"/>
+<layer number="53" name="tGND_GNDA" color="7" fill="9" visible="yes" active="no"/>
+<layer number="54" name="bGND_GNDA" color="1" fill="9" visible="yes" active="no"/>
+<layer number="56" name="wert" color="7" fill="1" visible="yes" active="no"/>
+<layer number="57" name="tCAD" color="7" fill="1" visible="yes" active="no"/>
 <layer number="90" name="Modules" color="5" fill="1" visible="yes" active="yes"/>
 <layer number="91" name="Nets" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="92" name="Busses" color="1" fill="1" visible="yes" active="yes"/>
@@ -1252,6 +1252,23 @@ Source: Comchip CGRM4001-G.pdf</description>
 </library>
 <library name="TLP168J">
 <packages>
+<package name="MFSOP-4-HANDSOLDER">
+<smd name="3" x="0" y="0.381" dx="1.27" dy="2.032" layer="1"/>
+<smd name="4" x="0" y="-6.731" dx="1.27" dy="2.032" layer="1"/>
+<smd name="1" x="2.54" y="0.381" dx="1.27" dy="2.032" layer="1"/>
+<smd name="6" x="2.54" y="-6.731" dx="1.27" dy="2.032" layer="1"/>
+<wire x1="-0.635" y1="-0.635" x2="3.175" y2="-0.635" width="0.127" layer="51"/>
+<wire x1="3.175" y1="-0.635" x2="3.175" y2="-5.715" width="0.127" layer="51"/>
+<wire x1="3.175" y1="-5.715" x2="-0.635" y2="-5.715" width="0.127" layer="51"/>
+<wire x1="-0.635" y1="-5.715" x2="-0.635" y2="-0.635" width="0.127" layer="51"/>
+<text x="-1.27" y="1.27" size="1.27" layer="21">&gt;NAME</text>
+<text x="-1.27" y="-8.89" size="1.27" layer="51">&gt;VALUE</text>
+<wire x1="-0.508" y1="-5.842" x2="-0.508" y2="-0.508" width="0.127" layer="21"/>
+<wire x1="-0.508" y1="-0.508" x2="3.048" y2="-0.508" width="0.127" layer="21"/>
+<wire x1="3.048" y1="-0.508" x2="3.048" y2="-5.842" width="0.127" layer="21"/>
+<wire x1="3.048" y1="-5.842" x2="-0.508" y2="-5.842" width="0.127" layer="21"/>
+<circle x="2.286" y="-1.27" radius="0.127" width="0.508" layer="21"/>
+</package>
 <package name="MFSOP-4">
 <smd name="3" x="0" y="0" dx="0.8" dy="1.2" layer="1"/>
 <smd name="4" x="0" y="-6.35" dx="0.8" dy="1.2" layer="1"/>
@@ -1394,7 +1411,18 @@ Source: Comchip CGRM4001-G.pdf</description>
 <gate name="G$1" symbol="TLP168J" x="0" y="0"/>
 </gates>
 <devices>
-<device name="" package="MFSOP-4">
+<device name="STD" package="MFSOP-4">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="3" pad="3"/>
+<connect gate="G$1" pin="4" pad="4"/>
+<connect gate="G$1" pin="6" pad="6"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="BIGPAD" package="MFSOP-4-HANDSOLDER">
 <connects>
 <connect gate="G$1" pin="1" pad="1"/>
 <connect gate="G$1" pin="3" pad="3"/>
@@ -9668,20 +9696,20 @@ DIN A3, portrait</description>
 <part name="R15" library="_c2h" deviceset="RESISTOR" device="'1206-RES''" value="470"/>
 <part name="R16" library="_c2h" deviceset="RESISTOR" device="'1206-RES''" value="470"/>
 <part name="GND4" library="supply1" deviceset="GND" device=""/>
-<part name="OP1" library="TLP168J" deviceset="TLP168J" device=""/>
-<part name="OP2" library="TLP168J" deviceset="TLP168J" device=""/>
-<part name="OP3" library="TLP168J" deviceset="TLP168J" device=""/>
-<part name="OP4" library="TLP168J" deviceset="TLP168J" device=""/>
-<part name="OP5" library="TLP168J" deviceset="TLP168J" device=""/>
-<part name="OP6" library="TLP168J" deviceset="TLP168J" device=""/>
-<part name="OP7" library="TLP168J" deviceset="TLP168J" device=""/>
-<part name="OP8" library="TLP168J" deviceset="TLP168J" device=""/>
-<part name="OP9" library="TLP168J" deviceset="TLP168J" device=""/>
-<part name="OP10" library="TLP168J" deviceset="TLP168J" device=""/>
-<part name="OP11" library="TLP168J" deviceset="TLP168J" device=""/>
-<part name="OP12" library="TLP168J" deviceset="TLP168J" device=""/>
-<part name="OP13" library="TLP168J" deviceset="TLP168J" device=""/>
-<part name="OP14" library="TLP168J" deviceset="TLP168J" device=""/>
+<part name="OP1" library="TLP168J" deviceset="TLP168J" device="BIGPAD" value="TLP168J"/>
+<part name="OP2" library="TLP168J" deviceset="TLP168J" device="BIGPAD" value="TLP168J"/>
+<part name="OP3" library="TLP168J" deviceset="TLP168J" device="BIGPAD" value="TLP168J"/>
+<part name="OP4" library="TLP168J" deviceset="TLP168J" device="BIGPAD" value="TLP168J"/>
+<part name="OP5" library="TLP168J" deviceset="TLP168J" device="BIGPAD" value="TLP168J"/>
+<part name="OP6" library="TLP168J" deviceset="TLP168J" device="BIGPAD" value="TLP168J"/>
+<part name="OP7" library="TLP168J" deviceset="TLP168J" device="BIGPAD" value="TLP168J"/>
+<part name="OP8" library="TLP168J" deviceset="TLP168J" device="BIGPAD" value="TLP168J"/>
+<part name="OP9" library="TLP168J" deviceset="TLP168J" device="BIGPAD" value="TLP168J"/>
+<part name="OP10" library="TLP168J" deviceset="TLP168J" device="BIGPAD" value="TLP168J"/>
+<part name="OP11" library="TLP168J" deviceset="TLP168J" device="BIGPAD" value="TLP168J"/>
+<part name="OP12" library="TLP168J" deviceset="TLP168J" device="BIGPAD" value="TLP168J"/>
+<part name="OP13" library="TLP168J" deviceset="TLP168J" device="BIGPAD" value="TLP168J"/>
+<part name="OP14" library="TLP168J" deviceset="TLP168J" device="BIGPAD" value="TLP168J"/>
 <part name="TELEINFO" library="con-ptr500" deviceset="AK500/2" device=""/>
 <part name="230V" library="con-ptr500" deviceset="AK500/2" device=""/>
 <part name="FILPILOTE" library="con-ptr500" deviceset="AK500/7" device=""/>
@@ -9757,7 +9785,7 @@ DIN A3, portrait</description>
 <sheet>
 <plain>
 <text x="-35.56" y="-106.68" size="2.54" layer="94">7 Fils pilotes + 2 type de relais (au choix)</text>
-<text x="54.102" y="-131.064" size="3.81" layer="94">B</text>
+<text x="54.102" y="-131.064" size="3.81" layer="94">C</text>
 <text x="-91.44" y="-91.44" size="1.778" layer="94">Module au choix, RFM12B, RFM69CW</text>
 <text x="-91.44" y="-99.06" size="1.778" layer="94">Ou RFM69HW</text>
 <text x="-180.34" y="-96.52" size="1.778" layer="94">Récepteur 433MHz</text>
@@ -9798,23 +9826,62 @@ DIN A3, portrait</description>
 <instance part="R15" gate="G$1" x="-66.04" y="-5.08"/>
 <instance part="R16" gate="G$1" x="-66.04" y="-25.4"/>
 <instance part="GND4" gate="1" x="-58.42" y="-45.72"/>
-<instance part="OP1" gate="G$1" x="-38.1" y="233.68"/>
-<instance part="OP2" gate="G$1" x="-38.1" y="213.36"/>
-<instance part="OP3" gate="G$1" x="-38.1" y="193.04"/>
-<instance part="OP4" gate="G$1" x="-38.1" y="172.72"/>
-<instance part="OP5" gate="G$1" x="-38.1" y="152.4"/>
-<instance part="OP6" gate="G$1" x="-38.1" y="132.08"/>
+<instance part="OP1" gate="G$1" x="-38.1" y="233.68" smashed="yes">
+<attribute name="NAME" x="-46.99" y="243.078" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-39.624" y="222.504" size="1.778" layer="96"/>
+</instance>
+<instance part="OP2" gate="G$1" x="-38.1" y="213.36" smashed="yes">
+<attribute name="NAME" x="-46.99" y="222.758" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-39.624" y="202.184" size="1.778" layer="96"/>
+</instance>
+<instance part="OP3" gate="G$1" x="-38.1" y="193.04" smashed="yes">
+<attribute name="NAME" x="-46.99" y="202.438" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-39.624" y="181.864" size="1.778" layer="96"/>
+</instance>
+<instance part="OP4" gate="G$1" x="-38.1" y="172.72" smashed="yes">
+<attribute name="NAME" x="-46.99" y="182.118" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-39.624" y="161.544" size="1.778" layer="96"/>
+</instance>
+<instance part="OP5" gate="G$1" x="-38.1" y="152.4" smashed="yes">
+<attribute name="NAME" x="-46.99" y="161.798" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-39.624" y="141.224" size="1.778" layer="96"/>
+</instance>
+<instance part="OP6" gate="G$1" x="-38.1" y="132.08" smashed="yes">
+<attribute name="NAME" x="-46.99" y="141.478" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-39.624" y="120.904" size="1.778" layer="96"/>
+</instance>
 <instance part="OP7" gate="G$1" x="-38.1" y="111.76" smashed="yes">
 <attribute name="NAME" x="-46.99" y="121.158" size="1.778" layer="95"/>
 <attribute name="VALUE" x="-39.624" y="100.584" size="1.778" layer="96"/>
 </instance>
-<instance part="OP8" gate="G$1" x="-38.1" y="91.44"/>
-<instance part="OP9" gate="G$1" x="-38.1" y="71.12"/>
-<instance part="OP10" gate="G$1" x="-38.1" y="50.8"/>
-<instance part="OP11" gate="G$1" x="-38.1" y="30.48"/>
-<instance part="OP12" gate="G$1" x="-38.1" y="10.16"/>
-<instance part="OP13" gate="G$1" x="-38.1" y="-10.16"/>
-<instance part="OP14" gate="G$1" x="-38.1" y="-30.48"/>
+<instance part="OP8" gate="G$1" x="-38.1" y="91.44" smashed="yes">
+<attribute name="NAME" x="-46.99" y="100.838" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-39.624" y="80.264" size="1.778" layer="96"/>
+</instance>
+<instance part="OP9" gate="G$1" x="-38.1" y="71.12" smashed="yes">
+<attribute name="NAME" x="-46.99" y="80.518" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-39.624" y="59.944" size="1.778" layer="96"/>
+</instance>
+<instance part="OP10" gate="G$1" x="-38.1" y="50.8" smashed="yes">
+<attribute name="NAME" x="-46.99" y="60.198" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-39.624" y="39.624" size="1.778" layer="96"/>
+</instance>
+<instance part="OP11" gate="G$1" x="-38.1" y="30.48" smashed="yes">
+<attribute name="NAME" x="-46.99" y="39.878" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-39.624" y="19.304" size="1.778" layer="96"/>
+</instance>
+<instance part="OP12" gate="G$1" x="-38.1" y="10.16" smashed="yes">
+<attribute name="NAME" x="-46.99" y="19.558" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-39.624" y="-1.016" size="1.778" layer="96"/>
+</instance>
+<instance part="OP13" gate="G$1" x="-38.1" y="-10.16" smashed="yes">
+<attribute name="NAME" x="-46.99" y="-0.762" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-39.624" y="-21.336" size="1.778" layer="96"/>
+</instance>
+<instance part="OP14" gate="G$1" x="-38.1" y="-30.48" smashed="yes">
+<attribute name="NAME" x="-46.99" y="-21.082" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-47.244" y="-41.656" size="1.778" layer="96"/>
+</instance>
 <instance part="TELEINFO" gate="-1" x="-180.34" y="228.6" rot="R180"/>
 <instance part="TELEINFO" gate="-2" x="-187.96" y="233.68" rot="R180"/>
 <instance part="230V" gate="-1" x="2.54" y="-81.28" smashed="yes">
@@ -10160,9 +10227,10 @@ DIN A3, portrait</description>
 <wire x1="-58.42" y1="-43.18" x2="-58.42" y2="-35.56" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<wire x1="-160.02" y1="134.62" x2="-149.86" y2="134.62" width="0.1524" layer="91"/>
-<label x="-149.86" y="134.62" size="1.778" layer="95" xref="yes"/>
-<pinref part="EXTENSION" gate="-5" pin="KL"/>
+<label x="-149.86" y="139.7" size="1.778" layer="95" xref="yes"/>
+<wire x1="-149.86" y1="139.7" x2="-160.02" y2="139.7" width="0.1524" layer="91"/>
+<pinref part="EXTENSION" gate="-4" pin="KL"/>
+<junction x="-160.02" y="139.7"/>
 </segment>
 <segment>
 <pinref part="R18" gate="G$1" pin="1"/>
@@ -10333,9 +10401,10 @@ DIN A3, portrait</description>
 <wire x1="-160.02" y1="238.76" x2="-160.02" y2="231.14" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<wire x1="-160.02" y1="139.7" x2="-149.86" y2="139.7" width="0.1524" layer="91"/>
-<label x="-149.86" y="139.7" size="1.778" layer="95" xref="yes"/>
-<pinref part="EXTENSION" gate="-4" pin="KL"/>
+<label x="-149.86" y="134.62" size="1.778" layer="95" xref="yes"/>
+<wire x1="-149.86" y1="134.62" x2="-160.02" y2="134.62" width="0.1524" layer="91"/>
+<pinref part="EXTENSION" gate="-5" pin="KL"/>
+<junction x="-160.02" y="134.62"/>
 </segment>
 <segment>
 <pinref part="IC2" gate="G$1" pin="VDD"/>
