@@ -29,8 +29,16 @@ A faire
 - pour le moment seul les [OLED][4] I2C sont gérés
 - tout autre idée est bienvenue
 
+Exemple
+-------
+
+Pour les photos la téléinfo n'était pas branchée sur la carte, c'est pour celà que les compteurs et le bargraphe sont à 0
+
+<img src="https://github.com/thibdct/programmateur-fil-pilote-wifi/blob/master/Logiciel/images/remora01.jpg" alt="Top">
+<img src="https://github.com/thibdct/programmateur-fil-pilote-wifi/blob/master/Logiciel/images/remora02.jpg" alt="Bottom">
+
+
 [1]: https://github.com/thibdct/programmateur-fil-pilote-wifi/tree/master/Mat%C3%A9riel/1.2
 [2]: https://github.com/spark/spark-dev
 [3]: https://github.com/thibdct/programmateur-fil-pilote-wifi/archive/master.zip
 [4]: http://www.ebay.com/itm/291216700457
-
