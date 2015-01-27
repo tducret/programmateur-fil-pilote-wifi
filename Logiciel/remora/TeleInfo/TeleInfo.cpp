@@ -6,6 +6,7 @@ Copyright (C) 2014 Thibault Ducret
 Licence MIT
 */
 
+#include "application.h"
 #include "TeleInfo.h"
 
 //définition des étiquettes
@@ -130,6 +131,7 @@ bool TeleInfo::decode(char c)
       { // on ajoute le groupe dans le tableau
         memcpy(_tableauGroupes[_nbGroupes].etiquette,_etiquette,sizeof(_etiquette));
         memcpy(_tableauGroupes[_nbGroupes].donnee,_donnee,sizeof(_donnee));
+
         _nbGroupes += 1;
         _etat=_5_ATTENDRE_GROUPE_OU_FIN_TRAME; // et on passe à la suite
       }
@@ -191,5 +193,9 @@ void TeleInfo::affecterVariables()
   	{
   		_indexHP=(unsigned int) atoi(_tableauGroupes[i].donnee);
   	}
+    else if (strcmp(_tableauGroupes[i].etiquette,_ETIQ_PERTARIF) == 0)
+    {
+      memcpy(_perTarif,_tableauGroupes[i].donnee,sizeof(_ETIQ_PERTARIF));
+    }
   }
 }

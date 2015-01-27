@@ -119,18 +119,26 @@ void setup()
       status |= STATUS_OLED ;
   #endif
 
+  #ifdef MOD_TELEINFO
+    Serial.println("Initializing Teleinfo Serial");
+    Serial1.begin(1200);  // Port série RX/TX
+
+    // Déclaration des variables "cloud" pour la téléinfo
+    Spark.variable("papp", &mypApp, INT);
+    Spark.variable("iinst", &myiInst, INT);
+    Spark.variable("indexhc", &myindexHC, INT);
+    Spark.variable("indexhp", &myindexHP, INT);
+    Spark.variable("periode", &myPeriode, STRING); // Période tarifaire en cours (string)
+    Spark.variable("iperiode", &ptec, INT); // Période tarifaire en cours (numerique)
+
+  #endif
+
   #ifdef MOD_RF69
     // Initialisation RFM69 Module
     if ( rfm_setup())
       status |= STATUS_RFM ;
   #endif
 
-  #ifdef MOD_TELEINFO
-    Serial.println("Initializing Teleinfo Serial");
-    Serial1.begin(1200);  // Port série RX/TX
-  #endif
-
-  Serial.println("Test du relais");
 
   // Led verte durant le test
   RGB.color(0, 255, 0);
@@ -139,8 +147,10 @@ void setup()
   display_splash();
 
   // Enclencher le relais 2 secondes
+  Serial.print("Relais=ON   ");
   relais("1");
   delay(2000);
+  Serial.println("Relais=OFF");
   relais("0");
 
   // nous avons fini, led Jaune
@@ -158,11 +168,6 @@ void setup()
   Spark.variable("nbdelest", &nbDelestage, INT);
   Spark.variable("etatfp", &etatFP, STRING);
   Spark.variable("etatrelais", &etatrelais, INT);
-  Spark.variable("papp", &mypApp, INT);
-  Spark.variable("iinst", &myiInst, INT);
-  Spark.variable("indexhc", &myindexHC, INT);
-  Spark.variable("indexhp", &myindexHP, INT);
-  Spark.variable("periode", &myPeriode, STRING);
 
   // On etteint la LED embarqué du core
   RGB.color( 0, 0, 0);
@@ -210,7 +215,7 @@ void loop()
         myDelestLimit = myisousc * ratio_intensite;
 
         // Récupération de la période tarifaire en cours
-        strncpy(myPeriode, ti.typeHoraireHPHC(), sizeof(myPeriode));
+        strncpy(myPeriode, ti.perTarif(), sizeof(ti.perTarif()));
 
         // Determination de la puissance tarifaire en cours
         // To DO : gérer les autres types de contrat

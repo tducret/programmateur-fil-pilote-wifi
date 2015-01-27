@@ -14,9 +14,9 @@
 
 //  Définir ici les modules utilsés sur la carte Remora
 //
-#define MOD_RF69        /* Module RF  */
-#define MOD_OLED        /* Afficheur  */
-//#define MOD_TELEINFO  /* Teleinfo   */
+#define MOD_RF69      /* Module RF  */
+#define MOD_OLED      /* Afficheur  */
+#define MOD_TELEINFO  /* Teleinfo   */
 //#define MOD_RF_OREGON   /* Reception des sondes orégon */
 
 // Spark Core main firmware include file
@@ -29,6 +29,7 @@
 #include "SSD1306.h"
 #include "GFX.h"
 #include "ULPN_RF_Protocol.h"
+#include "TeleInfo.h"
 //#include "OLED_local.h"
 //#include "mfGFX_local.h"
 
@@ -39,7 +40,7 @@
 #include "display.h"
 #include "pilotes.h"
 
-// Tarif en cours
+// Tarif en cours au format numérique
 enum ptec_e { PTEC_HP, PTEC_HC };
 
 #define LED_PIN     8
