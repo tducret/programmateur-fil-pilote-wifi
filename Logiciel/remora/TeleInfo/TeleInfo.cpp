@@ -128,12 +128,31 @@ bool TeleInfo::decode(char c)
         _etat=_10_TRAITER_ERREUR;
       }
       else
-      { // on ajoute le groupe dans le tableau
-        memcpy(_tableauGroupes[_nbGroupes].etiquette,_etiquette,sizeof(_etiquette));
-        memcpy(_tableauGroupes[_nbGroupes].donnee,_donnee,sizeof(_donnee));
+      {
+        int8_t i ;
+        unsigned char sum = 32 ;    // Somme des codes ASCII du message + un espace
 
-        _nbGroupes += 1;
-        _etat=_5_ATTENDRE_GROUPE_OU_FIN_TRAME; // et on passe à la suite
+        // Calcul de la checksum sur l'étiquette
+        for (i=0; i < strlen(_etiquette); i++)
+          sum = sum + _etiquette[i] ;
+
+        // Calcul de la checksum sur la donnée
+        for (i=0; i < strlen(_donnee); i++)
+          sum = sum + _donnee[i] ;
+
+        // Si la checksum est bonne, on ajoute le groupe dans le tableau
+        // sinon ce groupe sera ignoré pour cette fois-ci
+        if ( _checksum == ((sum & 63) + 32) )
+        {
+          memcpy(_tableauGroupes[_nbGroupes].etiquette,_etiquette,sizeof(_etiquette));
+          memcpy(_tableauGroupes[_nbGroupes].donnee,_donnee,sizeof(_donnee));
+          
+          // on ajoute le groupe dans le tableau
+          _nbGroupes += 1;
+        }
+
+        // et on passe à la suite
+        _etat=_5_ATTENDRE_GROUPE_OU_FIN_TRAME;
       }
     }
     else
