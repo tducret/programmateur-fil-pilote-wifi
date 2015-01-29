@@ -40,7 +40,6 @@
 #include "tinfo.h"
 
 //  Définir ici les modules utilisés sur la carte Remora
-//
 #define MOD_RF69      /* Module RF  */
 #define MOD_OLED      /* Afficheur  */
 #define MOD_TELEINFO  /* Teleinfo   */

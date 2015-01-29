@@ -1,4 +1,4 @@
-// **********************************************************************************
+  // **********************************************************************************
 // Programmateur Fil Pilote et Suivi Conso
 // **********************************************************************************
 // Copyright (C) 2014 Thibault Ducret
@@ -171,7 +171,7 @@ void loop()
 
   #ifdef MOD_TELEINFO
   // Vérification de la reception d'une 1ere trame téléinfo
-    if (status & STATUS_RFM)
+    if (status & STATUS_TINFO)
       tinfo_loop();
   #endif
 
