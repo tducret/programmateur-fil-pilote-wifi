@@ -91,6 +91,8 @@ void tinfo_loop(void)
 {
 	char c;
 
+	#ifdef MOD_TELEINFO
+
 	// Caractère présent sur la sérial téléinofo ?
 	while (Serial1.available())
 	{
@@ -143,4 +145,6 @@ void tinfo_loop(void)
 			}
 		} // If trame complète
 	} // While serial teleinfo
+	
+	#endif
 }
