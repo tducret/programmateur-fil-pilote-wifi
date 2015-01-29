@@ -15,10 +15,11 @@ Installation
 - Dans le menu Spark/Login to spark cloud entrez vos identifiants Spark pour vous connecter
 - Dans le menu Spark/Select Device selectionnez votre Spark Core
 - Ouvrir ensuite depuis l'IDE les fichers remora.ino et remora.h
+- Selectionner la version de carte utilisé dans le fichier remora.h (les defines REMORA_BOARD_Vxx)
 - Selectionner les modules utilisés dans le fichier remora.h (les defines MOD_xxxx)
 - Selectionner l'onglet remora.ino
 - Lancer la compilation+upload (icone éclair en haut à gauche)
-
+- Si vous avez une erreur de type "App code was invalid" durant la compilation, supprimer le ficher README.md du dossier
 
 A faire
 -------
