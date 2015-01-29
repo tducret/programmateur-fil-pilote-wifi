@@ -35,6 +35,9 @@ int setFP(String command)
 	command.trim();
 	command.toUpperCase();
 
+	Serial.print("setFP=");
+	Serial.println(command);
+
 	// Vérifier que l'on a la commande d'un seul fil pilote (2 caractères)
 	if (command.length() != 2)
 	{
@@ -131,6 +134,10 @@ int fpControl(String command)
 	command.trim();
 	command.toUpperCase();
 
+	Serial.print("fpControl=");
+	Serial.println(command);
+
+
 	// Vérifier que l'on a la commande de tous les fils pilotes
 	if (command.length() != NB_FILS_PILOTES)
 	{
@@ -144,7 +151,7 @@ int fpControl(String command)
     // envoyer les commandes pour tous les fils pilotes
 		for (uint8_t i=1; i<=NB_FILS_PILOTES; i++)
 		{
-			cmd[0] = i ;
+			cmd[0] = '0' + i ;
 			cmd[1] = command[i-1]; // l'index de la chaine commence à 0 donc i-1
 
 			// Si on ne doit pas laisser le fil pilote inchangé
