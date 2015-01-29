@@ -48,7 +48,7 @@ Comments: -
 ====================================================================== */
 void displayTeleinfo(void)
 {
-  int percent = 0;
+  uint percent = 0;
 
   // Effacer le buffer de l'affichage
   display.clearDisplay();
@@ -73,7 +73,11 @@ void displayTeleinfo(void)
   display.setTextColor(WHITE); // normaltext
 
   // Poucentrage de la puissance totale
-  percent = (100 * myiInst) / myisousc ;
+  percent = (uint) myiInst * 100 / myisousc ;
+
+  //Serial.print("myiInst="); Serial.print(myiInst);
+  //Serial.print("  myisousc="); Serial.print(myisousc);
+  //Serial.print("  percent="); Serial.println(percent);
 
   // Information additionelles
   display.printf("%d W %d%%  %3d A", mypApp, percent, myiInst);
