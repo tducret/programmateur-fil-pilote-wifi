@@ -17,39 +17,6 @@ char etatFP[20] = "";
 // Instanciation de l'I/O expander
 Adafruit_MCP23017 mcp;
 
-/* ======================================================================
-Function: pilotes_Setup
-Purpose : prepare and init stuff, configuration, ..
-Input   : -
-Output  : true if MCP23017 module found, false otherwise
-Comments: -
-====================================================================== */
-bool pilotes_setup(void)
-{
-	Serial.print("Initializing MCP23017...");
-
-	// Détection du MCP23017
-	if (!i2c_detect(MCP23017_ADDRESS))
-	//if (i2c_detect(0xFF))
-	{
-		Serial.println("Not found!");
-		return (false);
-	}
-	else
-	{
-		Serial.println("OK!");
-
-		// et l'initialiser
-		mcp.begin();
-
-		// Mettre toutes les PIN en sortie
-		mcp.writeRegister(MCP23017_IODIRA,0x00);
-		mcp.writeRegister(MCP23017_IODIRB,0x00);
-	}
-
-	// ou l'a trouvé
-	return (true);
-}
 
 /* ======================================================================
 Function: setFP
@@ -116,8 +83,8 @@ int setFP(String command)
 			}
 
 			// On positionne les sorties physiquement
-			mcp.digitalWrite(SortiesFP[2*fp+0], fpcmd1);
-			mcp.digitalWrite(SortiesFP[2*fp+1], fpcmd2);
+			_digitalWrite(SortiesFP[2*fp+0], fpcmd1);
+			_digitalWrite(SortiesFP[2*fp+1], fpcmd2);
 			return (0);
 		}
 	}
@@ -205,32 +172,65 @@ Comments: exposée par l'API spark donc attaquable par requête HTTP(S)
 int relais(String command)
 {
 	command.trim();
+	uint8_t cmd = command[0];
 
 	// Vérifier que l'on a la commande d'un seul caractère
-	if (command.length() != 1)
+	if (command.length()!=1 || (cmd!='1' && cmd!='0'))
 		return (-1);
 
-	// On souhaite le desactiver ?
-	if ( command[0] == '0' )
-	{
-		// Relais desactivé
-		etatrelais=0;
+	// Conversion en 0,1 numerique
+	etatrelais= cmd - '0';
 
-		// Etteindre le relais et la LED
-		mcp.digitalWrite(RELAIS_PIN, LOW);
-		mcp.digitalWrite(LED_PIN, LOW);
-
-	}
-	// On souhaire l'activer ?
-	else if (command[0] == '1')
-	{
-		// Relais enclenché
-		etatrelais=1;
-
-		// Allumer le relais et la LED
-		mcp.digitalWrite(RELAIS_PIN, HIGH);
-		mcp.digitalWrite(LED_PIN, HIGH);
-	}
+		// Allumer/Etteindre le relais et la LED
+	#ifdef RELAIS_PIN
+		_digitalWrite(RELAIS_PIN, etatrelais);
+	#endif
+	#ifdef LED_PIN
+		_digitalWrite(LED_PIN, etatrelais);
+	#endif
 
 	return (etatrelais);
+}
+
+/* ======================================================================
+Function: pilotes_Setup
+Purpose : prepare and init stuff, configuration, ..
+Input   : -
+Output  : true if MCP23017 module found, false otherwise
+Comments: -
+====================================================================== */
+bool pilotes_setup(void)
+{
+	// Cartes Version 1.0 et 1.1 pilotage part port I/O du spark
+	#if defined (REMORA_BOARD_V10) || defined (REMORA_BOARD_V11)
+
+		// 2*nbFilPilotes car 2 pins pour commander 1 fil pilote
+		for (uint8_t i=0; i < (NB_FILS_PILOTES*2); i++)
+			_pinMode(SortiesFP[i], OUTPUT); // Chaque commande de fil pilote est une sortie
+
+	// Cartes Version 1.2+ pilotage part I/O Expander
+	#else
+		Serial.print("Initializing MCP23017...");
+
+		// Détection du MCP23017
+		if (!i2c_detect(MCP23017_ADDRESS))
+		{
+			Serial.println("Not found!");
+			return (false);
+		}
+		else
+		{
+			Serial.println("OK!");
+
+			// et l'initialiser
+			mcp.begin();
+
+			// Mettre les 16 I/O PIN en sortie
+			mcp.writeRegister(MCP23017_IODIRA,0x00);
+			mcp.writeRegister(MCP23017_IODIRB,0x00);
+		}
+	#endif
+
+	// ou l'a trouvé
+	return (true);
 }

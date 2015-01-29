@@ -15,31 +15,10 @@
 // faut le faire dans le fichier remora.h
 #include "remora.h"
 
-#ifdef MOD_TELEINFO
-// Instanciation de l'objet Téléinfo
-TeleInfo ti;
-#endif
-
-// Variables globales au projet
-// ============================
-bool trameComplete            = false;
-bool refreshDisplay           = false;
-char myPeriode[8]             = "";
-unsigned int delestageEnCours = 1;
-unsigned int nbDelestage      = 0;
-unsigned int mypApp           = 0;
-unsigned int myiInst          = 0;
-unsigned int myindexHC        = 0;
-unsigned int myindexHP        = 0;
-unsigned int etatrelais       = 0; // Etat du relais
-unsigned int myisousc         = ISOUSCRITE; // pour calculer la limite de délestage
-int isousc                    = ISOUSCRITE;
-float ratio_intensite         = DELESTAGE_RATIO;
-uint16_t status               = 0; // status global de l'application
-
-ptec_e ptec; // Puissance tarifaire en cours
-
-float myDelestLimit = 0.0;
+// Variables globales
+// ==================
+// status global de l'application
+uint16_t status = 0;
 
 /* ======================================================================
 Function: setup
@@ -52,7 +31,6 @@ void setup()
 {
   uint8_t rf_version = 0;
   bool start = false;
-  char c;
   long started ;
 
   // On prend le controle de la LED RGB
@@ -109,7 +87,7 @@ void setup()
   Serial.print("RSSI : "); Serial.print(WiFi.RSSI());
   Serial.println("dB");
 
-  // Init de l'I/O expander des fils pilotes
+  // Init des fils pilotes
   if (pilotes_setup())
     status |= STATUS_MCP ;
 
@@ -120,17 +98,9 @@ void setup()
   #endif
 
   #ifdef MOD_TELEINFO
-    Serial.println("Initializing Teleinfo Serial");
-    Serial1.begin(1200);  // Port série RX/TX
-
-    // Déclaration des variables "cloud" pour la téléinfo
-    Spark.variable("papp", &mypApp, INT);
-    Spark.variable("iinst", &myiInst, INT);
-    Spark.variable("indexhc", &myindexHC, INT);
-    Spark.variable("indexhp", &myindexHP, INT);
-    Spark.variable("periode", &myPeriode, STRING); // Période tarifaire en cours (string)
-    Spark.variable("iperiode", &ptec, INT); // Période tarifaire en cours (numerique)
-
+    // Initialiser la téléinfo et attente d'une trame valide
+    if (tinfo_setup(true))
+      status |= STATUS_TINFO;
   #endif
 
   #ifdef MOD_RF69
@@ -139,7 +109,6 @@ void setup()
       status |= STATUS_RFM ;
   #endif
 
-
   // Led verte durant le test
   RGB.color(0, 255, 0);
 
@@ -147,11 +116,14 @@ void setup()
   display_splash();
 
   // Enclencher le relais 2 secondes
-  Serial.print("Relais=ON   ");
-  relais("1");
-  delay(2000);
-  Serial.println("Relais=OFF");
-  relais("0");
+  // si dispo sur la carte
+  #ifndef REMORA_BOARD_V10
+    Serial.print("Relais=ON   ");
+    relais("1");
+    delay(2000);
+    Serial.println("Relais=OFF");
+    relais("0");
+  #endif
 
   // nous avons fini, led Jaune
   RGB.color(255, 255, 0);
@@ -167,7 +139,10 @@ void setup()
   // Déclaration des variables "cloud"
   Spark.variable("nbdelest", &nbDelestage, INT);
   Spark.variable("etatfp", &etatFP, STRING);
-  Spark.variable("etatrelais", &etatrelais, INT);
+  // relais pas disponible sur les carte 1.0
+  #ifndef REMORA_BOARD_V10
+    Spark.variable("etatrelais", &etatrelais, INT);
+  #endif
 
   // On etteint la LED embarqué du core
   RGB.color( 0, 0, 0);
@@ -184,7 +159,7 @@ Comments: -
 ====================================================================== */
 void loop()
 {
-  char c;
+  static bool refreshDisplay   = false;
   static uint8_t lastsec = Time.second();
 
   // Par defaut on rafraichit à minima toutes les secondes
@@ -195,62 +170,9 @@ void loop()
   }
 
   #ifdef MOD_TELEINFO
-    // Caractère présent sur la sérial téléinofo ?
-    while (Serial1.available())
-    {
-      // Recupération du caractère
-      c = (Serial1.read() & 0x7F);
-
-      // Avons-nous une trame complète ?
-      if (ti.decode(c))
-      {
-        // Mise à jour des variables "cloud"
-        mypApp    = ti.pApp();
-        myiInst   = ti.iInst();
-        myindexHC = ti.indexHC();
-        myindexHP = ti.indexHP();
-        myisousc  = ti.iSousc();
-
-        // Calcul de quand on déclenchera le délestage
-        myDelestLimit = myisousc * ratio_intensite;
-
-        // Récupération de la période tarifaire en cours
-        strncpy(myPeriode, ti.perTarif(), sizeof(ti.perTarif()));
-
-        // Determination de la puissance tarifaire en cours
-        // To DO : gérer les autres types de contrat
-        if (!strcmp(myPeriode,"HP..")) ptec=PTEC_HP;
-        if (!strcmp(myPeriode,"HC..")) ptec=PTEC_HC;
-
-        // 1ere trame ?
-        // Ok nous avons une téléinfo fonctionelle
-        if( (status & STATUS_TINFO) == 0 )
-          status |= STATUS_TINFO;
-
-        // Ok à ce stade nous venons de recevoir une Trame valide
-
-        // on rafraichira l'affichage
-        refreshDisplay = true;
-
-        // Faut-il enclencher le delestage ?
-        // To DO : gestion d'un delestage plus fin de type ou
-        //         ou coupe les Pilotes à un 1 et on vérifie
-        //         que c'est OK
-        if (myiInst >= myDelestLimit)
-        {
-          if (delestageEnCours == 0)
-          {
-            //delestageEnCours ne passe jamais à 1 ???
-            nbDelestage += 1; // on vient juste de passer en délestage
-            delestage();
-          }
-        }
-        else
-        {
-          delestageEnCours = 0; // Pas de délestage
-        }
-      } // If trame complète
-    } // While serial teleinfi
+  // Vérification de la reception d'une 1ere trame téléinfo
+    if (status & STATUS_RFM)
+      tinfo_loop();
   #endif
 
   #ifdef MOD_RF69
@@ -271,6 +193,6 @@ void loop()
   // çà c'est fait
   refreshDisplay = false;
 
-  // on laisse un peu de temp au système
+  // on laisse un peu de temps au système
   delay(20);
 }

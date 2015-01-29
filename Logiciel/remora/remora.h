@@ -12,15 +12,13 @@
 #ifndef REMORA_h
 #define REMORA_h
 
-//  Définir ici les modules utilsés sur la carte Remora
-//
-#define MOD_RF69      /* Module RF  */
-#define MOD_OLED      /* Afficheur  */
-#define MOD_TELEINFO  /* Teleinfo   */
-//#define MOD_RF_OREGON   /* Reception des sondes orégon */
-
 // Spark Core main firmware include file
 #include "application.h"
+
+// Définir ici le type de carte utilsé
+//#define REMORA_BOARD_V10  // Version 1.0
+//#define REMORA_BOARD_V11  // Version 1.1
+#define REMORA_BOARD_V12  // Version 1.2
 
 // Librairies du projet remora
 #include "MCP23017.h"
@@ -39,16 +37,42 @@
 #include "rfm.h"
 #include "display.h"
 #include "pilotes.h"
+#include "tinfo.h"
 
-// Tarif en cours au format numérique
-enum ptec_e { PTEC_HP, PTEC_HC };
+//  Définir ici les modules utilisés sur la carte Remora
+//
+#define MOD_RF69      /* Module RF  */
+#define MOD_OLED      /* Afficheur  */
+#define MOD_TELEINFO  /* Teleinfo   */
+//#define MOD_RF_OREGON   /* Reception des sondes orégon */
 
-#define LED_PIN     8
-#define RELAIS_PIN  9
+// Ces modules ne sont pas disponibles sur les carte 1.0 et 1.1
+#if defined (REMORA_BOARD_V10) || defined (REMORA_BOARD_V11)
+  #undef MOD_RF69
+  #undef MOD_OLED
+  #undef MOD_RF_OREGON
 
-#define ISOUSCRITE 30
-#define DELESTAGE_RATIO 0.9 //ratio en % => 90%
-#define IMAX 35 // sera mis à jour à la reception de trame teleinfo
+  // en revanche le relais l'est sur la carte 1.1
+  #ifdef REMORA_BOARD_V11
+    #define RELAIS_PIN A1
+  #endif
+
+  // Creation macro unique et indépendante du type de
+  // carte pour le controle des I/O
+  #define _digitalWrite(p,v)  digitalWrite(p,v)
+  #define _pinMode(p,v)       pinMode(p,v)
+
+// Carte 1.2+
+#else
+
+  #define LED_PIN    8
+  #define RELAIS_PIN 9
+
+  // Creation macro unique et indépendante du type de
+  // carte pour le controle des I/O
+  #define _digitalWrite(p,v)  mcp.digitalWrite(p,v)
+  #define _pinMode(p,v)       mcp.pinMode(p,v)
+#endif
 
 // Masque de bits pour le status global de l'application
 #define STATUS_MCP    0x0001 // I/O expander detecté
@@ -59,15 +83,7 @@ enum ptec_e { PTEC_HP, PTEC_HC };
 // Variables exported to other source file
 // ========================================
 // define var for whole project
-extern char myPeriode[];
-extern unsigned int mypApp;
-extern unsigned int myiInst;
-extern unsigned int myindexHC;
-extern unsigned int myindexHP;
-extern unsigned int myisousc;
-extern unsigned int etatrelais;
 extern uint16_t status; // status global de l'application
-extern ptec_e ptec;
 
 // Function exported for other source file
 // =======================================

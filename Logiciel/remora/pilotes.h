@@ -16,24 +16,49 @@
 
 // Fils pilotes
 #define NB_FILS_PILOTES 7
-// Les fils pilotes sont connectés de la façon suivante sur l'I/O expander
-// # Fil Pilote    MCP IO/Port   Digital Port
-// FP1 (a et b) -> GPB6, GPB7  ->  14/15
-// FP2 (a et b) -> GPB4, GPB5  ->  12/13
-// FP3 (a et b) -> GPB2, GPB3  ->  10/11
-// FP4 (a et b) -> GPA1, GPA0  ->  1/0
-// FP5 (a et b) -> GPA3, GPA2  ->  3/2
-// FP6 (a et b) -> GPA5, GPA4  ->  5/4
-// FP7 (a et b) -> GPA7, GPA6  ->  7/6
-// Relais       -> GPB1        ->  9
-// LED          -> GPB0        ->  8
-#define FP1 14,15
-#define FP2 12,13
-#define FP3 10,11
-#define FP4  1,0
-#define FP5  3,2
-#define FP6  5,4
-#define FP7  7,6
+
+// Cartes Version 1.0 et 1.1
+#if defined (REMORA_BOARD_V10) || defined (REMORA_BOARD_V11)
+  // Les fils pilotes sont connectés de la façon suivante sur l'I/O expander
+  // # Fil Pilote    Digital Port
+  // FP1 (a et b)  ->  D6,D7
+  // FP2 (a et b)  ->  D4/D5
+  // FP3 (a et b)  ->  D2/D3
+  // FP4 (a et b)  ->  A6/A7
+  // FP5 (a et b)  ->  A4/A5
+  // FP6 (a et b)  ->  A2/A3
+  // FP7 (a et b)  ->  A0,A1
+  // Relais        ->  A1 (attention partagé avec FP7)
+  #define FP1 D6,D7
+  #define FP2 D4,D5
+  #define FP3 D2,D3
+  #define FP4 A6,A7
+  #define FP5 A4,A5
+  #define FP6 A2,A3
+  #define FP7 A0,A1
+#else
+  // Les fils pilotes sont connectés de la façon suivante sur l'I/O expander
+  // # Fil Pilote    MCP IO/Port   Digital Port
+  // FP1 (a et b) -> GPB6, GPB7  ->  14/15
+  // FP2 (a et b) -> GPB4, GPB5  ->  12/13
+  // FP3 (a et b) -> GPB2, GPB3  ->  10/11
+  // FP4 (a et b) -> GPA1, GPA0  ->  1/0
+  // FP5 (a et b) -> GPA3, GPA2  ->  3/2
+  // FP6 (a et b) -> GPA5, GPA4  ->  5/4
+  // FP7 (a et b) -> GPA7, GPA6  ->  7/6
+  // Relais       -> GPB1        ->  9
+  // LED          -> GPB0        ->  8
+  #define FP1 14,15
+  #define FP2 12,13
+  #define FP3 10,11
+  #define FP4  1,0
+  #define FP5  3,2
+  #define FP6  5,4
+  #define FP7  7,6
+
+  #define RELAIS_PIN  9
+  #define LED_PIN     8
+#endif
 
 // Variables exported to other source file
 // ========================================
