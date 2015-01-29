@@ -146,7 +146,7 @@ bool TeleInfo::decode(char c)
         {
           memcpy(_tableauGroupes[_nbGroupes].etiquette,_etiquette,sizeof(_etiquette));
           memcpy(_tableauGroupes[_nbGroupes].donnee,_donnee,sizeof(_donnee));
-          
+
           // on ajoute le groupe dans le tableau
           _nbGroupes += 1;
         }
@@ -215,6 +215,14 @@ void TeleInfo::affecterVariables()
     else if (strcmp(_tableauGroupes[i].etiquette,_ETIQ_PERTARIF) == 0)
     {
       memcpy(_perTarif,_tableauGroupes[i].donnee,sizeof(_ETIQ_PERTARIF));
+    }
+    else if (strcmp(_tableauGroupes[i].etiquette,_ETIQ_ISOUSC) == 0)
+    {
+      _iSousc=(unsigned int) atoi(_tableauGroupes[i].donnee);
+    }
+    else if (strcmp(_tableauGroupes[i].etiquette,_ETIQ_IMAX) == 0)
+    {
+      _iMax=(unsigned int) atoi(_tableauGroupes[i].donnee);
     }
   }
 }
