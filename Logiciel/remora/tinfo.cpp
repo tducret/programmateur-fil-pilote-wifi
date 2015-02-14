@@ -64,17 +64,6 @@ bool tinfo_setup(bool wait_frame)
 		}
 	}
 
-	// Déclaration des variables "cloud" pour la téléinfo
-	// je ne sais pas si les fonction cloud sont persistentes
-	// c'est à dire en cas de deconnexion/reconnexion du wifi
-	// si elles sont perdues ou pas, à tester
-	Spark.variable("papp", &mypApp, INT);
-	Spark.variable("iinst", &myiInst, INT);
-	Spark.variable("indexhc", &myindexHC, INT);
-	Spark.variable("indexhp", &myindexHP, INT);
-	Spark.variable("periode", &myPeriode, STRING); // Période tarifaire en cours (string)
-	Spark.variable("iperiode", (ptec_e *)&ptec, INT); // Période tarifaire en cours (numerique)
-
 	Serial.println("OK!");
 
 	return (wait_frame && !tramevalide ? false : true);
@@ -90,11 +79,15 @@ Comments: -
 void tinfo_loop(void)
 {
 	char c;
+	uint8_t nb_char=0;
 
 	#ifdef MOD_TELEINFO
 
-	// Caractère présent sur la sérial téléinofo ?
-	while (Serial1.available())
+	// Caractère présent sur la sérial téléinfo ?
+	// On prendra maximum 8 caractères par passage
+	// les autres au prochain tour, çà evite les
+	// long while bloquant pour les autres traitements
+	while (Serial1.available() && nb_char++<8)
 	{
 		// Recupération du caractère
 		c = (Serial1.read() & 0x7F);
@@ -145,6 +138,6 @@ void tinfo_loop(void)
 			}
 		} // If trame complète
 	} // While serial teleinfo
-	
+
 	#endif
 }
