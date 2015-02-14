@@ -20,6 +20,51 @@
 // status global de l'application
 uint16_t status = 0;
 
+// Nombre de deconexion cloud detectée
+int cloud_disconnect = 0;
+
+/* ======================================================================
+Function: spark_expose_cloud
+Purpose : declare et expose les variables et fonctions cloud
+Input   :
+Output  : -
+Comments: -
+====================================================================== */
+void spark_expose_cloud(void)
+{
+  Serial.println("spark_expose_cloud()");
+
+  #ifdef MOD_TELEINFO
+    // Déclaration des variables "cloud" pour la téléinfo
+    // je ne sais pas si les fonction cloud sont persistentes
+    // c'est à dire en cas de deconnexion/reconnexion du wifi
+    // si elles sont perdues ou pas, à tester
+    Spark.variable("papp", &mypApp, INT);
+    Spark.variable("iinst", &myiInst, INT);
+    Spark.variable("isousc", &myisousc, INT);
+    Spark.variable("indexhc", &myindexHC, INT);
+    Spark.variable("indexhp", &myindexHP, INT);
+    Spark.variable("periode", &myPeriode, STRING); // Période tarifaire en cours (string)
+    Spark.variable("iperiode", (ptec_e *)&ptec, INT); // Période tarifaire en cours (numerique)
+  #endif
+
+  // Déclaration des fonction "cloud"
+  Spark.function("fp",    fp);
+  Spark.function("setfp", setfp);
+  Spark.function("relais",relais);
+
+  // Déclaration des variables "cloud"
+  Spark.variable("nbdelest", &nbDelestage, INT);
+  Spark.variable("disconnect", &cloud_disconnect, INT);
+  Spark.variable("etatfp", &etatFP, STRING);
+
+  // relais pas disponible sur les carte 1.0
+  #ifndef REMORA_BOARD_V10
+    Spark.variable("etatrelais", &etatrelais, INT);
+  #endif
+}
+
+
 /* ======================================================================
 Function: setup
 Purpose : prepare and init stuff, configuration, ..
@@ -131,18 +176,8 @@ void setup()
   // Hors gel, désactivation des fils pilotes
   delestage();
 
-  // Déclaration des fonction "cloud"
-  Spark.function("fp", fpControl);
-  Spark.function("setfp", setFP);
-  Spark.function("relais", relais);
-
-  // Déclaration des variables "cloud"
-  Spark.variable("nbdelest", &nbDelestage, INT);
-  Spark.variable("etatfp", &etatFP, STRING);
-  // relais pas disponible sur les carte 1.0
-  #ifndef REMORA_BOARD_V10
-    Spark.variable("etatrelais", &etatrelais, INT);
-  #endif
+  // Rendre à dispo nos API
+  spark_expose_cloud();
 
   // On etteint la LED embarqué du core
   RGB.color( 0, 0, 0);
@@ -161,6 +196,8 @@ void loop()
 {
   static bool refreshDisplay   = false;
   static uint8_t lastsec = Time.second();
+  static bool lastcloudstate = Spark.connected();
+  bool currentcloudstate ;
 
   // Par defaut on rafraichit à minima toutes les secondes
   if (Time.second() != lastsec )
@@ -193,6 +230,27 @@ void loop()
   // çà c'est fait
   refreshDisplay = false;
 
-  // on laisse un peu de temps au système
-  delay(20);
+  // recupération de l'état de connexion au cloud spark
+  currentcloudstate = Spark.connected();
+
+  // La connexion cloud vient de chager d'état ?
+  if (lastcloudstate != currentcloudstate)
+  {
+    // Mise à jour de l'état
+    lastcloudstate=currentcloudstate;
+
+    // on vient de se reconnecter ?
+    if (currentcloudstate)
+    {
+      // on pubie à nouveau nos affaires et led verte
+      spark_expose_cloud();
+      RGB.color( 0, 255, 0);
+    }
+    else
+    {
+      // on compte la deconnexion led rouge
+      cloud_disconnect++;
+      RGB.color( 255, 0, 0);
+    }
+  }
 }
