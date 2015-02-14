@@ -71,8 +71,8 @@ extern char etatFP[];
 bool pilotes_setup(void);
 bool pilotes_loop(void);
 void delestage(void);
-int setFP(String);
-int fpControl(String);
+int setfp(String);
+int fp(String);
 int relais(String);
 
 #endif

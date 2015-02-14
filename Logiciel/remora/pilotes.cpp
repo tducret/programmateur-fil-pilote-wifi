@@ -19,7 +19,7 @@ Adafruit_MCP23017 mcp;
 
 
 /* ======================================================================
-Function: setFP
+Function: setfp
 Purpose : selectionne le mode d'un des fils pilotes
 Input   : commande numéro du fil pilote (1 à NB_FILS_PILOTE) + commande
 					C=Confort, A=Arrêt, E=Eco, H=Hors gel, 1=Eco-1, 2=Eco-2
@@ -30,12 +30,12 @@ Input   : commande numéro du fil pilote (1 à NB_FILS_PILOTE) + commande
 Output  : 0 si ok -1 sinon
 Comments: exposée par l'API spark donc attaquable par requête HTTP(S)
 ====================================================================== */
-int setFP(String command)
+int setfp(String command)
 {
 	command.trim();
 	command.toUpperCase();
 
-	Serial.print("setFP=");
+	Serial.print("setfp=");
 	Serial.println(command);
 
 	// Vérifier que l'on a la commande d'un seul fil pilote (2 caractères)
@@ -109,12 +109,12 @@ void delestage(void)
 	for (uint8_t i=1; i<=NB_FILS_PILOTES; i+=1)
 	{
 		cmd[0]='0' + i;
-		setFP(cmd);
+		setfp(cmd);
 	}
 }
 
 /* ======================================================================
-Function: fpControl
+Function: fp
 Purpose : selectionne le mode d'un ou plusieurs les fils pilotes d'un coup
 Input   : liste des commandes
 					-=rien, C=Confort, A=Arrêt, E=Eco, H=Hors gel, 1=Eco-1, 2=Eco-2,
@@ -129,12 +129,12 @@ Input   : liste des commandes
 Output  : 0 si ok -1 sinon
 Comments: exposée par l'API spark donc attaquable par requête HTTP(S)
 ====================================================================== */
-int fpControl(String command)
+int fp(String command)
 {
 	command.trim();
 	command.toUpperCase();
 
-	Serial.print("fpControl=");
+	Serial.print("fp=");
 	Serial.println(command);
 
 
@@ -161,7 +161,7 @@ int fpControl(String command)
 				// on positionne le code de retour à -1 mais on
 				// continue le traitement, les suivantes sont
 				// peut-être correctes
-				if (setFP(cmd) == -1)
+				if (setfp(cmd) == -1)
 					returnValue = -1;
 			}
 		}
@@ -180,6 +180,9 @@ int relais(String command)
 {
 	command.trim();
 	uint8_t cmd = command[0];
+
+	Serial.print("relais=");
+	Serial.println(command);
 
 	// Vérifier que l'on a la commande d'un seul caractère
 	if (command.length()!=1 || (cmd!='1' && cmd!='0'))
