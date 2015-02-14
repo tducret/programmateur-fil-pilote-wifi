@@ -366,7 +366,7 @@ void rfm_loop(void)
       }
 
       // check for known Payload
-      if ( c > RF_PL_START && c < RF_PL_END )
+      if ( isPayloadCmdValid(c))
       {
         // send frame to serial in jeenode style + checksum
         print_received_data(module.nodeid ,module.groupid, module.pdata, module.size, module.rssi, module.ack );

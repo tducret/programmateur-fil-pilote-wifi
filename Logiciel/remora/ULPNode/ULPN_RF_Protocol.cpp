@@ -15,40 +15,78 @@
 // All text above must be included in any redistribution.
 //
 // **********************************************************************************
+
+
+#ifdef SPARK
+#include <application.h>        // Spark Code main include file
 #include "ULPN_RF_Protocol.h"
+#else
+#include <Arduino.h>            //assumes Arduino IDE v1.0 or greater
+#include "ULPNode.h"
+#include "ULPN_RF_Protocol.h"
+#endif
+
 
 #ifdef SPARK
 const char * rf_frame[] = {
 #else
 const char * const rf_frame[] PROGMEM = {
 #endif
-    "UNKNOWN", "ALIVE", "TEMP", "TEMP_HUM",
-    "TEMP_LUX", "TEMP_CO2", "TH02", "PING", "PINGBACK"
+    "UNKNOWN", "ALIVE", "PING", "PINGBACK", "OTA_CONFIG", "OTA_UPDATE", "OTA_AUTOID",
+    "SYS_END", "","","","","","","","","","","","","","","","","","","","","","","",""
+    "SENS_START", "TEMP", "TEMP_HUM", "TEMP_LUX", "TEMP_CO2", "TH02", "TEMP_TEMP", "SENS_END"
   };
 
+// Payload command code
+#define RF_PL_SYSTEM_START  0x00 // first value for system payload type
+#define RF_PL_ALIVE         0x01
+#define RF_PL_PING          0x02
+#define RF_PL_PINGBACK      0x03
+#define RF_PL_OTA_CONFIG    0x04 // OTA Node Configuration
+#define RF_PL_OTA_UPDATE    0x05 // OTA Node Firmware update
+#define RF_PL_OTA_AUTOID    0x06 // OTA Node Auto ID request
+#define RF_PL_SYSTEM_END    0x07 // Lasted value for system payload
 
+#define RF_PL_SENSOR_START  0x20  // first value for sensor payload type
+#define RF_PL_TEMP          0x21
+#define RF_PL_TEMP_HUM      0x22
+#define RF_PL_TEMP_LUX      0x23
+#define RF_PL_TEMP_CO2      0x24
+#define RF_PL_TH02          0x25
+#define RF_PL_TEMP_TEMP     0x26
+#define RF_PL_SENSOR_END    0x27  // last value for sensor payload type
+
+// Buffer used to decode data
+char pbuf[24];
 
 /* ======================================================================
 Function: decode_frame_type
 Purpose : print the frame type
 Input   : type
 Output  : -
-Comments:
+Comments: -
 ====================================================================== */
-void decode_frame_type(uint8_t type)
+char * decode_frame_type(uint8_t type)
 {
-  Serial.print(type);
-  Serial.print(' ');
+  //DebugF(" DFT Type=");
+  //Debug(type,DEC);
+  //DebugF(" ");
+  //DebugFlush();
 
   // check command type is known
-  if (type<=RF_PL_START || type>=RF_PL_END)
+  if (!isPayloadCmdValid(type))
     type =0;
 
 #ifdef SPARK
-  Serial.print(rf_frame[type]);
+  strcpy(pbuf, rf_frame[type]);
 #else
-  Serial.print((char*)pgm_read_word(&(rf_frame[type])));
+  strcpy(pbuf, (char*)pgm_read_word(&(rf_frame[type])));
 #endif
+
+//Debug(pbuff);
+//DebugFlush();
+
+  return pbuf;
 }
 
 /* ======================================================================
@@ -56,11 +94,25 @@ Function: decode_batt
 Purpose : print the battery value
 Input   : battery (mV)
 ====================================================================== */
-void decode_bat(uint16_t bat)
+char * decode_bat(uint16_t bat)
 {
-  Serial.print(F(" Bat:"));
-  Serial.print(bat/1000.0f);
-  Serial.print(F("V"));
+  // convert bat to V format x.yyy
+#ifdef SPARK
+  sprintf(pbuf, " Bat:%1.3fV", bat/1000.0f);
+#else
+  char str_buff[6];
+  dtostrf(bat/1000.0f, 4, 3, str_buff);
+  sprintf_P(pbuf, PSTR(" Bat:%sV"), str_buff);
+#endif
+
+//  Debug(" Bat:");
+//  Debug(bat/1000.0f);
+//  Debug("V");
+//  Serial.print(F(" Bat:"));
+//  Debug(bat/1000.0f);
+//  Serial.print(F("V"));
+
+  return pbuf;
 }
 
 /* ======================================================================
@@ -68,11 +120,23 @@ Function: decode_temp
 Purpose : print the temperature value
 Input   : temp (*100)
 ====================================================================== */
-void decode_temp(int16_t temp)
+char * decode_temp(int16_t temp)
 {
-  Serial.print(F(" Temp:"));
-  Serial.print(temp/100.0f);
-  Serial.print(F("C"));
+// convert bat to V format xx.yy
+#ifdef SPARK
+  sprintf(pbuf, " Bat:%2.2fC", temp/100.0f );
+#else
+  char str_buff[6];
+  dtostrf(temp/100.0f, 4, 2, str_buff);
+  sprintf_P(pbuf, PSTR(" Temp:%sC"), str_buff);
+#endif
+
+  //Debug(" Temp:");
+  //Debug(temp/100.0f);
+  //Debug("C");
+
+  return pbuf;
+
 }
 
 /* ======================================================================
@@ -80,11 +144,13 @@ Function: decode_hum
 Purpose : print the humidity
 Input   : humidity
 ====================================================================== */
-void decode_hum(int16_t hum)
+char * decode_hum(int16_t hum)
 {
-  Serial.print(F(" Hum:"));
-  Serial.print(hum);
-  Serial.print(F("%"));
+  sprintf_P(pbuf, PSTR(" Hum:%d%%"), hum);
+  //Debug(" Hum:");
+  //Debug(hum);
+  //Debug("%");
+  return pbuf;
 }
 
 /* ======================================================================
@@ -92,21 +158,45 @@ Function: decode_lux
 Purpose : print the lux value
 Input   : lux (*10)
 ====================================================================== */
-void decode_lux(int16_t lux)
+char * decode_lux(int16_t lux)
 {
-  Serial.print(F(" Lux:"));
-  Serial.print(lux/10.0f);
+// convert bat to V format x.yyy
+#ifdef SPARK
+  sprintf(pbuf, " Lux:%d", lux/10 );
+#else
+  char str_buff[8];
+  dtostrf(lux/10.0f, 6, 1, str_buff);
+  sprintf_P(pbuf, PSTR(" Lux:%s"), str_buff);
+#endif
+
+//Debug(" Lux:");
+//Debug(lux/10.0f);
+
+  return pbuf;
 }
 /* ======================================================================
 Function: decode_co2
 Purpose : print the co2 value
 Input   : co2
 ====================================================================== */
-void decode_co2(int16_t co2)
+char * decode_co2(int16_t co2)
 {
-  Serial.print(F(" CO2:"));
-  Serial.print(co2);
-  Serial.print(F("ppm"));
+  sprintf_P(pbuf, PSTR(" CO2:%dppm"), co2);
+  //Debug(" CO2:");
+  //Debug(co2);
+  //Debug("ppm");
+  return pbuf;
+}
+
+/* ======================================================================
+Function: decode_rssi
+Purpose : print the rssi value
+Input   : rssi
+====================================================================== */
+char * decode_rssi(int8_t rssi)
+{
+  sprintf_P(pbuf, PSTR(" RSSI:%ddB"), rssi);
+  return pbuf;
 }
 
 /* ======================================================================
@@ -121,25 +211,26 @@ Comments: if we had a command and payload does not match
 ====================================================================== */
 uint8_t decode_received_data(uint8_t len, uint8_t c, void * ppayload)
 {
-
-  Serial.print(F("# type "));
-  decode_frame_type(c);
+  // Show packet type name
+  Debug("#   ");
+  Debug(decode_frame_type(c));
 
   // Alive packet ?
   if ( c==RF_PL_ALIVE && len==sizeof(RFAlivePayload))
   {
     RFAlivePayload * p = (RFAlivePayload *) ppayload;
-    decode_bat(p->vbat/1000);
+    Debug(decode_bat(p->vbat));
   }
 
-  // Ping packet ?
-  else if ( c==RF_PL_PING && len==sizeof(RFPingPayload))
+  // ping/ping back packet ?
+  else if ( (c==RF_PL_PING || c==RF_PL_PINGBACK) && len==sizeof(RFPingPayload))
   {
     RFPingPayload * p = (RFPingPayload *) ppayload;
-    decode_bat(p->vbat/1000);
-    Serial.print(F(" RSSI:"));
-    Serial.print(p->rssi,DEC);
-    Serial.print(F("dB"));
+    Debug(decode_bat(p->vbat));
+
+    // RSSI from other side is sent only in pingback response
+    if (c==RF_PL_PINGBACK)
+      Debug(decode_rssi(p->rssi));
   }
 
   // Classic payload Packet for majority of sensors ?
@@ -147,7 +238,7 @@ uint8_t decode_received_data(uint8_t len, uint8_t c, void * ppayload)
   {
     RFPayload * p = (RFPayload *) ppayload;
 
-    decode_bat(p->vbat/1000);
+    decode_bat(p->vbat);
 
     if ( c==RF_PL_TEMP || c==RF_PL_TEMP_HUM || c==RF_PL_TEMP_LUX || c==RF_PL_TEMP_CO2)
     {
@@ -166,8 +257,8 @@ uint8_t decode_received_data(uint8_t len, uint8_t c, void * ppayload)
     uint8_t * p = (uint8_t *) ppayload;
     while (--len)
     {
-      Serial.print(*p++,HEX);
-      Serial.print(' ');
+      Debug(*p++,HEX);
+      Debug(" ");
     }
 
     // here we did not validated known packet, so clear command
