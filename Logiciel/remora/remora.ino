@@ -35,31 +35,32 @@ void spark_expose_cloud(void)
   Serial.println("spark_expose_cloud()");
 
   #ifdef MOD_TELEINFO
-    // Déclaration des variables "cloud" pour la téléinfo
+    // Déclaration des variables "cloud" pour la téléinfo (10 variables au maximum)
     // je ne sais pas si les fonction cloud sont persistentes
     // c'est à dire en cas de deconnexion/reconnexion du wifi
     // si elles sont perdues ou pas, à tester
     Spark.variable("papp", &mypApp, INT);
     Spark.variable("iinst", &myiInst, INT);
-    Spark.variable("isousc", &myisousc, INT);
+    //Spark.variable("isousc", &myisousc, INT);
     Spark.variable("indexhc", &myindexHC, INT);
     Spark.variable("indexhp", &myindexHP, INT);
     Spark.variable("periode", &myPeriode, STRING); // Période tarifaire en cours (string)
-    Spark.variable("iperiode", (ptec_e *)&ptec, INT); // Période tarifaire en cours (numerique)
+    //Spark.variable("iperiode", (ptec_e *)&ptec, INT); // Période tarifaire en cours (numerique)
   #endif
 
-  // Déclaration des fonction "cloud"
+  // Déclaration des fonction "cloud" (4 fonctions au maximum)
   Spark.function("fp",    fp);
   Spark.function("setfp", setfp);
-  Spark.function("relais",relais);
 
   // Déclaration des variables "cloud"
-  Spark.variable("nbdelest", &nbDelestage, INT);
-  Spark.variable("disconnect", &cloud_disconnect, INT);
-  Spark.variable("etatfp", &etatFP, STRING);
+  Spark.variable("nivdelest", &nivDelest, INT); // Niveau de délestage (nombre de zones délestées)
+  //Spark.variable("disconnect", &cloud_disconnect, INT);
+  Spark.variable("etatfp", &etatFP, STRING); // Etat actuel des fils pilotes
+  Spark.variable("memfp", &memFP, STRING); // Etat mémorisé des fils pilotes (utile en cas de délestage)
 
   // relais pas disponible sur les carte 1.0
   #ifndef REMORA_BOARD_V10
+    Spark.function("relais", relais);
     Spark.variable("etatrelais", &etatrelais, INT);
   #endif
 }
@@ -174,7 +175,7 @@ void setup()
   RGB.color(255, 255, 0);
 
   // Hors gel, désactivation des fils pilotes
-  delestage();
+  initFP();
 
   // Rendre à dispo nos API
   spark_expose_cloud();

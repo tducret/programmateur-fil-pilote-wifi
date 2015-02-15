@@ -12,7 +12,14 @@
 #include "pilotes.h"
 
 int SortiesFP[NB_FILS_PILOTES*2] = { FP1,FP2,FP3,FP4,FP5,FP6,FP7 };
-char etatFP[20] = "";
+char etatFP[NB_FILS_PILOTES+1] = "";
+char memFP[NB_FILS_PILOTES+1] = ""; //Commandes des fils pilotes mémorisées (utile pour le délestage/relestage)
+uint8_t nivDelest = 0; // Niveau de délestage actuel (par défaut = 0, pas de délestage)
+// Correspond au nombre de fils pilotes délestés (entre 0 et nombre de zones)
+uint8_t plusAncienneZoneDelestee = 1;
+// Numéro de la zone qui est délestée depuis le plus de temps (entre 1 et nombre de zones)
+// C'est la première zone à être délestée
+unsigned long timerDelestRelest = 0; // Timer de délestage/relestage
 
 // Instanciation de l'I/O expander
 Adafruit_MCP23017 mcp;
@@ -38,69 +45,114 @@ int setfp(String command)
 	Serial.print("setfp=");
 	Serial.println(command);
 
+	int returnValue = -1;
+
 	// Vérifier que l'on a la commande d'un seul fil pilote (2 caractères)
-	if (command.length() != 2)
-	{
-		return (-1);
-	}
-	else
+	if (command.length() == 2)
 	{
 		// numéro du fil pilote concerné, avec conversion ASCII > entier
 		// la commande est vérifiée dans fpC, pas besoin de traiter ici
 		uint8_t fp = command[0]-'0';
 		char cOrdre= command[1];
-
-		// Vérifier que le numéro du fil pilote ne dépasse le MAX et
-		// que la commande est correcte
-		// Pour le moment les ordres Eco-1 et Eco-2 ne sont pas traités
 		if ( (fp < 1 || fp > NB_FILS_PILOTES) ||
 				(cOrdre!='C' && cOrdre!='E' && cOrdre!='H' && cOrdre!='A') )
 		{
 				// erreur
-				return (-1);
+				Serial.println("Argument incorrect");
 		}
-		// Ok ici tout est correct
 		else
 		{
-			// Commande à passer
-			uint8_t fpcmd1, fpcmd2;
-
-			// tableau d'index de 0 à 6 pas de 1 à 7
-			// on en profite pour Sauver l'état
-			etatFP[--fp]=cOrdre;
-
-			switch (cOrdre)
+			memFP[fp-1] = cOrdre; // On mémorise toujours la commande demandée
+			char cOrdreEnCours = etatFP[fp-1]; // Quel est l'état actuel du fil pilote?
+			if (cOrdreEnCours != 'D')
 			{
-					// Confort => Commande 0/0
-					case 'C': fpcmd1=LOW;  fpcmd2=LOW;  break;
-					// Eco => Commande 1/1
-					case 'E': fpcmd1=HIGH; fpcmd2=HIGH; break;
-					// Hors gel => Commande 1/0
-					case 'H': fpcmd1=HIGH; fpcmd2=LOW;  break;
-					// Arrêt => Commande 0/1
-					case 'A': fpcmd1=LOW;  fpcmd2=HIGH; break;
-					// Eco - 1
-					case '1': { /* to DO */ } ; break;
-					// Eco - 2
-					case '2': { /* to DO */ }; break;
+				// Si un délestage est en cours sur ce fil pilote, on n'exécute pas la commande
+				// La commande est néanmoins mémorisé
+				// Elle sera appliquée lors du relestage
+				returnValue = setfp_interne(fp, cOrdre);
 			}
-
-			// On positionne les sorties physiquement
-			_digitalWrite(SortiesFP[2*fp+0], fpcmd1);
-			_digitalWrite(SortiesFP[2*fp+1], fpcmd2);
-			return (0);
 		}
+	}
+	return(returnValue);
+}
+
+/* ======================================================================
+Function: setfp_interne
+Purpose : selectionne le mode d'un des fils pilotes
+Input   : numéro du fil pilote (1 à NB_FILS_PILOTE)
+					ordre à appliquer
+					C=Confort, A=Arrêt, E=Eco, H=Hors gel, 1=Eco-1, 2=Eco-2, D=Délestage
+					ex:	1,'A' => FP1 Arrêt
+							4,'1' => FP4 eco -1 (To DO)
+							6,'C' => FP6 confort
+							7,'2' => FP7 eco -2 (To DO)
+							5,'D' => FP5 délestage (=> hors-gel et blocage des nouvelles commandes)
+Output  : 0 si ok -1 sinon
+Comments: non exposée par l'API spark car on y gère le délestage
+====================================================================== */
+int setfp_interne(uint8_t fp, char cOrdre)
+{
+	// Vérifier que le numéro du fil pilote ne dépasse le MAX et
+	// que la commande est correcte
+	// Pour le moment les ordres Eco-1 et Eco-2 ne sont pas traités
+	// 'D' correspond à délestage
+
+	Serial.print("setfp_interne : fp=");
+	Serial.print(fp);
+	Serial.print(" ; cOrdre=");
+	Serial.println(cOrdre);
+
+	if ( (fp < 1 || fp > NB_FILS_PILOTES) ||
+			(cOrdre!='C' && cOrdre!='E' && cOrdre!='H' && cOrdre!='A' && cOrdre!='D') )
+	{
+			// erreur
+			return (-1);
+	}
+	// Ok ici tout est correct
+	else
+	{
+		// Commande à passer
+		uint8_t fpcmd1, fpcmd2;
+
+		// tableau d'index de 0 à 6 pas de 1 à 7
+		// on en profite pour Sauver l'état
+		etatFP[fp-1]=cOrdre;
+		Serial.print("etatFP=");
+		Serial.println(etatFP);
+
+		switch (cOrdre)
+		{
+				// Confort => Commande 0/0
+				case 'C': fpcmd1=LOW;  fpcmd2=LOW;  break;
+				// Eco => Commande 1/1
+				case 'E': fpcmd1=HIGH; fpcmd2=HIGH; break;
+				// Hors gel => Commande 1/0
+				case 'H': fpcmd1=HIGH; fpcmd2=LOW;  break;
+				// Arrêt => Commande 0/1
+				case 'A': fpcmd1=LOW;  fpcmd2=HIGH; break;
+				// Eco - 1
+				case '1': { /* to DO */ } ; break;
+				// Eco - 2
+				case '2': { /* to DO */ }; break;
+				// Délestage => Hors gel => Commande 1/0
+				case 'D': fpcmd1=HIGH; fpcmd2=LOW;  break;
+		}
+
+		// On positionne les sorties physiquement
+		_digitalWrite(SortiesFP[2*fp+0], fpcmd1);
+		_digitalWrite(SortiesFP[2*fp+1], fpcmd2);
+		return (0);
 	}
 }
 
 /* ======================================================================
-Function: delestage
+Function: initFP
 Purpose : met tous les fils pilotes en mode hors-gel
 Input   : -
 Output  : -
 Comments: -
 ====================================================================== */
-void delestage(void)
+void initFP(void)
 {
 	// buffer contenant la commande à passer à setFP
 	char cmd[] = "xH" ;
@@ -111,6 +163,94 @@ void delestage(void)
 		cmd[0]='0' + i;
 		setfp(cmd);
 	}
+}
+
+/* ======================================================================
+Function: delester1zone
+Purpose : déleste une zone de plus
+Input   : variables globales nivDelest et plusAncienneZoneDelestee
+Output  : màj variable globale nivDelest
+Comments: -
+====================================================================== */
+void delester1zone(void)
+{
+	uint8_t numFp; // numéro du fil pilote à délester
+
+	Serial.print("delester1zone() : avant : nivDelest=");
+	Serial.print(nivDelest);
+	Serial.print(" ; plusAncienneZoneDelestee=");
+	Serial.println(plusAncienneZoneDelestee);
+
+	if (nivDelest < NB_FILS_PILOTES) // On s'assure que l'on n'est pas au niveau max
+	{
+		nivDelest += 1;
+		numFp = ((plusAncienneZoneDelestee-1 + nivDelest-1) % NB_FILS_PILOTES)+1;
+		setfp_interne(numFp, 'D');
+	}
+
+	Serial.print("delester1zone() : apres : nivDelest=");
+	Serial.print(nivDelest);
+	Serial.print(" ; plusAncienneZoneDelestee=");
+	Serial.println(plusAncienneZoneDelestee);
+}
+
+/* ======================================================================
+Function: relester1zone
+Purpose : retire le délestage d'une zone
+Input   : variables globales nivDelest et plusAncienneZoneDelestee
+Output  : màj variable globale nivDelest et plusAncienneZoneDelestee
+Comments: -
+====================================================================== */
+void relester1zone(void)
+{
+	uint8_t numFp; // numéro du fil pilote à passer HORS-GEL
+
+	Serial.print("relester1zone() : avant : nivDelest=");
+	Serial.print(nivDelest);
+	Serial.print(" ; plusAncienneZoneDelestee=");
+	Serial.println(plusAncienneZoneDelestee);
+
+	if (nivDelest > 0) // On s'assure qu'un délestage est en cours
+	{
+		nivDelest -= 1;
+		numFp = plusAncienneZoneDelestee;
+		char cOrdreMemorise = memFP[numFp-1]; //On récupére la dernière valeur de commande pour cette zone
+		setfp_interne(numFp,cOrdreMemorise);
+		plusAncienneZoneDelestee = (plusAncienneZoneDelestee % NB_FILS_PILOTES) + 1;
+	}
+
+	Serial.print("relester1zone() : apres : nivDelest=");
+	Serial.print(nivDelest);
+	Serial.print(" ; plusAncienneZoneDelestee=");
+	Serial.println(plusAncienneZoneDelestee);
+}
+
+/* ======================================================================
+Function: decalerDelestage
+Purpose : fait tourner la ou les zones délestées
+Input   : variables globales nivDelest et plusAncienneZoneDelestee
+Output  : màj variable globale plusAncienneZoneDelestee
+Comments: -
+====================================================================== */
+void decalerDelestage(void)
+{
+	Serial.print("decalerDelestage() : avant : nivDelest=");
+	Serial.print(nivDelest);
+	Serial.print(" ; plusAncienneZoneDelestee=");
+	Serial.println(plusAncienneZoneDelestee);
+
+	if (nivDelest > 0 && nivDelest < NB_FILS_PILOTES)
+	// On ne peut pas faire tourner les zones délestées s'il n'y en a aucune en cours
+	// de délestage, ou si elles le sont toutes
+	{
+		relester1zone();
+		delester1zone();
+	}
+
+	Serial.print("decalerDelestage() : apres : nivDelest=");
+	Serial.print(nivDelest);
+	Serial.print(" ; plusAncienneZoneDelestee=");
+	Serial.println(plusAncienneZoneDelestee);
 }
 
 /* ======================================================================

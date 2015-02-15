@@ -65,13 +65,21 @@
 extern Adafruit_MCP23017 mcp;
 extern int SortiesFP[];
 extern char etatFP[];
+extern char memFP[];
+extern uint8_t nivDelest;
+extern uint8_t plusAncienneZoneDelestee;
+extern unsigned long timerDelestRelest;
 
 // Function exported for other source file
 // =======================================
 bool pilotes_setup(void);
 bool pilotes_loop(void);
-void delestage(void);
+void delester1zone(void);
+void relester1zone(void);
+void decalerDelestage(void);
+void initFP(void);
 int setfp(String);
+int setfp_interne(uint8_t fp, char cOrdre);
 int fp(String);
 int relais(String);
 
