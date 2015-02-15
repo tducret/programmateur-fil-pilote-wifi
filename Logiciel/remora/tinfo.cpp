@@ -21,12 +21,11 @@ uint myiInst  = 0;
 uint myindexHC= 0;
 uint myindexHP= 0;
 uint myisousc	= ISOUSCRITE; // pour calculer la limite de délestage
-//int  isousc   = ISOUSCRITE;
 char myPeriode[8]= "";
-float ratio_intensite = DELESTAGE_RATIO;
+float ratio_delestage = DELESTAGE_RATIO;
+float ratio_relestage = RELESTAGE_RATIO;
 float myDelestLimit = 0.0;
-uint delestageEnCours = 1;
-uint nbDelestage      = 0;
+float myRelestLimit = 0.0;
 uint etatrelais       = 0; // Etat du relais
 bool tramevalide			= false;
 
@@ -103,7 +102,10 @@ void tinfo_loop(void)
 			myisousc  = ti.iSousc();
 
 			// Calcul de quand on déclenchera le délestage
-			myDelestLimit = myisousc * ratio_intensite;
+			myDelestLimit = myisousc * ratio_delestage;
+
+			// Calcul de quand on déclenchera le relestage
+			myRelestLimit = myisousc * ratio_relestage;
 
 			// Récupération de la période tarifaire en cours
 			strncpy(myPeriode, ti.perTarif(), sizeof(ti.perTarif()));
@@ -120,21 +122,38 @@ void tinfo_loop(void)
 			// Ok à ce stade nous venons de recevoir une Trame valide
 
 			// Faut-il enclencher le delestage ?
-			// To DO : gestion d'un delestage plus fin de type ou
-			//         ou coupe les Pilotes à un 1 et on vérifie
-			//         que c'est OK
-			if (myiInst >= myDelestLimit)
+			if (myiInst > myDelestLimit) //On dépasse le courant max?
 			{
-				if (delestageEnCours == 0)
+				if ((millis() - timerDelestRelest) > 5000L)
 				{
-					//delestageEnCours ne passe jamais à 1 ???
-					nbDelestage += 1; // on vient juste de passer en délestage
-					delestage();
+					//On ne passe pas dans la boucle si l'on a délesté ou relesté une zone il y a moins de 5s
+					//On évite ainsi de délester d'autres zones avant que le délestage précédent ne fasse effet
+					delester1zone();
+					timerDelestRelest = millis();
 				}
 			}
 			else
 			{
-				delestageEnCours = 0; // Pas de délestage
+				if (nivDelest > 0 && (millis() - timerDelestRelest) > 180000L)
+				// Un délestage est en cours (nivDelest > 0)
+				// Le délestage/relestage de la dernière zone date de plus de 3 minutes
+				// On attend au moins ce délai pour relester ou décaler
+				// pour éviter les délestage/relestage trop rapprochés
+				{
+					if (myiInst < myRelestLimit)
+					//Le courant est suffisamment bas pour relester
+					{
+						relester1zone();
+						timerDelestRelest = millis();
+					}
+					else
+					{
+						// On fait tourner le délestage
+						// ex : AVANT = "DDCEEEE" => APRES = "CDDEEEE"
+						decalerDelestage();
+						timerDelestRelest = millis();
+					}
+				}
 			}
 		} // If trame complète
 	} // While serial teleinfo

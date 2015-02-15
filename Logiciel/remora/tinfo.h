@@ -17,8 +17,9 @@
 // nous pouvons attendre une trame téléinfo
 // a l'initialisation
 #define TINFO_FRAME_TIMEOUT 5
-#define ISOUSCRITE 30
+#define ISOUSCRITE 30 // sera mis à jour à la reception de trame teleinfo
 #define DELESTAGE_RATIO 0.9 //ratio en % => 90%
+#define RELESTAGE_RATIO 0.8 //ratio en % => 80%
 #define IMAX 35 // sera mis à jour à la reception de trame teleinfo
 
 
@@ -37,9 +38,8 @@ extern ptec_e ptec; // Puisance tarifaire en cours
 extern char myPeriode[];
 
 extern uint     etatrelais;
-extern uint     delestageEnCours ;
-extern uint     nbDelestage ;
 extern float    myDelestLimit;
+extern float    myRelestLimit;
 
 // Function exported for other source file
 // =======================================
