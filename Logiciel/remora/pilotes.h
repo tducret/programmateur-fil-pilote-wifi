@@ -19,7 +19,7 @@
 
 // Cartes Version 1.0 et 1.1
 #if defined (REMORA_BOARD_V10) || defined (REMORA_BOARD_V11)
-  // Les fils pilotes sont connectés de la façon suivante sur l'I/O expander
+  // Les fils pilotes sont connectés de la façon suivante sur le core
   // # Fil Pilote    Digital Port
   // FP1 (a et b)  ->  D6,D7
   // FP2 (a et b)  ->  D4/D5
@@ -35,7 +35,12 @@
   #define FP4 A6,A7
   #define FP5 A4,A5
   #define FP6 A2,A3
+  #if defined (REMORA_BOARD_V10)
   #define FP7 A0,A1
+  #else
+  #undef NB_FILS_PILOTES
+  #define NB_FILS_PILOTES 6
+  #endif
 #else
   // Les fils pilotes sont connectés de la façon suivante sur l'I/O expander
   // # Fil Pilote    MCP IO/Port   Digital Port
