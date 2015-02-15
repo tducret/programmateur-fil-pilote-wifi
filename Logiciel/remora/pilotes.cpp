@@ -21,13 +21,15 @@ Adafruit_MCP23017 mcp;
 /* ======================================================================
 Function: setfp
 Purpose : selectionne le mode d'un des fils pilotes
-Input   : commande numéro du fil pilote (1 à NB_FILS_PILOTE) + commande
+Input   : commande numéro du fil pilote + commande optionelle
 					C=Confort, A=Arrêt, E=Eco, H=Hors gel, 1=Eco-1, 2=Eco-2
 					ex:	1A => FP1 Arrêt
 							41 => FP4 eco -1 (To DO)
 							6C => FP6 confort
 							72 => FP7 eco -2 (To DO)
-Output  : 0 si ok -1 sinon
+					Si la commande est absente la fonction retourne l'état du FP
+					ex:	1 => si état FP1 est "arret" retourne code ASCII du "A" (65)
+Output  : 0 ou etat commande, si ok -1 sinon
 Comments: exposée par l'API spark donc attaquable par requête HTTP(S)
 ====================================================================== */
 int setfp(String command)
@@ -41,7 +43,23 @@ int setfp(String command)
 	// Vérifier que l'on a la commande d'un seul fil pilote (2 caractères)
 	if (command.length() != 2)
 	{
-		return (-1);
+		// Vérifier que l'on demande l'état d'un seul fil pilote
+		if (command.length() == 1)
+		{
+			uint8_t fp = command[0]-'0';
+
+			// demande valide
+			// retourner l'état du fil pilote (char)
+			if (fp >= 1 && fp <= NB_FILS_PILOTES)
+				return (etatFP[fp-1])	;
+			else
+				return (-1);
+		}
+		else
+		{
+			// erreur
+			return (-1);
+		}
 	}
 	else
 	{
