@@ -1,10 +1,7 @@
-Version Logicielle pour version matérielle 1.2
-==============================================
+Version Logicielle pour toutes les versions du matériel
+=======================================================
 
-Modifications
--------------
-Cette version logicielle est pour la version matérielle [1.2][1]
-
+Cette version logicielle est compatible avec la version matérielle [1.2][1] ainsi que les anciennes versions des cartes electroniques  
 
 Installation
 ------------
@@ -21,6 +18,11 @@ Installation
 - Lancer la compilation+upload (icone éclair en haut à gauche)
 - Si vous avez une erreur de type "App code was invalid" durant la compilation, supprimer le ficher README.md du dossier
 
+API Exposée
+-----------
+
+Description complète bientôt  
+
 A faire
 -------
 
@@ -29,6 +31,10 @@ A faire
 - Gérer le RF des sondes Oregon Scientific
 - pour le moment seul les [OLED][4] I2C sont gérés
 - tout autre idée est bienvenue
+
+Historiques des Modifications
+-----------------------------
+16/02/2015 : Ajout délestage cascadocyclique / Possibilité de ne récupérer l'état que d'un seul fil pilote  
 
 Exemple
 -------
