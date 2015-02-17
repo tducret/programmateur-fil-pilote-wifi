@@ -150,8 +150,8 @@ int setfp_interne(uint8_t fp, char cOrdre)
 		}
 
 		// On positionne les sorties physiquement
-		_digitalWrite(SortiesFP[2*fp+0], fpcmd1);
-		_digitalWrite(SortiesFP[2*fp+1], fpcmd2);
+		_digitalWrite(SortiesFP[2*(fp-1)], fpcmd1);
+		_digitalWrite(SortiesFP[2*(fp-1)+1], fpcmd2);
 		return (0);
 	}
 }
