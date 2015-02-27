@@ -161,14 +161,8 @@ void setup()
     if (display_setup())
     {
       status |= STATUS_OLED ;
-      Serial.print("OLED OK!");
-
       // Splash screen
       display_splash();
-    }
-    else
-    {
-      Serial.print("OLED non trouvé!");
     }
   #endif
 
@@ -177,25 +171,18 @@ void setup()
     if (tinfo_setup(true))
     {
       status |= STATUS_TINFO;
-      Serial.print("Teleinfo OK!");
+      Serial.println("Teleinfo OK!");
     }
     else
     {
-      Serial.print("Teleinfo non fonctionelle!");
+      Serial.println("Teleinfo non fonctionelle!");
     }
   #endif
 
   #ifdef MOD_RF69
     // Initialisation RFM69 Module
     if ( rfm_setup())
-    {
       status |= STATUS_RFM ;
-      Serial.print("RFM69 OK!");
-    }
-    else
-    {
-    Serial.print("RFM69 non trouvé!");
-    }
   #endif
 
   // Led verte durant le test
