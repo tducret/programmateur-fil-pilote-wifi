@@ -46,6 +46,9 @@ void spark_expose_cloud(void)
     Spark.variable("indexhp", &myindexHP, INT);
     Spark.variable("periode", &myPeriode, STRING); // Période tarifaire en cours (string)
     //Spark.variable("iperiode", (ptec_e *)&ptec, INT); // Période tarifaire en cours (numerique)
+
+    // Récupération d'une valeur d'étiquette
+    //Spark.function("tinfo", tinfo);
   #endif
 
   // Déclaration des fonction "cloud" (4 fonctions au maximum)
@@ -130,8 +133,24 @@ void setup()
   Serial.print("Mask : "); Serial.println(WiFi.subnetMask());
   Serial.print("GW   : "); Serial.println(WiFi.gatewayIP());
   Serial.print("SSDI : "); Serial.println(WiFi.SSID());
-  Serial.print("RSSI : "); Serial.print(WiFi.RSSI());
-  Serial.println("dB");
+  Serial.print("RSSI : "); Serial.print(WiFi.RSSI());Serial.println("dB");
+
+  Serial.print("Compilé avec les fonctions : ");
+
+  #ifdef REMORA_BOARD_V12
+    Serial.print("MCP23017 ");
+  #endif
+  #ifdef MOD_OLED
+    Serial.print("OLED ");
+  #endif
+  #ifdef MOD_TELEINFO
+    Serial.print("TELEINFO ");
+  #endif
+  #ifdef MOD_RF69
+    Serial.print("RFM69 ");
+  #endif
+
+  Serial.println();
 
   // Init des fils pilotes
   if (pilotes_setup())
@@ -140,26 +159,47 @@ void setup()
   #ifdef MOD_OLED
     // Initialisation de l'afficheur
     if (display_setup())
+    {
       status |= STATUS_OLED ;
+      Serial.print("OLED OK!");
+
+      // Splash screen
+      display_splash();
+    }
+    else
+    {
+      Serial.print("OLED non trouvé!");
+    }
   #endif
 
   #ifdef MOD_TELEINFO
     // Initialiser la téléinfo et attente d'une trame valide
     if (tinfo_setup(true))
+    {
       status |= STATUS_TINFO;
+      Serial.print("Teleinfo OK!");
+    }
+    else
+    {
+      Serial.print("Teleinfo non fonctionelle!");
+    }
   #endif
 
   #ifdef MOD_RF69
     // Initialisation RFM69 Module
     if ( rfm_setup())
+    {
       status |= STATUS_RFM ;
+      Serial.print("RFM69 OK!");
+    }
+    else
+    {
+    Serial.print("RFM69 non trouvé!");
+    }
   #endif
 
   // Led verte durant le test
   RGB.color(0, 255, 0);
-
-  // Splash screen
-  display_splash();
 
   // Enclencher le relais 2 secondes
   // si dispo sur la carte
@@ -251,6 +291,8 @@ void loop()
     {
       // on compte la deconnexion led rouge
       cloud_disconnect++;
+      Serial.print("Perte de conexion au cloud #");
+      Serial.println(cloud_disconnect);
       RGB.color( 255, 0, 0);
     }
   }
