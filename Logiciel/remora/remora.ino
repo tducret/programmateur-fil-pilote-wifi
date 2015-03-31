@@ -48,7 +48,7 @@ void spark_expose_cloud(void)
     //Spark.variable("iperiode", (ptec_e *)&ptec, INT); // Période tarifaire en cours (numerique)
 
     // Récupération d'une valeur d'étiquette
-    //Spark.function("tinfo", tinfo);
+    Spark.variable("tinfo", &mytinfo, STRING);
   #endif
 
   // Déclaration des fonction "cloud" (4 fonctions au maximum)

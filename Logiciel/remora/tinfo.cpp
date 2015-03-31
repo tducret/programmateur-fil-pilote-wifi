@@ -22,6 +22,8 @@ uint myindexHC= 0;
 uint myindexHP= 0;
 uint myisousc	= ISOUSCRITE; // pour calculer la limite de délestage
 char myPeriode[8]= "";
+char mytinfo[200] ="";
+char mycompteur[64] ="";
 float ratio_delestage = DELESTAGE_RATIO;
 float ratio_relestage = RELESTAGE_RATIO;
 float myDelestLimit = 0.0;
@@ -114,6 +116,14 @@ void tinfo_loop(void)
 			// To DO : gérer les autres types de contrat
 			if (!strcmp(myPeriode,"HP..")) ptec= PTEC_HP;
 			if (!strcmp(myPeriode,"HC..")) ptec= PTEC_HC;
+
+			//On publie toutes les infos teleinfos dans un seul appel :
+			sprintf(mytinfo,"{\"papp\":%u,\"iinst\":%u,\"isousc\":%u,\"Periode\":%u,\"indexHP\":%u,\"indexHC\":%u}",mypApp,myiInst,myisousc,ptec,myindexHP,myindexHC);
+			//Spark.publish("Teleinfo",mytinfo);
+
+			// On creer les compteurs :
+			sprintf(mycompteur,"{\"indexHP\":\"%u\",\"indexHC\":\"%u\"}",myindexHP,myindexHC);
+			// Spark.publish("Compteur",mycompteur);
 
 			// 1ere trame ?
 			// Ok nous avons une téléinfo fonctionelle
