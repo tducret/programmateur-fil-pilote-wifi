@@ -41,9 +41,9 @@
 
 //  Définir ici les modules utilisés sur la carte Remora
 #define MOD_RF69      /* Module RF  */
-#define MOD_OLED      /* Afficheur  */
+//#define MOD_OLED      /* Afficheur  */
 #define MOD_TELEINFO  /* Teleinfo   */
-//#define MOD_RF_OREGON   /* Reception des sondes orégon */
+#define MOD_RF_OREGON   /* Reception des sondes orégon */
 
 // Ces modules ne sont pas disponibles sur les carte 1.0 et 1.1
 #if defined (REMORA_BOARD_V10) || defined (REMORA_BOARD_V11)

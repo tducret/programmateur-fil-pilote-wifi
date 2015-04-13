@@ -37,6 +37,7 @@ extern unsigned int myisousc;
 extern ptec_e ptec; // Puisance tarifaire en cours
 extern char myPeriode[];
 extern char mytinfo[];
+extern char myAction[];
 
 extern uint     etatrelais;
 extern float    myDelestLimit;
