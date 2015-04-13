@@ -35,6 +35,7 @@ A faire
 Historiques des Modifications
 -----------------------------
 16/02/2015 : Ajout délestage cascadocyclique / Possibilité de ne récupérer l'état que d'un seul fil pilote
+
 14/04/2015 : Ajout d'une varible spark pour la teleinfo. Passage en un seul appel pour script jeedom. Les variables d'origine restent utilisables.
 
 Exemple
