@@ -52,6 +52,21 @@ $obj = json_decode($output);
 $etatfp = $obj->{'result'};
 $etatfp = substr($etatfp,$fp,1); 
 
-echo $etatfp;
+// Compatibilité native Jeedom avec retour numerique :
+switch ($etatfp) {
+    case 'C':
+     echo "0";
+     break;
+    case 'H':
+     echo "1";
+     break;
+    case 'A':
+     echo "2";
+     break;
+    case 'E':
+     echo "3";
+     break;
+}
+//echo $etatfp;
 ?>
 
