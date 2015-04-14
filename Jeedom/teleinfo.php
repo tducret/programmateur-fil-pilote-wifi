@@ -1,13 +1,25 @@
 #!/usr/bin/php
 <?php
 
+// =========================================================================
+//  Theju / 15/04/2015 / création du script
+// =========================================================================
+
 // script de recuperation des info compteurs EDF depuis la carte de Thibault (https://github.com/thibdct).
 // Le script est fourni tel quel, il n'est pas parfait et aucun contrôle n'est fait sur les données.
 //
 // Il est necessaire de modifer le code de thibdct et hallard dans le spark afin de recuperer toutes les valeurs dans une seul réponse json
 // voir mon github : https://github.com/Th3ju/programmateur-fil-pilote-wifi
 //
-// Integration à jeedom : 
+
+// =========================================================================
+// Utilisation dans Jeedom : 
+// =========================================================================
+
+// Creer 2 variables (General / Scenarios / Voir Variables / Ajouter)
+// SPARK_ID : L'id de votre spark
+// SPARK_TOKEN : Votre token 
+
 // Créer un nouveau script puis ajouter une commande d'info evenement
 // Selectionner script, type Info / Autre.
 // Cliquer sur nouveau
@@ -15,20 +27,22 @@
 // Modifier la valeur Programmation à */5 * * * * (execution auto du script toutes les 5 minutes)
 // Vous n'avez plus qu'a verifier que les imports sont corrects dans les logs du plugin teleinfo
 // Attention, la plage horaire ne fonctionne pas. Si quelqu'un trouve pourquoi faites moi signe.
+// =========================================================================
 
+
+require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';  
 
 // Il faut modifier les varibales suivantes suivant votre conf :
 // L'ip de votre jeedom : 
-$IP = "IP:80";
+$IP = "localhost:80";
 // votre clé API jeedom :
 $API= "xxxxxxxxxxxxxxxxxxx";
 
-// votre spark id : 
-$core = "xxxxxxxxxxxxxxxxxxxxxxxx";
-// votre token d'accès a votre spark core :
-$token = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-
 // Plus rien à toucher en dessous de cette ligne.
+// Declaration des variables :
+$core = scenario::getData("SPARK_ID");
+$token = scenario::getData("SPARK_TOKEN");
+
 // Let's go !!! 
 
 //initialisation de la requete :
