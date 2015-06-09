@@ -6,6 +6,9 @@
 //
 // History : 15/01/2015 Charles-Henri Hallard (http://hallard.me)
 //                      Intégration de version 1.2 de la carte electronique
+//           13/04/2015 Theju
+//                      Modification des variables cloud teleinfo
+//                      (passage en 1 seul appel) et liberation de variables
 //
 // **********************************************************************************
 
@@ -39,16 +42,18 @@ void spark_expose_cloud(void)
     // je ne sais pas si les fonction cloud sont persistentes
     // c'est à dire en cas de deconnexion/reconnexion du wifi
     // si elles sont perdues ou pas, à tester
-    Spark.variable("papp", &mypApp, INT);
-    Spark.variable("iinst", &myiInst, INT);
+    // -> Theju: Chez moi elles persistes, led passe verte mais OK
+    //Spark.variable("papp", &mypApp, INT);
+    //Spark.variable("iinst", &myiInst, INT);
     //Spark.variable("isousc", &myisousc, INT);
-    Spark.variable("indexhc", &myindexHC, INT);
-    Spark.variable("indexhp", &myindexHP, INT);
-    Spark.variable("periode", &myPeriode, STRING); // Période tarifaire en cours (string)
+    //Spark.variable("indexhc", &myindexHC, INT);
+    //Spark.variable("indexhp", &myindexHP, INT);
+    //Spark.variable("periode", &myPeriode, STRING); // Période tarifaire en cours (string)
     //Spark.variable("iperiode", (ptec_e *)&ptec, INT); // Période tarifaire en cours (numerique)
 
-    // Récupération d'une valeur d'étiquette
-    //Spark.function("tinfo", tinfo);
+    // Récupération des valeurs d'étiquettes :
+    Spark.variable("tinfo", &mytinfo, STRING);
+
   #endif
 
   // Déclaration des fonction "cloud" (4 fonctions au maximum)

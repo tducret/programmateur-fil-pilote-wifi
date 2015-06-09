@@ -1,7 +1,7 @@
 Version Logicielle pour toutes les versions du matériel
 =======================================================
 
-Cette version logicielle est compatible avec la version matérielle [1.2][1] ainsi que les anciennes versions des cartes electroniques  
+Cette version logicielle est compatible avec la version matérielle [1.2][1] ainsi que les anciennes versions des cartes electroniques
 
 Installation
 ------------
@@ -21,7 +21,7 @@ Installation
 API Exposée
 -----------
 
-Description complète bientôt  
+Description complète bientôt
 
 A faire
 -------
@@ -34,7 +34,9 @@ A faire
 
 Historiques des Modifications
 -----------------------------
-16/02/2015 : Ajout délestage cascadocyclique / Possibilité de ne récupérer l'état que d'un seul fil pilote  
+16/02/2015 : Ajout délestage cascadocyclique / Possibilité de ne récupérer l'état que d'un seul fil pilote
+
+14/04/2015 : Ajout d'une varible spark pour la teleinfo. Passage en un seul appel pour script jeedom. Les variables d'origine restent utilisables.
 
 Exemple
 -------

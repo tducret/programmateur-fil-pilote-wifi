@@ -7,6 +7,9 @@
 // History : 15/01/2015 Charles-Henri Hallard (http://hallard.me)
 //                      Intégration de version 1.2 de la carte electronique
 //
+//           13/04/2015 Theju
+//                      Modification des variables cloud teleinfo
+//                      (passage en 1 seul appel) et liberation de variables
 // **********************************************************************************
 
 #include "tinfo.h"
@@ -20,8 +23,11 @@ uint mypApp   = 0;
 uint myiInst  = 0;
 uint myindexHC= 0;
 uint myindexHP= 0;
+uint myimax= 0;
 uint myisousc	= ISOUSCRITE; // pour calculer la limite de délestage
 char myPeriode[8]= "";
+char mytinfo[250] ="";
+char mycompteur[64] ="";
 float ratio_delestage = DELESTAGE_RATIO;
 float ratio_relestage = RELESTAGE_RATIO;
 float myDelestLimit = 0.0;
@@ -100,6 +106,7 @@ void tinfo_loop(void)
 			myindexHC = ti.indexHC();
 			myindexHP = ti.indexHP();
 			myisousc  = ti.iSousc();
+			myimax    = ti.iMax();
 
 			// Calcul de quand on déclenchera le délestage
 			myDelestLimit = myisousc * ratio_delestage;
@@ -114,6 +121,11 @@ void tinfo_loop(void)
 			// To DO : gérer les autres types de contrat
 			if (!strcmp(myPeriode,"HP..")) ptec= PTEC_HP;
 			if (!strcmp(myPeriode,"HC..")) ptec= PTEC_HC;
+
+			//On publie toutes les infos teleinfos dans un seul appel :
+			sprintf(mytinfo,"{\"papp\":%u,\"iinst\":%u,\"isousc\":%u,\"ptec\":%u,\"indexHP\":%u,\"indexHC\":%u,\"imax\":%u,\"ADCO\":%u}",mypApp,myiInst,myisousc,ptec,myindexHP,myindexHC,myimax,mycompteur);
+			// Posibilité de faire une pseudo serial avec la fonction suivante :
+			//Spark.publish("Teleinfo",mytinfo);
 
 			// 1ere trame ?
 			// Ok nous avons une téléinfo fonctionelle
