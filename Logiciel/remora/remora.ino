@@ -24,7 +24,7 @@
 uint16_t status = 0;
 
 // Nombre de deconexion cloud detectée
-int my_cloud_disconnect = 0;
+int cloud_disconnect = 0;
 
 /* ======================================================================
 Function: spark_expose_cloud
@@ -282,9 +282,9 @@ void loop()
     else
     {
       // on compte la deconnexion led rouge
-      my_cloud_disconnect++;
+      cloud_disconnect++;
       Serial.print("Perte de conexion au cloud #");
-      Serial.println(my_cloud_disconnect);
+      Serial.println(cloud_disconnect);
       RGB.color( 255, 0, 0);
     }
   }
