@@ -11,7 +11,11 @@
 
 #include "pilotes.h"
 
-int SortiesFP[NB_FILS_PILOTES*2] = { FP1,FP2,FP3,FP4,FP5,FP6,FP7 };
+#if defined (REMORA_BOARD_V10)
+	int SortiesFP[NB_FILS_PILOTES*2] = { FP1,FP2,FP3,FP4,FP5,FP6,FP7 };
+#else
+	int SortiesFP[NB_FILS_PILOTES*2] = { FP1,FP2,FP3,FP4,FP5,FP6 };
+#endif
 char etatFP[NB_FILS_PILOTES+1] = "";
 char memFP[NB_FILS_PILOTES+1] = ""; //Commandes des fils pilotes mémorisées (utile pour le délestage/relestage)
 uint8_t nivDelest = 0; // Niveau de délestage actuel (par défaut = 0, pas de délestage)
