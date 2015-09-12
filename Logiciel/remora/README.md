@@ -6,11 +6,11 @@ Cette version logicielle est compatible avec la version matérielle [1.2][1] ain
 Installation
 ------------
 
-- Télécharger l'environnement de développement [Spark-Dev][2] puis lancer l'IDE.
+- Télécharger l'environnement de développement [Particle-Dev][2] puis lancer l'IDE.
 - Télécharger l'archive du repo logiciel [github][3] et le copier sur votre disque dur puis le décompresser
-- Une fois l'IDE ouvert, menu File/Open folder et ouvrir le dossier programmateur-fil-pilote-wifi\Logiciel\remora
-- Dans le menu Spark/Login to spark cloud entrez vos identifiants Spark pour vous connecter
-- Dans le menu Spark/Select Device selectionnez votre Spark Core
+- Une fois l'IDE ouvert, menu File/Open et ouvrir le dossier programmateur-fil-pilote-wifi-master\Logiciel\remora
+- Dans le menu Particle/Log in to Particle Cloud, entrez vos identifiants Particle pour vous connecter
+- Dans le menu Particle/Select Device selectionnez votre Spark Core ou Particle Photon
 - Ouvrir ensuite depuis l'IDE les fichers remora.ino et remora.h
 - Selectionner la version de carte utilisé dans le fichier remora.h (les defines REMORA_BOARD_Vxx)
 - Selectionner les modules utilisés dans le fichier remora.h (les defines MOD_xxxx)
@@ -52,6 +52,6 @@ Avec la téléinfo branchée sur la carte, le bargraph indique la puissance inst
 
 
 [1]: https://github.com/thibdct/programmateur-fil-pilote-wifi/tree/master/Mat%C3%A9riel/1.2
-[2]: https://github.com/spark/spark-dev
+[2]: https://www.particle.io/dev
 [3]: https://github.com/thibdct/programmateur-fil-pilote-wifi/archive/master.zip
 [4]: http://www.ebay.com/itm/291216700457
