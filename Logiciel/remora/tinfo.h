@@ -21,6 +21,7 @@
 #define DELESTAGE_RATIO 0.9 //ratio en % => 90%
 #define RELESTAGE_RATIO 0.8 //ratio en % => 80%
 #define IMAX 35 // sera mis à jour à la reception de trame teleinfo
+#define TINFO_LED_BLINK_MS	150	// Time of RGB LED blink
 
 
 

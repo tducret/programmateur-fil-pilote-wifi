@@ -9,6 +9,7 @@
 //           13/04/2015 Theju
 //                      Modification des variables cloud teleinfo
 //                      (passage en 1 seul appel) et liberation de variables
+//           15/09/2015 Charles-Henri Hallard : Ajout compatibilité ESP8266
 //
 // **********************************************************************************
 
@@ -18,10 +19,34 @@
 // faut le faire dans le fichier remora.h
 #include "remora.h"
 
+// Arduino IDE need include in main INO file
+#ifdef ESP8266
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+#include <ESP8266mDNS.h>
+#include <WiFiUDP.h>
+#include <Wire.h>
+#include <SPI.h>
+#include "./MCP23017.h"
+#include "./SSD1306.h"
+#include "./GFX.h"
+#include "./ULPNode_RF_Protocol.h"
+#include "./LibTeleinfo.h"
+#endif
+
 // Variables globales
 // ==================
 // status global de l'application
 uint16_t status = 0;
+
+#ifdef ESP8266
+  // ESP8266 WebServer
+  ESP8266WebServer server(80);
+  // Udp listener for OTA
+  WiFiUDP OTA;
+  // Use WiFiClient class to create a connection to WEB server
+  WiFiClient client;
+#endif
 
 // Nombre de deconexion cloud detectée
 int my_cloud_disconnect = 0;
@@ -33,6 +58,7 @@ Input   :
 Output  : -
 Comments: -
 ====================================================================== */
+#ifdef SPARK
 void spark_expose_cloud(void)
 {
   Serial.println("spark_expose_cloud()");
@@ -72,7 +98,138 @@ void spark_expose_cloud(void)
     Spark.variable("etatrelais", &etatrelais, INT);
   #endif
 }
+#endif
 
+
+// ====================================================
+// Following are dedicated to ESP8266 Platform
+// Wifi management and OTA updates
+// ====================================================
+#ifdef ESP8266
+/* ======================================================================
+Function: CheckOTAUpdate
+Purpose : Check if we need to update the firmware over the Air
+Input   : -
+Output  : -
+Comments: If upgraded, no return, perform update and reboot ESP
+====================================================================== */
+void CheckOTAUpdate(void)
+{
+  //OTA detection
+  if (OTA.parsePacket()) {
+    IPAddress remote = OTA.remoteIP();
+    int cmd  = OTA.parseInt();
+    int port = OTA.parseInt();
+    int size = OTA.parseInt();
+
+    LedRGBON(0,COLOR_MAGENTA);
+
+    Serial.print(F("Update Start: ip:"));
+    Serial.print(remote);
+    Serial.printf(", port:%d, size:%dKB\n", port, size/1024);
+    uint32_t startTime = millis();
+
+    WiFiUDP::stopAll();
+
+    if(!Update.begin(size)) {
+      Serial.print(F("Update Begin Error"));
+      return;
+    }
+
+    // Declare Wifi client connexion
+    WiFiClient ota_client;
+
+    if (ota_client.connect(remote, port)) {
+
+      uint32_t written;
+      while(!Update.isFinished()) {
+        written = Update.write(ota_client);
+        if(written > 0)
+        {
+          LedRGBOFF();
+          ota_client.print(written, DEC);
+          LedRGBON(0,COLOR_MAGENTA);
+        }
+      }
+      LedRGBOFF();
+      Serial.setDebugOutput(false);
+
+      if(Update.end()) {
+        ota_client.println("OK");
+        Serial.printf("Update Success: %u\nRebooting...\n", millis() - startTime);
+        ESP.restart();
+      } else {
+        Update.printError(ota_client);
+        Update.printError(Serial);
+      }
+    } else {
+      Serial.printf("Connect Failed: %u\n", millis() - startTime);
+    }
+
+    // Be sure to re enable it
+    OTA.begin(DEFAULT_OTA_PORT);
+  }
+}
+
+/* ======================================================================
+Function: WifiHandleConn
+Purpose : Handle Wifi connection / reconnection and OTA updates
+Input   : -
+Output  : state of the wifi status
+Comments: -
+====================================================================== */
+int WifiHandleConn()
+{
+  int ret = WiFi.status();
+
+  // Wait for connection if disconnected
+  if ( ret != WL_CONNECTED ) {
+
+    // Orange we're not connected anymore
+    LedRGBON(0, COLOR_ORANGE);
+
+    Serial.print(F("Connecting to: "));
+    Serial.print(DEFAULT_WIFI_SSID);
+    Serial.print(F("..."));
+
+    WiFi.begin(DEFAULT_WIFI_SSID, DEFAULT_WIFI_PASS);
+
+    ret = WiFi.waitForConnectResult();
+    if ( ret != WL_CONNECTED) {
+      LedRGBON(0, COLOR_RED);
+      Serial.println(F("Connection failed!"));
+    } else {
+      LedRGBON(0,COLOR_GREEN);
+      Serial.println(F("Connected"));
+      Serial.print(F("IP address   : ")); Serial.println(WiFi.localIP());
+      Serial.print(F("MAC address  : ")); Serial.println(WiFi.macAddress());
+
+      MDNS.begin(DEFAULT_HOSTNAME);
+      MDNS.addService("arduino", "tcp", DEFAULT_OTA_PORT);
+      OTA.begin(DEFAULT_OTA_PORT);
+
+      // just in case your sketch sucks, keep update OTA Available
+      // Trust me, when coding and testing it happens, this could save
+      // the need to connect FTDI to reflash
+      // Usefull just after 1st connexion when called from setup() before
+      // launching potentially bugging main()
+      for (uint8_t i=0; i<= 10; i++) {
+        LedRGBON(0,COLOR_MAGENTA);
+        delay(100);
+        LedRGBOFF();
+        delay(200);
+        CheckOTAUpdate();
+      }
+    }
+  }
+
+  // Handle OTA if we're connected
+  if ( ret == WL_CONNECTED )
+    CheckOTAUpdate();
+
+  return ret;
+}
+#endif
 
 /* ======================================================================
 Function: setup
@@ -84,63 +241,76 @@ Comments: -
 void setup()
 {
   uint8_t rf_version = 0;
-  bool start = false;
-  long started ;
 
-  // On prend le controle de la LED RGB
-  // En rouge nous ne sommes pas encore prêt
-  RGB.control(true);
-  RGB.brightness(32);
-  RGB.color(255, 0,0);
+  #ifdef SPARK
+    bool start = false;
+    long started ;
+
+    // On prend le controle de la LED RGB
+    // En jaune nous ne sommes pas encore prêt
+    RGB.control(true);
+    RGB.brightness(128);
+    LedRGBON(COLOR_YELLOW);
+
+    // nous sommes en GMT+1
+    Time.zone(+1);
+
+    // Rendre à dispo nos API, çà doit être fait
+    // très rapidement depuis le dernier firmware
+    spark_expose_cloud();
+
+    Serial.begin(115200); // Port série USB
+
+    // C'est parti
+    started = millis();
+
+    // Attendre que le core soit bien connecté à la serial
+    // car en cas d'update le core perd l'USB Serial a
+    // son reboot et sous windows faut reconnecter quand
+    // on veut débugguer, et si on est pas synchro on rate
+    // le debut du programme, donc petite pause le temps de
+    // reconnecter le terminal série sous windows
+    // Une fois en prod c'est plus necessaire, c'est vraiment
+    // pour le développement (time out à 10s)
+    while(!start)
+    {
+      // Il suffit du time out ou un caractère reçu
+      // sur la liaison série USB pour démarrer
+      if (Serial.available() || millis()-started >= 1000)
+        start = true;
+
+      // On clignote en rouge pour indiquer l'attente
+      LedRGBON(COLOR_RED);
+      delay(50);
+
+      // Jamais on ne bloque le "core" firmware du Spark
+      // sous perte de deconnexion au cloud
+      SPARK_WLAN_Loop();
+
+      // On clignote en rouge pour indiquer l'attente
+      LedRGBOFF();
+      delay(100);
+    }
+
+    // Et on affiche nos paramètres
+    Serial.println("Core Network settings");
+    Serial.print("IP   : "); Serial.println(WiFi.localIP());
+    Serial.print("Mask : "); Serial.println(WiFi.subnetMask());
+    Serial.print("GW   : "); Serial.println(WiFi.gatewayIP());
+    Serial.print("SSDI : "); Serial.println(WiFi.SSID());
+    Serial.print("RSSI : "); Serial.print(WiFi.RSSI());Serial.println("dB");
+
+  #elif defined (ESP8266)
+    Serial.begin(1200, SERIAL_7E1);
+
+    // Connection au Wifi ou Vérification
+    WifiHandleConn();
+  #endif
 
   // Init bus I2C
   i2c_init();
 
-  // nous sommes en GMT+1
-  Time.zone(+1);
-
-  Serial.begin(115200); // Port série USB
-
-  // C'est parti
-  started = millis();
-
-  // Attendre que le core soit bien connecté à la serial
-  // car en cas d'update le core perd l'USB Serial a
-  // son reboot et sous windows faut reconnecter quand
-  // on veut débugguer, et si on est pas synchro on rate
-  // le debut du programme, donc petite pause le temps de
-  // reconnecter le terminal série sous windows
-  // Une fois en prod c'est plus necessaire, c'est vraiment
-  // pour le développement (time out à 10s)
-  while(!start)
-  {
-    // Il suffit du time out ou un caractère reçu
-    // sur la liaison série USB pour démarrer
-    if (Serial.available() || millis()-started >= 10000)
-      start = true;
-
-    // On clignote en rouge pour indiquer l'attente
-    RGB.color(255, 0,0);
-    delay(50);
-
-    // Jamais on ne bloque le "core" firmware du Spark
-    // sous perte de deconnexion au cloud
-    SPARK_WLAN_Loop();
-
-    // On clignote en rouge pour indiquer l'attente
-    RGB.color(0,0,0);
-    delay(100);
-  }
-
-  // Et on affiche nos paramètres
-  Serial.println("Core Network settings");
-  Serial.print("IP   : "); Serial.println(WiFi.localIP());
-  Serial.print("Mask : "); Serial.println(WiFi.subnetMask());
-  Serial.print("GW   : "); Serial.println(WiFi.gatewayIP());
-  Serial.print("SSDI : "); Serial.println(WiFi.SSID());
-  Serial.print("RSSI : "); Serial.print(WiFi.RSSI());Serial.println("dB");
-
-  Serial.print("Compilé avec les fonctions : ");
+  Serial.print("Compile avec les fonctions : ");
 
   #ifdef REMORA_BOARD_V12
     Serial.print("MCP23017 ");
@@ -191,7 +361,7 @@ void setup()
   #endif
 
   // Led verte durant le test
-  RGB.color(0, 255, 0);
+  LedRGBON(COLOR_GREEN);
 
   // Enclencher le relais 2 secondes
   // si dispo sur la carte
@@ -204,16 +374,13 @@ void setup()
   #endif
 
   // nous avons fini, led Jaune
-  RGB.color(255, 255, 0);
+  LedRGBON(COLOR_YELLOW);
 
   // Hors gel, désactivation des fils pilotes
   initFP();
 
-  // Rendre à dispo nos API
-  spark_expose_cloud();
-
   // On etteint la LED embarqué du core
-  RGB.color( 0, 0, 0);
+  LedRGBOFF();
 
   Serial.println("Starting main loop");
 }
@@ -227,16 +394,19 @@ Comments: -
 ====================================================================== */
 void loop()
 {
-  static bool refreshDisplay   = false;
-  static uint8_t lastsec = Time.second();
-  static bool lastcloudstate = Spark.connected();
+  static bool refreshDisplay = false;
+  static bool lastcloudstate;
+  static unsigned long uptime = 0; // Nombre de seconde depuis boot
+  static unsigned long previousMillis = 0;  // last time update
+  unsigned long currentMillis = millis();
   bool currentcloudstate ;
 
-  // Par defaut on rafraichit à minima toutes les secondes
-  if (Time.second() != lastsec )
-  {
-    refreshDisplay = true;
-    lastsec= Time.second();
+  // Gérer notre compteur de secondes
+  if ( millis()-previousMillis > 1000) {
+    // Ceci arrive toute les secondes écoulées
+    previousMillis = currentMillis;
+    uptime++;
+    refreshDisplay = true ;
   }
 
   #ifdef MOD_TELEINFO
@@ -263,8 +433,13 @@ void loop()
   // çà c'est fait
   refreshDisplay = false;
 
-  // recupération de l'état de connexion au cloud spark
+  #if defined (SPARK)
+  // recupération de l'état de connexion au cloud SPARK
   currentcloudstate = Spark.connected();
+  #elif defined (ESP8266)
+  // recupération de l'état de connexion au Wifi
+  currentcloudstate = WiFi.status()==WL_CONNECTED ? true:false;
+  #endif
 
   // La connexion cloud vient de chager d'état ?
   if (lastcloudstate != currentcloudstate)
@@ -275,9 +450,14 @@ void loop()
     // on vient de se reconnecter ?
     if (currentcloudstate)
     {
-      // on pubie à nouveau nos affaires et led verte
-      spark_expose_cloud();
-      RGB.color( 0, 255, 0);
+      // on pubie à nouveau nos affaires
+      // Plus necessaire
+      #ifdef SPARK
+      // spark_expose_cloud();
+      #endif
+
+      // led verte
+      LedRGBON(COLOR_GREEN);
     }
     else
     {
@@ -285,7 +465,13 @@ void loop()
       my_cloud_disconnect++;
       Serial.print("Perte de conexion au cloud #");
       Serial.println(my_cloud_disconnect);
-      RGB.color( 255, 0, 0);
+      LedRGBON(COLOR_RED);
     }
   }
+
+  // Connection au Wifi ou Vérification
+  #ifdef ESP8266
+  WifiHandleConn();
+  #endif
+
 }

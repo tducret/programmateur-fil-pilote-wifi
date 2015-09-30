@@ -39,10 +39,14 @@ History : 15/01/2015 Charles-Henri Hallard (http://hallard.me)
 #ifndef _ADAFRUIT_GFX_H
 #define _ADAFRUIT_GFX_H
 
+#ifdef SPARK
 #include "application.h"
+#define pgm_read_byte(addr) (*(const unsigned char *)(addr))
+#else
+#include "Arduino.h"
+#endif
 
-
-#define swap(a, b) { int16_t t = a; a = b; b = t; }
+#define _swap(a, b) { int16_t t = a; a = b; b = t; }
 
 //class Adafruit_GFX : public Print {
 class Adafruit_GFX {

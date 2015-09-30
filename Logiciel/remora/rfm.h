@@ -52,15 +52,13 @@ typedef struct
   int8_t    rssi;     /* RSSI         */
   bool      ack;      /* ACK          */
   uint8_t   checksum; /* Serial checksum*/
-  uint8_t   data[RF69_MAX_DATA_LEN];
+//  uint8_t   data[RF69_MAX_DATA_LEN];
 } RFData;
 
 // Variables exported to other source file
 // ========================================
 // define RF var for whole project
-extern RFM69      radio;
-extern RFPayload  payload;
-extern RFData     module;
+
 
 // Function exported for other source file
 // =======================================

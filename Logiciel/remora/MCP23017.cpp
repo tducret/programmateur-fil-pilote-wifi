@@ -13,21 +13,11 @@
  Adapted for Spark Core by Paul Kourany, Sept 3, 2014
  ****************************************************/
 
-#if defined (SPARK)
 #include "MCP23017.h"
-#else
-#include <Wire.h>
-#ifdef __AVR__
-#include <avr/pgmspace.h>
-#endif
-#include "Adafruit_MCP23017.h"
 
-#if ARDUINO >= 100
-#include "Arduino.h"
-#else
-#include "WProgram.h"
+#ifdef ESP8266
+#include <Wire.h>
 #endif
-#endif //Spark
 
 // minihelper to keep Arduino backward compatibility
 static inline void wiresend(uint8_t x) {

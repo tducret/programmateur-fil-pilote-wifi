@@ -25,7 +25,13 @@ Comments: -
 bool i2c_init(void)
 {
   // Set i2C speed
-  Wire.setSpeed(CLOCK_SPEED_400KHZ);
+  #if defined (SPARK)
+    Wire.setSpeed(CLOCK_SPEED_400KHZ);
+  #elif defined (ESP8266)
+    // Sepecific ESP8266 to set I2C Speed
+    Wire.setClock(400000);
+  #endif
+  
   Wire.begin();
 }
 
@@ -59,7 +65,12 @@ uint8_t i2c_scan()
   Serial.println(F("Scanning I2C bus ..."));
 
   // slow down i2C speed in case of slow device
-  Wire.setSpeed(CLOCK_SPEED_100KHZ);
+  #if defined (SPARK)
+    Wire.setSpeed(CLOCK_SPEED_100KHZ);
+  #elif defined (ESP8266)
+    // Sepecific ESP8266 to set I2C Speed
+    Wire.setClock(100000);
+  #endif
 
   for(address = 1; address < 127; address++ )
   {
@@ -95,7 +106,13 @@ uint8_t i2c_scan()
   Serial.println(" ms");
 
   // Get back to full speed
-  Wire.setSpeed(CLOCK_SPEED_400KHZ);
+  // slow down i2C speed in case of slow device
+  #if defined (SPARK)
+    Wire.setSpeed(CLOCK_SPEED_400KHZ);
+  #elif defined (ESP8266)
+    // Sepecific ESP8266 to set I2C Speed
+    Wire.setClock(400000);
+  #endif
 
   return (nDevices);
 }

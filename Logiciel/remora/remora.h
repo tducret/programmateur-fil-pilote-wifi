@@ -6,44 +6,95 @@
 //
 // History : 15/01/2015 Charles-Henri Hallard (http://hallard.me)
 //                      Intégration de version 1.2 de la carte electronique
+//            15/09/2015 Charles-Henri Hallard : Ajout compatibilité ESP8266
 //
 // **********************************************************************************
-
 #ifndef REMORA_h
 #define REMORA_h
 
 // Spark Core main firmware include file
+#ifdef SPARK
 #include "application.h"
+#endif
 
 // Définir ici le type de carte utilsé
 //#define REMORA_BOARD_V10  // Version 1.0
 //#define REMORA_BOARD_V11  // Version 1.1
 #define REMORA_BOARD_V12  // Version 1.2
 
-// Librairies du projet remora
+//  Définir ici les modules utilisés sur la carte Remora
+//#define MOD_RF69      /* Module RF  */
+#define MOD_OLED      /* Afficheur  */
+#define MOD_TELEINFO  /* Teleinfo   */
+//#define MOD_RF_OREGON   /* Reception des sondes orégon */
+
+// Librairies du projet remora Pour Particle
+#ifdef SPARK
 #include "MCP23017.h"
-#include "RFM69registers.h"
-#include "RFM69.h"
 #include "SSD1306.h"
 #include "GFX.h"
-#include "ULPN_RF_Protocol.h"
-#include "TeleInfo.h"
+#include "ULPNode_RF_Protocol.h"
+#include "LibTeleinfo.h"
 //#include "OLED_local.h"
 //#include "mfGFX_local.h"
+#endif
+
+// Librairies du projet remora Pour Particle
+#ifdef ESP8266
+#if defined (REMORA_BOARD_V10) || defined (REMORA_BOARD_V11)
+#error "La version ESP8266 NodeMCU n'est pas compatible avec les cartes V1.1x"
+#endif
+
+// Définir ici les identifiants de
+// connexion à votre réseau Wifi
+#define DEFAULT_WIFI_SSID "HOME-HOTSPOT"
+#define DEFAULT_WIFI_PASS "Wireless@Home"
+#define DEFAULT_OTA_PORT  8266
+#define DEFAULT_HOSTNAME  "remora"
+#include "Arduino.h"
+#include "./MCP23017.h"
+//#include "./RFM69registers.h"
+//#include "./RFM69.h"
+#include "./SSD1306.h"
+#include "./GFX.h"
+#include "./ULPNode_RF_Protocol.h"
+#include "./TeleInfo.h"
+#endif
 
 // Includes du projets remora
-#include "linkedlist.h"
+#include "linked_list.h"
 #include "i2c.h"
 #include "rfm.h"
 #include "display.h"
 #include "pilotes.h"
 #include "tinfo.h"
 
-//  Définir ici les modules utilisés sur la carte Remora
-#define MOD_RF69      /* Module RF  */
-//#define MOD_OLED      /* Afficheur  */
-#define MOD_TELEINFO  /* Teleinfo   */
-#define MOD_RF_OREGON   /* Reception des sondes orégon */
+// RGB LED related MACROS
+#if defined (SPARK)
+  #define COLOR_RED     255,   0,   0
+  #define COLOR_ORANGE  255, 127,   0
+  #define COLOR_YELLOW  255, 255,   0
+  #define COLOR_GREEN     0, 255,   0
+  #define COLOR_CYAN      0, 255, 255
+  #define COLOR_BLUE      0,   0, 255
+  #define COLOR_MAGENTA 255,   0, 255
+
+  #define LedRGBOFF() RGB.color(0,0,0)
+  #define LedRGBON(x) RGB.color(x)
+
+#elif defined (ESP8266)
+  #define COLOR_RED     rgb_brightness, 0, 0
+  #define COLOR_ORANGE  rgb_brightness, rgb_brightness>>1, 0
+  #define COLOR_YELLOW  rgb_brightness, rgb_brightness, 0
+  #define COLOR_GREEN   0, rgb_brightness, 0
+  #define COLOR_CYAN    0, rgb_brightness, rgb_brightness
+  #define COLOR_BLUE    0, 0, rgb_brightness
+  #define COLOR_MAGENTA rgb_brightness, 0, rgb_brightness
+
+  // On ESP8266 we use NeopixelBus library to drive neopixel RGB LED
+  #define LedRGBOFF() { rgb_led.SetPixelColor(0,0,0,0); rgb_led.Show(); }
+  #define LedRGBON(x) { rgb_led.SetPixelColor(0,x); rgb_led.Show(); }
+#endif
 
 // Ces modules ne sont pas disponibles sur les carte 1.0 et 1.1
 #if defined (REMORA_BOARD_V10) || defined (REMORA_BOARD_V11)

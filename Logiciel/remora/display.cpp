@@ -15,6 +15,9 @@
 
 #include "display.h"
 
+
+
+
 // Instantiate OLED (no reset pin)
 Adafruit_SSD1306 display(-1);
 
@@ -85,7 +88,9 @@ void displayTeleinfo(void)
   // etat des fils pilotes
   display.setCursor(0,32);
   display.setTextSize(2);
+  #ifdef SPARK
   display.printf("%02d:%02d:%02d",Time.hour(),Time.minute(),Time.second());
+  #endif
 
   display.setCursor(0,48);
   display.printf("%s  %c", etatFP, etatrelais+'0' );
@@ -117,7 +122,7 @@ Output  : -
 Comments: -
 ====================================================================== */
 void displayRf(void)
-{
+{/*
   int16_t percent;
 
   display.printf("RF69 G%d I%d", NETWORK_ID, NODE_ID);
@@ -145,6 +150,7 @@ void displayRf(void)
   //display.drawHorizontalBargraph(106,current_line+1, 22, 6, 1, percent);
 
   display.printf("%d%% ", percent);
+  */
 }
 
 /* ======================================================================
@@ -193,7 +199,7 @@ Comments: -
 ====================================================================== */
 void display_loop(void)
 {
-  RGB.color(0, 0, 255);
+  //LedRGBON(COLOR_BLUE);
 
   display.setCursor(0,0);
 
@@ -207,5 +213,5 @@ void display_loop(void)
   // Affichage physique sur l'écran
   display.display();
 
-  RGB.color(0, 0, 0);
+  //LedRGBOFF();
 }

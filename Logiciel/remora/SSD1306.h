@@ -24,9 +24,11 @@ History : 15/01/2015 Charles-Henri Hallard (http://hallard.me)
 #ifndef _ADAFRUIT_SSD1306_H
 #define _ADAFRUIT_SSD1306_H
 
-
+#ifdef SPARK
 #include "application.h"
-#include "GFX.h"
+#endif
+
+#include "./GFX.h"
 
 
 #define BLACK 0
