@@ -19,6 +19,20 @@
 // faut le faire dans le fichier remora.h
 #include "remora.h"
 
+#ifdef SPARK
+#include "MCP23017.h"
+#include "SSD1306.h"
+#include "GFX.h"
+#include "ULPNode_RF_Protocol.h"
+#include "LibTeleinfo.h"
+#include "display.h"
+#include "i2c.h"
+#include "pilotes.h"
+#include "rfm.h"
+#include "tinfo.h"
+#endif
+
+
 // Arduino IDE need include in main INO file
 #ifdef ESP8266
 #include <ESP8266WiFi.h>

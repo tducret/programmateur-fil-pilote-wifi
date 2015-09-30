@@ -35,6 +35,11 @@
 #include "GFX.h"
 #include "ULPNode_RF_Protocol.h"
 #include "LibTeleinfo.h"
+#include "display.h"
+#include "i2c.h"
+#include "pilotes.h"
+#include "rfm.h"
+#include "tinfo.h"
 //#include "OLED_local.h"
 //#include "mfGFX_local.h"
 
