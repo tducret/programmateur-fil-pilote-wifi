@@ -3,8 +3,8 @@ Version Logicielle pour toutes les versions du matériel
 
 Cette version logicielle est compatible avec la version matérielle [1.2][1] ainsi que les anciennes versions des cartes electroniques. Elle est aussi compatible avec les cartes à base d'ESP8266 via un [adaptateur][5]
 
-Installation
-------------
+Installation (Particle)
+-----------------------
 
 - Télécharger l'environnement de développement [Particle-Dev][2] puis lancer l'IDE.
 - Télécharger l'archive du repo logiciel [github][3] et le copier sur votre disque dur puis le décompresser
@@ -17,6 +17,16 @@ Installation
 - Selectionner l'onglet remora.ino
 - Lancer la compilation+upload (icone éclair en haut à gauche)
 - Si vous avez une erreur de type "App code was invalid" durant la compilation, supprimer le ficher README.md du dossier
+
+Installation (Arduino ESP8266)
+------------------------------
+
+- Suivre la procédure détaillée [ici](https://github.com/esp8266/Arduino)
+- Ouvrir ensuite depuis l'IDE et ouvrir le ficher remora.ino et remora.h
+- Selectionner la version de carte utilisé dans le fichier remora.h (les defines REMORA_BOARD_Vxx)
+- Selectionner les modules utilisés dans le fichier remora.h (les defines MOD_xxxx)
+- choisir la carte NodeMCU 1.0 (ESP12E-Module) ainsi que le bon serial port
+- Lancer la compilation + upload 
 
 API Exposée
 -----------
