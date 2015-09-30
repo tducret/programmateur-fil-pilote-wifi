@@ -30,6 +30,7 @@
 #include "pilotes.h"
 #include "rfm.h"
 #include "tinfo.h"
+#include "linked_list.h"
 #endif
 
 
