@@ -96,7 +96,7 @@ void DataCallback(ValueList * me, uint8_t flags)
 
   // Nous venons de recevoir la puissance tarifaire en cours
   // To DO : gérer les autres types de contrat
-  if (!strcmp(me->name, "PETC")) {
+  if (!strcmp(me->name, "PTEC")) {
     // Récupération de la période tarifaire en cours
     strncpy(myPeriode, me->value, strlen(me->value));
 
@@ -105,6 +105,14 @@ void DataCallback(ValueList * me, uint8_t flags)
     if (!strcmp(me->value, "HP..")) ptec= PTEC_HP;
     if (!strcmp(me->value, "HC..")) ptec= PTEC_HC;
   }
+
+  // Mise à jour des variables "cloud"
+  if (!strcmp(me->name, "PAPP"))   mypApp    = atoi(me->value);
+  if (!strcmp(me->name, "IINST"))  myiInst   = atoi(me->value);
+  if (!strcmp(me->name, "HCHC"))   myindexHC = atol(me->value);
+  if (!strcmp(me->name, "HCHP"))   myindexHP = atol(me->value);
+  if (!strcmp(me->name, "ISOUSC")) myisousc  = atoi(me->value);
+  if (!strcmp(me->name, "IMAX"))   myimax    = atoi(me->value);
 
   Serial.println();
 
@@ -166,15 +174,7 @@ void UpdatedFrame(ValueList * me)
   #endif
   //Serial.println(buff);
 
-  // Mise à jour des variables "cloud"
-  if ( tinfo.valueGet("PAPP"  , buff)) mypApp    = atoi(buff);
-  if ( tinfo.valueGet("IINST" , buff)) myiInst   = atoi(buff);
-  if ( tinfo.valueGet("HCHC"  , buff)) myindexHC = atol(buff);
-  if ( tinfo.valueGet("HCHP"  , buff)) myindexHP = atol(buff);
-  if ( tinfo.valueGet("ISOUSC", buff)) myisousc  = atoi(buff);
-  if ( tinfo.valueGet("IMAX"  , buff)) myimax    = atoi(buff);
 
-  // Calcul de quand on déclenchera le délestage
   myDelestLimit = myisousc * ratio_delestage;
 
   // Calcul de quand on déclenchera le relestage

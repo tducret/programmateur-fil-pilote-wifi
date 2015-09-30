@@ -24,8 +24,6 @@
 #define IMAX 35 // sera mis à jour à la reception de trame teleinfo
 #define TINFO_LED_BLINK_MS  150 // Time of RGB LED blink
 
-
-
 // Tarif en cours au format numérique
 enum ptec_e { PTEC_HP = 1, PTEC_HC = 2 };
 
