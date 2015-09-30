@@ -246,11 +246,14 @@ void setup()
     bool start = false;
     long started ;
 
-    // On prend le controle de la LED RGB
-    // En jaune nous ne sommes pas encore prêt
+    // On prend le controle de la LED RGB pour faire
+    // un heartbeat si Teleinfo ou OLED ou RFM69
+    #if defined (MOD_TELEINFO) || defined (MOD_OLED) || defined (MOD_RF69)
     RGB.control(true);
     RGB.brightness(128);
+    // En jaune nous ne sommes pas encore prêt
     LedRGBON(COLOR_YELLOW);
+    #endif
 
     // nous sommes en GMT+1
     Time.zone(+1);
