@@ -6,6 +6,7 @@
 //
 // History : 15/01/2015 Charles-Henri Hallard (http://hallard.me)
 //                      Intégration de version 1.2 de la carte electronique
+//           15/09/2015 Charles-Henri Hallard Utilisation Librairie Teleinfo Universelle
 //
 // **********************************************************************************
 #ifndef TINFO_h
@@ -21,7 +22,7 @@
 #define DELESTAGE_RATIO 0.9 //ratio en % => 90%
 #define RELESTAGE_RATIO 0.8 //ratio en % => 80%
 #define IMAX 35 // sera mis à jour à la reception de trame teleinfo
-#define TINFO_LED_BLINK_MS	150	// Time of RGB LED blink
+#define TINFO_LED_BLINK_MS  150 // Time of RGB LED blink
 
 
 

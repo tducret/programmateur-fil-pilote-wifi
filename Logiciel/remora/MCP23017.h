@@ -9,6 +9,9 @@
 
   Written by Limor Fried/Ladyada for Adafruit Industries.
   BSD license, all text above must be included in any redistribution
+
+  15/09/2015 Charles-Henri Hallard : Ajout compatibilité ESP8266
+
  ****************************************************/
 
 #ifndef _Adafruit_MCP23017_H_

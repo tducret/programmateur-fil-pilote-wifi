@@ -1,7 +1,7 @@
 Version Logicielle pour toutes les versions du matériel
 =======================================================
 
-Cette version logicielle est compatible avec la version matérielle [1.2][1] ainsi que les anciennes versions des cartes electroniques
+Cette version logicielle est compatible avec la version matérielle [1.2][1] ainsi que les anciennes versions des cartes electroniques. Elle est aussi compatible avec les cartes à base d'ESP8266 via un [adaptateur](5)
 
 Installation
 ------------
@@ -36,7 +36,11 @@ Historiques des Modifications
 -----------------------------
 16/02/2015 : Ajout délestage cascadocyclique / Possibilité de ne récupérer l'état que d'un seul fil pilote
 
-14/04/2015 : Ajout d'une varible spark pour la teleinfo. Passage en un seul appel pour script jeedom. Les variables d'origine restent utilisables.
+14/04/2015 : Ajout d'une variable spark pour la teleinfo. Passage en un seul appel pour script jeedom. Les variables d'origine restent utilisables.
+
+30/09/2015 : voir le post [dédié][6].   
+
+
 
 Exemple
 -------
@@ -55,3 +59,5 @@ Avec la téléinfo branchée sur la carte, le bargraph indique la puissance inst
 [2]: https://www.particle.io/dev
 [3]: https://github.com/thibdct/programmateur-fil-pilote-wifi/archive/master.zip
 [4]: http://www.ebay.com/itm/291216700457
+[5]: https://github.com/hallard/Particle2NodeMCU/blob/master/README.md
+[6]: https://community.hallard.me/topic/92/nouvelle-version-remora-compatible-esp8266

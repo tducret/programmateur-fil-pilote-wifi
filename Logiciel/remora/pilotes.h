@@ -6,6 +6,7 @@
 //
 // History : 15/01/2015 Charles-Henri Hallard (http://hallard.me)
 //                      Intégration de version 1.2 de la carte electronique
+//           15/09/2015 Charles-Henri Hallard : Ajout compatibilité ESP8266
 //
 // **********************************************************************************
 

@@ -6,10 +6,10 @@
 //
 // History : 15/01/2015 Charles-Henri Hallard (http://hallard.me)
 //                      Intégration de version 1.2 de la carte electronique
-//
 //           13/04/2015 Theju
 //                      Modification des variables cloud teleinfo
 //                      (passage en 1 seul appel) et liberation de variables
+//           15/09/2015 Charles-Henri Hallard Utilisation Librairie Teleinfo Universelle
 // **********************************************************************************
 
 #include "tinfo.h"
@@ -24,7 +24,7 @@ uint myiInst  = 0;
 uint myindexHC= 0;
 uint myindexHP= 0;
 uint myimax= 0;
-uint myisousc	= ISOUSCRITE; // pour calculer la limite de délestage
+uint myisousc = ISOUSCRITE; // pour calculer la limite de délestage
 char myPeriode[8]= "";
 char mytinfo[250] ="";
 char mycompteur[64] ="";
@@ -33,7 +33,7 @@ float ratio_relestage = RELESTAGE_RATIO;
 float myDelestLimit = 0.0;
 float myRelestLimit = 0.0;
 uint etatrelais       = 0; // Etat du relais
-bool tramevalide			= false;
+bool tramevalide      = false;
 
 unsigned long tinfo_led_timer = 0; // Led blink timer
 
@@ -91,18 +91,18 @@ void DataCallback(ValueList * me, uint8_t flags)
   if ( flags & TINFO_FLAGS_EXIST )   Serial.print(F(" Exist"));
   if ( flags & TINFO_FLAGS_ALERT )   Serial.print(F(" Alert"));
 
-	// Nous venons de recevoir la puissance tarifaire en cours
-	// To DO : gérer les autres types de contrat
-	if (!strcmp(me->name, "PETC"))
-	{
-	 	// Récupération de la période tarifaire en cours
-		strncpy(myPeriode, me->value, strlen(me->value));
+  // Nous venons de recevoir la puissance tarifaire en cours
+  // To DO : gérer les autres types de contrat
+  if (!strcmp(me->name, "PETC"))
+  {
+    // Récupération de la période tarifaire en cours
+    strncpy(myPeriode, me->value, strlen(me->value));
 
-		// Determination de la puissance tarifaire en cours
-		// To DO : gérer les autres types de contrat
-		if (!strcmp(me->value, "HP..")) ptec= PTEC_HP;
-		if (!strcmp(me->value, "HC..")) ptec= PTEC_HC;
-	}
+    // Determination de la puissance tarifaire en cours
+    // To DO : gérer les autres types de contrat
+    if (!strcmp(me->value, "HP..")) ptec= PTEC_HP;
+    if (!strcmp(me->value, "HC..")) ptec= PTEC_HC;
+  }
 
   Serial.println();
 }
@@ -123,11 +123,11 @@ void NewFrame(ValueList * me)
   tinfo_led_timer = millis();
 
   #if defined (ESP8266)
-  	//sprintf( buff, "New Frame (%ld Bytes free)", ESP.getFreeHeap() );
+    //sprintf( buff, "New Frame (%ld Bytes free)", ESP.getFreeHeap() );
   #elif defined (SPARK)
-  	//sprintf( buff, "New Frame (%ld Bytes free)", System.freeMemory());
+    //sprintf( buff, "New Frame (%ld Bytes free)", System.freeMemory());
   #else
-  	//sprintf( buff, "New Frame");
+    //sprintf( buff, "New Frame");
   #endif
   //Serial.println(buff);
 
@@ -152,35 +152,35 @@ void UpdatedFrame(ValueList * me)
   tinfo_led_timer = millis();
 
   #if defined (ESP8266)
-  	//sprintf( buff, "Updated Frame (%ld Bytes free)", ESP.getFreeHeap() );
+    //sprintf( buff, "Updated Frame (%ld Bytes free)", ESP.getFreeHeap() );
   #elif defined (SPARK)
-  	//sprintf( buff, "Updated Frame (%ld Bytes free)", System.freeMemory());
+    //sprintf( buff, "Updated Frame (%ld Bytes free)", System.freeMemory());
   #else
-  	//sprintf( buff, "Updated Frame");
+    //sprintf( buff, "Updated Frame");
   #endif
   //Serial.println(buff);
 
-	// Mise à jour des variables "cloud"
-	if ( tinfo.valueGet("PAPP"  , buff)) mypApp    = atoi(buff);
-	if ( tinfo.valueGet("IINST" , buff)) myiInst   = atoi(buff);
-	if ( tinfo.valueGet("HCHC"  , buff)) myindexHC = atol(buff);
-	if ( tinfo.valueGet("HCHP"  , buff)) myindexHP = atol(buff);
-	if ( tinfo.valueGet("ISOUSC", buff)) myisousc  = atoi(buff);
-	if ( tinfo.valueGet("IMAX"  , buff)) myimax    = atoi(buff);
+  // Mise à jour des variables "cloud"
+  if ( tinfo.valueGet("PAPP"  , buff)) mypApp    = atoi(buff);
+  if ( tinfo.valueGet("IINST" , buff)) myiInst   = atoi(buff);
+  if ( tinfo.valueGet("HCHC"  , buff)) myindexHC = atol(buff);
+  if ( tinfo.valueGet("HCHP"  , buff)) myindexHP = atol(buff);
+  if ( tinfo.valueGet("ISOUSC", buff)) myisousc  = atoi(buff);
+  if ( tinfo.valueGet("IMAX"  , buff)) myimax    = atoi(buff);
 
-	// Calcul de quand on déclenchera le délestage
-	myDelestLimit = myisousc * ratio_delestage;
+  // Calcul de quand on déclenchera le délestage
+  myDelestLimit = myisousc * ratio_delestage;
 
-	// Calcul de quand on déclenchera le relestage
-	myRelestLimit = myisousc * ratio_relestage;
+  // Calcul de quand on déclenchera le relestage
+  myRelestLimit = myisousc * ratio_relestage;
 
-	//On publie toutes les infos teleinfos dans un seul appel :
-	sprintf(mytinfo,"{\"papp\":%u,\"iinst\":%u,\"isousc\":%u,\"ptec\":%u,\"indexHP\":%u,\"indexHC\":%u,\"imax\":%u,\"ADCO\":%u}",mypApp,myiInst,myisousc,ptec,myindexHP,myindexHC,myimax,mycompteur);
-	// Posibilité de faire une pseudo serial avec la fonction suivante :
-	//Spark.publish("Teleinfo",mytinfo);
+  //On publie toutes les infos teleinfos dans un seul appel :
+  sprintf(mytinfo,"{\"papp\":%u,\"iinst\":%u,\"isousc\":%u,\"ptec\":%u,\"indexHP\":%u,\"indexHC\":%u,\"imax\":%u,\"ADCO\":%u}",mypApp,myiInst,myisousc,ptec,myindexHP,myindexHC,myimax,mycompteur);
+  // Posibilité de faire une pseudo serial avec la fonction suivante :
+  //Spark.publish("Teleinfo",mytinfo);
 
-	// Ok nous avons une téléinfo fonctionelle
-	tramevalide = true;
+  // Ok nous avons une téléinfo fonctionelle
+  tramevalide = true;
 }
 
 /* ======================================================================
@@ -192,13 +192,13 @@ Comments: -
 ====================================================================== */
 bool tinfo_setup(bool wait_frame)
 {
-	Serial.print("Initializing Teleinfo...");
+  Serial.print("Initializing Teleinfo...");
 
-	#ifdef SPARK
-	Serial1.begin(1200);  // Port série RX/TX on serial1 for Spark
-	#endif
+  #ifdef SPARK
+  Serial1.begin(1200);  // Port série RX/TX on serial1 for Spark
+  #endif
 
-	// Init teleinfo
+  // Init teleinfo
   tinfo.init();
 
   // Attach the callback we need
@@ -207,29 +207,29 @@ bool tinfo_setup(bool wait_frame)
   tinfo.attachNewFrame(NewFrame);
   tinfo.attachUpdatedFrame(UpdatedFrame);
 
-	// Doit-on attendre une trame valide
-	if (wait_frame)
-	{
-		// debut du time out
-		long started = millis();
+  // Doit-on attendre une trame valide
+  if (wait_frame)
+  {
+    // debut du time out
+    long started = millis();
 
-		// ici on attend une trame ou le time out
-		while (!tramevalide && millis()-started<TINFO_FRAME_TIMEOUT*1000)
-		{
-			// Main loop de la teleinfo
-			tinfo_loop();
+    // ici on attend une trame ou le time out
+    while (!tramevalide && millis()-started<TINFO_FRAME_TIMEOUT*1000)
+    {
+      // Main loop de la teleinfo
+      tinfo_loop();
 
-			// Jamais on ne bloque le "core" firmware du Spark
-			// sous perte de deconnexion au cloud
-			#ifdef SPARK
-			SPARK_WLAN_Loop();
-			#endif
-		}
-	}
+      // Jamais on ne bloque le "core" firmware du Spark
+      // sous perte de deconnexion au cloud
+      #ifdef SPARK
+      SPARK_WLAN_Loop();
+      #endif
+    }
+  }
 
-	Serial.println("OK!");
+  Serial.println("OK!");
 
-	return (wait_frame && !tramevalide ? false : true);
+  return (wait_frame && !tramevalide ? false : true);
 }
 
 /* ======================================================================
@@ -242,63 +242,63 @@ Comments: -
 void tinfo_loop(void)
 {
 #ifdef MOD_TELEINFO
-	char c;
-	uint8_t nb_char=0;
+  char c;
+  uint8_t nb_char=0;
 
-	// Caractère présent sur la sérial téléinfo ?
-	// On prendra maximum 8 caractères par passage
-	// les autres au prochain tour, çà evite les
-	// long while bloquant pour les autres traitements
-	#ifdef SPARK
-		while (Serial1.available() && nb_char<8)
-		{
-			c = (Serial1.read() & 0x7F);
-			tinfo.process(c);
-			nb_char++;
-		}
-	#else
-		while (Serial.available() && nb_char<8)
-		{
-			c = (Serial.read() & 0x7F);
-			tinfo.process(c);
-			nb_char++;
-		}
-	#endif
+  // Caractère présent sur la sérial téléinfo ?
+  // On prendra maximum 8 caractères par passage
+  // les autres au prochain tour, çà evite les
+  // long while bloquant pour les autres traitements
+  #ifdef SPARK
+    while (Serial1.available() && nb_char<8)
+    {
+      c = (Serial1.read() & 0x7F);
+      tinfo.process(c);
+      nb_char++;
+    }
+  #else
+    while (Serial.available() && nb_char<8)
+    {
+      c = (Serial.read() & 0x7F);
+      tinfo.process(c);
+      nb_char++;
+    }
+  #endif
 
-	// Faut-il enclencher le delestage ?
-	if (myiInst > myDelestLimit) //On dépasse le courant max?
-	{
-		if ((millis() - timerDelestRelest) > 5000L)
-		{
-			//On ne passe pas dans la boucle si l'on a délesté ou relesté une zone il y a moins de 5s
-			//On évite ainsi de délester d'autres zones avant que le délestage précédent ne fasse effet
-			delester1zone();
-			timerDelestRelest = millis();
-		}
-	}
-	else
-	{
-		if (nivDelest > 0 && (millis() - timerDelestRelest) > 180000L)
-		// Un délestage est en cours (nivDelest > 0)
-		// Le délestage/relestage de la dernière zone date de plus de 3 minutes
-		// On attend au moins ce délai pour relester ou décaler
-		// pour éviter les délestage/relestage trop rapprochés
-		{
-			//Le courant est suffisamment bas pour relester
-			if (myiInst < myRelestLimit)
-			{
-				relester1zone();
-				timerDelestRelest = millis();
-			}
-			else
-			{
-				// On fait tourner le délestage
-				// ex : AVANT = "DDCEEEE" => APRES = "CDDEEEE"
-				decalerDelestage();
-				timerDelestRelest = millis();
-			}
-		}
-	}
+  // Faut-il enclencher le delestage ?
+  if (myiInst > myDelestLimit) //On dépasse le courant max?
+  {
+    if ((millis() - timerDelestRelest) > 5000L)
+    {
+      //On ne passe pas dans la boucle si l'on a délesté ou relesté une zone il y a moins de 5s
+      //On évite ainsi de délester d'autres zones avant que le délestage précédent ne fasse effet
+      delester1zone();
+      timerDelestRelest = millis();
+    }
+  }
+  else
+  {
+    if (nivDelest > 0 && (millis() - timerDelestRelest) > 180000L)
+    // Un délestage est en cours (nivDelest > 0)
+    // Le délestage/relestage de la dernière zone date de plus de 3 minutes
+    // On attend au moins ce délai pour relester ou décaler
+    // pour éviter les délestage/relestage trop rapprochés
+    {
+      //Le courant est suffisamment bas pour relester
+      if (myiInst < myRelestLimit)
+      {
+        relester1zone();
+        timerDelestRelest = millis();
+      }
+      else
+      {
+        // On fait tourner le délestage
+        // ex : AVANT = "DDCEEEE" => APRES = "CDDEEEE"
+        decalerDelestage();
+        timerDelestRelest = millis();
+      }
+    }
+  }
 
   // Do we have RGB led timer expiration ?
   if (tinfo_led_timer && (millis()-tinfo_led_timer >= TINFO_LED_BLINK_MS))

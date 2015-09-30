@@ -47,8 +47,8 @@
 
 // Définir ici les identifiants de
 // connexion à votre réseau Wifi
-#define DEFAULT_WIFI_SSID "HOME-HOTSPOT"
-#define DEFAULT_WIFI_PASS "Wireless@Home"
+#define DEFAULT_WIFI_SSID "************"
+#define DEFAULT_WIFI_PASS "************"
 #define DEFAULT_OTA_PORT  8266
 #define DEFAULT_HOSTNAME  "remora"
 #include "Arduino.h"

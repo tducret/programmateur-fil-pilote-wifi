@@ -18,6 +18,8 @@ All text above, and the splash screen below must be included in any redistributi
 
 History : 15/01/2015 Charles-Henri Hallard (http://hallard.me)
                      Ported to for Spark Core
+          15/09/2015 Charles-Henri Hallard : Ajout compatibilité ESP8266
+
 
 *********************************************************************/
 

@@ -9,8 +9,9 @@
 //
 // History : V1.00 2015-01-22 - First release
 //
-// All text above must be included in any redistribution.
+// 15/09/2015 Charles-Henri Hallard : Ajout compatibilité ESP8266
 //
+// All text above must be included in any redistribution.
 // **********************************************************************************
 
 #include "display.h"

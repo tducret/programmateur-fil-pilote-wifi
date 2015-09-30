@@ -9,6 +9,8 @@
 //
 // History : V1.00 2015-01-22 - First release
 //
+// 15/09/2015 Charles-Henri Hallard : Ajout compatibilité ESP8266
+//
 // All text above must be included in any redistribution.
 //
 // **********************************************************************************
@@ -29,8 +31,8 @@
 #define OLED_LINE_5 40
 #define OLED_LINE_6 48
 #define OLED_LINE_7 56
-//#define OLED_CHAR_SIZE	5
-#define OLED_CHAR_SIZE	7
+//#define OLED_CHAR_SIZE  5
+#define OLED_CHAR_SIZE  7
 
 #define OLED_SPACE1 OLED_CHAR_SIZE
 #define OLED_SPACE2 OLED_CHAR_SIZE*2
