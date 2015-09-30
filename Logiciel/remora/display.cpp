@@ -13,11 +13,7 @@
 //
 // All text above must be included in any redistribution.
 // **********************************************************************************
-
 #include "display.h"
-
-
-
 
 // Instantiate OLED (no reset pin)
 Adafruit_SSD1306 display(-1);
@@ -36,6 +32,8 @@ Comments: -
 void display_splash(void)
 {
   display.clearDisplay() ;
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
   display.setCursor(0,0);
   display.setTextSize(2);
   display.print("  REMORA\n");
@@ -163,32 +161,27 @@ Comments: -
 ====================================================================== */
 bool display_setup(void)
 {
+  bool ret = false;
+
   Serial.print("Initializing OLED...");
 
   // Par defaut affichage des infos de téléinfo
   screen_state = screen_teleinfo;
 
   // Init et detection des modules I2C
-  if (!i2c_detect(OLED_I2C_ADDRESS))
-  {
+  if (!i2c_detect(OLED_I2C_ADDRESS)) {
     Serial.println("Not found!");
-    return (false);
-  }
-  else
-  {
+  } else {
     Serial.println("OK!");
 
     // initialize with the I2C addr for the 128x64
     display.begin(OLED_I2C_ADDRESS);
-
-    // Clear display and refresh
-    //display.clearDisplay() ;
+    display.clearDisplay() ;
     display.display();
-
-    // May also be set to TIMESNR_8, CENTURY_8, COMICS_8 or TEST (for testing candidate fonts)
-    //display.setFont(CENTURY_8);
+    ret = true;
   }
-  return (true);
+
+  return (ret);
 }
 
 /* ======================================================================
@@ -200,19 +193,15 @@ Comments: -
 ====================================================================== */
 void display_loop(void)
 {
-  //LedRGBON(COLOR_BLUE);
-
   display.setCursor(0,0);
 
-  switch (screen_state)
-  {
-    case screen_sys     : displaySys()      ; break;
-    case screen_rf      : displayRf()       ; break;
-    case screen_teleinfo: displayTeleinfo() ; break;
-  }
+  if (screen_state==screen_sys)
+    displaySys();
+  else if (screen_state==screen_rf)
+    displayRf();
+  else if (screen_state==screen_teleinfo)
+    displayTeleinfo();
 
   // Affichage physique sur l'écran
   display.display();
-
-  //LedRGBOFF();
 }
