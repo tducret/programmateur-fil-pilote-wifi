@@ -193,6 +193,12 @@ Comments: -
 ====================================================================== */
 void display_loop(void)
 {
+  // Si pas de heartbeat via la teleinfo, le faire
+  // via l'affichage
+  #ifndef MOD_TELEINFO
+    LedRGBON(COLOR_BLUE);
+  #endif
+
   display.setCursor(0,0);
 
   if (screen_state==screen_sys)
@@ -204,4 +210,9 @@ void display_loop(void)
 
   // Affichage physique sur l'écran
   display.display();
+
+  #ifndef MOD_TELEINFO
+    LedRGBOFF();
+  #endif
+
 }
