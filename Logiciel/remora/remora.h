@@ -37,13 +37,15 @@
 #include "LibTeleinfo.h"
 //#include "OLED_local.h"
 //#include "mfGFX_local.h"
+
+#define _yield()  SPARK_WLAN_Loop()
 #endif
 
 // Librairies du projet remora Pour Particle
 #ifdef ESP8266
-#if defined (REMORA_BOARD_V10) || defined (REMORA_BOARD_V11)
-#error "La version ESP8266 NodeMCU n'est pas compatible avec les cartes V1.1x"
-#endif
+  #if defined (REMORA_BOARD_V10) || defined (REMORA_BOARD_V11)
+  #error "La version ESP8266 NodeMCU n'est pas compatible avec les cartes V1.1x"
+  #endif
 
 // Définir ici les identifiants de
 // connexion à votre réseau Wifi
@@ -59,6 +61,8 @@
 #include "./GFX.h"
 #include "./ULPNode_RF_Protocol.h"
 #include "./LibTeleinfo.h"
+
+#define _yield()  yield()
 #endif
 
 // Includes du projets remora

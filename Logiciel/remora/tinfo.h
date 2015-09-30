@@ -15,9 +15,9 @@
 #include "remora.h"
 
 // Nombre de secondes pendant lesquelles
-// nous pouvons attendre une trame téléinfo
-// a l'initialisation
-#define TINFO_FRAME_TIMEOUT 5
+// nous pouvons attendre une etiquette/trame téléinfo
+#define TINFO_DATA_TIMEOUT 1
+#define TINFO_FRAME_TIMEOUT 3
 #define ISOUSCRITE 30 // sera mis à jour à la reception de trame teleinfo
 #define DELESTAGE_RATIO 0.9 //ratio en % => 90%
 #define RELESTAGE_RATIO 0.8 //ratio en % => 80%

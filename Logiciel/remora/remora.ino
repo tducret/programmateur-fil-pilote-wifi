@@ -276,16 +276,16 @@ void setup()
     {
       // Il suffit du time out ou un caractère reçu
       // sur la liaison série USB pour démarrer
-      if (Serial.available() || millis()-started >= 1000)
+      if (Serial.available() || millis()-started >= 2000)
         start = true;
 
-      // On clignote en rouge pour indiquer l'attente
-      LedRGBON(COLOR_RED);
+      // On clignote en jaune pour indiquer l'attente
+      LedRGBON(COLOR_YELLOW);
       delay(50);
 
-      // Jamais on ne bloque le "core" firmware du Spark
-      // sous perte de deconnexion au cloud
-      SPARK_WLAN_Loop();
+      // Jamais on ne bloque le firmware
+      // sous perte de deconnexion du réseau
+      _yield();
 
       // On clignote en rouge pour indiquer l'attente
       LedRGBOFF();
@@ -301,6 +301,7 @@ void setup()
     Serial.print("RSSI : "); Serial.print(WiFi.RSSI());Serial.println("dB");
 
   #elif defined (ESP8266)
+    // Init de la téléinformation
     Serial.begin(1200, SERIAL_7E1);
 
     // Connection au Wifi ou Vérification
@@ -341,34 +342,35 @@ void setup()
     }
   #endif
 
-  #ifdef MOD_TELEINFO
-    // Initialiser la téléinfo et attente d'une trame valide
-    if (tinfo_setup(true))
-    {
-      status |= STATUS_TINFO;
-      Serial.println("Teleinfo OK!");
-    }
-    else
-    {
-      Serial.println("Teleinfo non fonctionelle!");
-    }
-  #endif
-
   #ifdef MOD_RF69
     // Initialisation RFM69 Module
     if ( rfm_setup())
       status |= STATUS_RFM ;
   #endif
 
+  #ifdef MOD_TELEINFO
+    // Initialiser la téléinfo et attente d'une trame valide
+    // Le status est mis à jour dans les callback de la teleinfo
+    tinfo_setup(true);
+  #endif
+
   // Led verte durant le test
   LedRGBON(COLOR_GREEN);
 
-  // Enclencher le relais 2 secondes
+  // Enclencher le relais 1 seconde
   // si dispo sur la carte
   #ifndef REMORA_BOARD_V10
     Serial.print("Relais=ON   ");
     relais("1");
-    delay(2000);
+    for (uint8_t i=0; i<20; i++)
+    {
+      delay(10);
+      // Ne pas bloquer la reception et
+      // la gestion de la téléinfo
+      #ifdef MOD_TELEINFO
+        tinfo_loop();
+      #endif
+    }
     Serial.println("Relais=OFF");
     relais("0");
   #endif
@@ -410,9 +412,8 @@ void loop()
   }
 
   #ifdef MOD_TELEINFO
-  // Vérification de la reception d'une 1ere trame téléinfo
-    if (status & STATUS_TINFO)
-      tinfo_loop();
+    // Vérification de la reception d'une 1ere trame téléinfo
+    tinfo_loop();
   #endif
 
   #ifdef MOD_RF69

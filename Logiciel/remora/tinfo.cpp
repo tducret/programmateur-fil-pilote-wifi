@@ -33,12 +33,11 @@ float ratio_relestage = RELESTAGE_RATIO;
 float myDelestLimit = 0.0;
 float myRelestLimit = 0.0;
 uint etatrelais       = 0; // Etat du relais
-bool tramevalide      = false;
 
 unsigned long tinfo_led_timer = 0; // Led blink timer
+unsigned long tinfo_last_frame = 0; // dernière fois qu'on a recu une trame valide
 
 ptec_e ptec; // Puissance tarifaire en cours
-
 
 /* ======================================================================
 Function: ADPSCallback
@@ -65,6 +64,10 @@ void ADPSCallback(uint8_t phase)
     Serial.print(F("ADPS Phase "));
     Serial.println('0' + phase);
   }
+
+  // nous avons une téléinfo fonctionelle
+  status |= STATUS_TINFO;
+  tinfo_last_frame = millis();
 }
 
 /* ======================================================================
@@ -82,8 +85,8 @@ void DataCallback(ValueList * me, uint8_t flags)
   Serial.print('=');
   Serial.print(me->value);
 
-  Serial.print(" Flags=0x");
-  Serial.print(flags, HEX);
+  //Serial.print(" Flags=0x");
+  //Serial.print(flags, HEX);
 
   if ( flags & TINFO_FLAGS_NOTHING ) Serial.print(F(" Nothing"));
   if ( flags & TINFO_FLAGS_ADDED )   Serial.print(F(" Added"));
@@ -93,8 +96,7 @@ void DataCallback(ValueList * me, uint8_t flags)
 
   // Nous venons de recevoir la puissance tarifaire en cours
   // To DO : gérer les autres types de contrat
-  if (!strcmp(me->name, "PETC"))
-  {
+  if (!strcmp(me->name, "PETC")) {
     // Récupération de la période tarifaire en cours
     strncpy(myPeriode, me->value, strlen(me->value));
 
@@ -105,6 +107,9 @@ void DataCallback(ValueList * me, uint8_t flags)
   }
 
   Serial.println();
+
+  // nous avons une téléinfo fonctionelle
+  status |= STATUS_TINFO;
 }
 
 /* ======================================================================
@@ -131,8 +136,9 @@ void NewFrame(ValueList * me)
   #endif
   //Serial.println(buff);
 
-  // Pour l'init
-  tramevalide = true;
+  // Ok nous avons une téléinfo fonctionelle
+  status |= STATUS_TINFO;
+  tinfo_last_frame = millis();
 }
 
 /* ======================================================================
@@ -147,8 +153,8 @@ void UpdatedFrame(ValueList * me)
 {
   char buff[32];
 
-  // Light the RGB LED (purple) and set timer
-  LedRGBON(COLOR_MAGENTA);
+  // Light the RGB LED (orange) and set timer
+  LedRGBON(COLOR_ORANGE);
   tinfo_led_timer = millis();
 
   #if defined (ESP8266)
@@ -179,57 +185,65 @@ void UpdatedFrame(ValueList * me)
   // Posibilité de faire une pseudo serial avec la fonction suivante :
   //Spark.publish("Teleinfo",mytinfo);
 
-  // Ok nous avons une téléinfo fonctionelle
-  tramevalide = true;
+  // nous avons une téléinfo fonctionelle
+  status |= STATUS_TINFO;
+  tinfo_last_frame = millis();
 }
 
 /* ======================================================================
 Function: tinfo_setup
 Purpose : prepare and init stuff, configuration, ..
-Input   : indique si on doit bloquer jusqu'à reception 1ere trame téléinfo
+Input   : indique si on doit bloquer jusqu'à reception ligne téléinfo
 Output  : false si on devait attendre et time out expiré, true sinon
 Comments: -
 ====================================================================== */
-bool tinfo_setup(bool wait_frame)
+bool tinfo_setup(bool wait_data)
 {
+  bool ret = false;
+
   Serial.print("Initializing Teleinfo...");
 
   #ifdef SPARK
   Serial1.begin(1200);  // Port série RX/TX on serial1 for Spark
   #endif
 
+  // reset du timeout de detection de la teleinfo
+  tinfo_last_frame = millis();
+
   // Init teleinfo
   tinfo.init();
 
-  // Attach the callback we need
+  // Attacher les callback donc nous avons besoin
   tinfo.attachADPS(ADPSCallback);
   tinfo.attachData(DataCallback);
   tinfo.attachNewFrame(NewFrame);
   tinfo.attachUpdatedFrame(UpdatedFrame);
 
-  // Doit-on attendre une trame valide
-  if (wait_frame)
-  {
-    // debut du time out
-    long started = millis();
-
-    // ici on attend une trame ou le time out
-    while (!tramevalide && millis()-started<TINFO_FRAME_TIMEOUT*1000)
-    {
-      // Main loop de la teleinfo
-      tinfo_loop();
-
-      // Jamais on ne bloque le "core" firmware du Spark
-      // sous perte de deconnexion au cloud
+  // Doit-on attendre une ligne valide
+  if (wait_data) {
+    // ici on attend une trame complete ou le time out
+    while ( !(status & STATUS_TINFO) && (millis()-tinfo_last_frame<TINFO_FRAME_TIMEOUT*1000)) {
+      // Envoyer le contenu de la serial au process teleinfo
+      // les callback mettront le status à jour
       #ifdef SPARK
-      SPARK_WLAN_Loop();
+        while (Serial1.available()) {
+          tinfo.process(Serial1.read());
+        }
+      #else
+        while (Serial.available()) {
+          tinfo.process(Serial.read());
+        }
       #endif
+
+      _yield();
     }
   }
 
-  Serial.println("OK!");
+  ret = (status & STATUS_TINFO)?true:false;
+  Serial.print("Init Teleinfo ");
+  Serial.println(ret?"OK!":"Erreur!");
 
-  return (wait_frame && !tramevalide ? false : true);
+  return ret;
 }
 
 /* ======================================================================
@@ -245,53 +259,66 @@ void tinfo_loop(void)
   char c;
   uint8_t nb_char=0;
 
+  // on a la téléinfo présente ?
+  if ( status & STATUS_TINFO) {
+    // est ce que cela fait un moment qu'on a pas recu de trame
+    if ( millis()-tinfo_last_frame>TINFO_FRAME_TIMEOUT*1000) {
+      // Indiquer qu'elle n'est pas présente
+      status &= ~STATUS_TINFO;
+      Serial.println("Teleinfo absente/perdue!");
+    }
+
+  // Nous n'avions plus de téléinfo
+  } else  {
+    // est ce que cela fait un moment qu'on a pas recu de data
+    if ( millis()-tinfo_last_frame>TINFO_DATA_TIMEOUT*1000) {
+      // Light the RGB LED (RED) and set timer with
+      // 500ms more than classic blink
+      LedRGBON(COLOR_RED);
+      tinfo_last_frame = millis();
+      tinfo_led_timer = millis();
+      Serial.println("Teleinfo toujours absente!");
+    }
+  }
+
   // Caractère présent sur la sérial téléinfo ?
   // On prendra maximum 8 caractères par passage
   // les autres au prochain tour, çà evite les
   // long while bloquant pour les autres traitements
   #ifdef SPARK
-    while (Serial1.available() && nb_char<8)
-    {
-      c = (Serial1.read() & 0x7F);
+    while (Serial1.available() && nb_char<8) {
+      c = (Serial1.read());
       tinfo.process(c);
       nb_char++;
     }
   #else
-    while (Serial.available() && nb_char<8)
-    {
-      c = (Serial.read() & 0x7F);
+    while (Serial.available() && nb_char<8) {
+      c = (Serial.read());
       tinfo.process(c);
       nb_char++;
     }
   #endif
 
   // Faut-il enclencher le delestage ?
-  if (myiInst > myDelestLimit) //On dépasse le courant max?
-  {
-    if ((millis() - timerDelestRelest) > 5000L)
-    {
+  //On dépasse le courant max?
+  if (myiInst > myDelestLimit) {
+    if ((millis() - timerDelestRelest) > 5000L)  {
       //On ne passe pas dans la boucle si l'on a délesté ou relesté une zone il y a moins de 5s
       //On évite ainsi de délester d'autres zones avant que le délestage précédent ne fasse effet
       delester1zone();
       timerDelestRelest = millis();
     }
-  }
-  else
-  {
-    if (nivDelest > 0 && (millis() - timerDelestRelest) > 180000L)
+  } else {
     // Un délestage est en cours (nivDelest > 0)
     // Le délestage/relestage de la dernière zone date de plus de 3 minutes
     // On attend au moins ce délai pour relester ou décaler
     // pour éviter les délestage/relestage trop rapprochés
-    {
+    if (nivDelest > 0 && (millis() - timerDelestRelest) > 180000L) {
       //Le courant est suffisamment bas pour relester
-      if (myiInst < myRelestLimit)
-      {
+      if (myiInst < myRelestLimit) {
         relester1zone();
         timerDelestRelest = millis();
-      }
-      else
-      {
+      } else {
         // On fait tourner le délestage
         // ex : AVANT = "DDCEEEE" => APRES = "CDDEEEE"
         decalerDelestage();
@@ -301,8 +328,7 @@ void tinfo_loop(void)
   }
 
   // Do we have RGB led timer expiration ?
-  if (tinfo_led_timer && (millis()-tinfo_led_timer >= TINFO_LED_BLINK_MS))
-  {
+  if (tinfo_led_timer && (millis()-tinfo_led_timer >= TINFO_LED_BLINK_MS)) {
       LedRGBOFF(); // Light Off the LED
       tinfo_led_timer=0; // Stop virtual timer
   }
