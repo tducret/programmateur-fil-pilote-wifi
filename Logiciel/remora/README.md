@@ -22,11 +22,12 @@ Installation (Arduino ESP8266)
 ------------------------------
 
 - Suivre la procédure détaillée [ici](https://github.com/esp8266/Arduino)
-- Ouvrir ensuite depuis l'IDE et ouvrir le ficher remora.ino et remora.h
+- Ouvrir ensuite depuis l'IDE le ficher remora.ino
 - Selectionner la version de carte utilisé dans le fichier remora.h (les defines REMORA_BOARD_Vxx)
 - Selectionner les modules utilisés dans le fichier remora.h (les defines MOD_xxxx)
 - choisir la carte NodeMCU 1.0 (ESP12E-Module) ainsi que le bon serial port
 - Lancer la compilation + upload 
+- La procédure OTA sera détaillée ultérieurement
 
 API Exposée
 -----------
