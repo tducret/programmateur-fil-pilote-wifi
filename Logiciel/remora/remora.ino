@@ -122,7 +122,7 @@ void CheckOTAUpdate(void)
     int port = OTA.parseInt();
     int size = OTA.parseInt();
 
-    LedRGBON(0,COLOR_MAGENTA);
+    LedRGBON(COLOR_MAGENTA);
 
     Serial.print(F("Update Start: ip:"));
     Serial.print(remote);
@@ -148,7 +148,7 @@ void CheckOTAUpdate(void)
         {
           LedRGBOFF();
           ota_client.print(written, DEC);
-          LedRGBON(0,COLOR_MAGENTA);
+          LedRGBON(COLOR_MAGENTA);
         }
       }
       LedRGBOFF();
@@ -186,7 +186,7 @@ int WifiHandleConn()
   if ( ret != WL_CONNECTED ) {
 
     // Orange we're not connected anymore
-    LedRGBON(0, COLOR_ORANGE);
+    LedRGBON(COLOR_ORANGE);
 
     Serial.print(F("Connecting to: "));
     Serial.print(DEFAULT_WIFI_SSID);
@@ -196,10 +196,10 @@ int WifiHandleConn()
 
     ret = WiFi.waitForConnectResult();
     if ( ret != WL_CONNECTED) {
-      LedRGBON(0, COLOR_RED);
+      LedRGBON(COLOR_RED);
       Serial.println(F("Connection failed!"));
     } else {
-      LedRGBON(0,COLOR_GREEN);
+      LedRGBON(COLOR_GREEN);
       Serial.println(F("Connected"));
       Serial.print(F("IP address   : ")); Serial.println(WiFi.localIP());
       Serial.print(F("MAC address  : ")); Serial.println(WiFi.macAddress());
@@ -214,7 +214,7 @@ int WifiHandleConn()
       // Usefull just after 1st connexion when called from setup() before
       // launching potentially bugging main()
       for (uint8_t i=0; i<= 10; i++) {
-        LedRGBON(0,COLOR_MAGENTA);
+        LedRGBON(COLOR_MAGENTA);
         delay(100);
         LedRGBOFF();
         delay(200);

@@ -58,7 +58,7 @@
 #include "./SSD1306.h"
 #include "./GFX.h"
 #include "./ULPNode_RF_Protocol.h"
-#include "./TeleInfo.h"
+#include "./LibTeleinfo.h"
 #endif
 
 // Includes du projets remora
@@ -92,8 +92,10 @@
   #define COLOR_MAGENTA rgb_brightness, 0, rgb_brightness
 
   // On ESP8266 we use NeopixelBus library to drive neopixel RGB LED
-  #define LedRGBOFF() { rgb_led.SetPixelColor(0,0,0,0); rgb_led.Show(); }
-  #define LedRGBON(x) { rgb_led.SetPixelColor(0,x); rgb_led.Show(); }
+  //#define LedRGBOFF() { rgb_led.SetPixelColor(0,0,0,0); rgb_led.Show(); }
+  //#define LedRGBON(x) { rgb_led.SetPixelColor(0,x); rgb_led.Show(); }
+  #define LedRGBOFF() {}
+  #define LedRGBON(x) {}
 #endif
 
 // Ces modules ne sont pas disponibles sur les carte 1.0 et 1.1
