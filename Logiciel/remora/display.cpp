@@ -32,12 +32,13 @@ Comments: -
 void display_splash(void)
 {
   display.clearDisplay() ;
-  display.setTextSize(1);
   display.setTextColor(WHITE);
   display.setCursor(0,0);
   display.setTextSize(2);
   display.print("  REMORA\n");
-  display.print("Fil Pilote");
+  display.print("Fil Pilote\n");
+  display.setTextSize(1);
+  //display.print(WiFi.localIP());
   display.display();
 }
 

@@ -29,6 +29,7 @@ enum ptec_e { PTEC_HP = 1, PTEC_HC = 2 };
 
 // Variables exported to other source file
 // ========================================
+extern TInfo tinfo;
 extern unsigned int mypApp;
 extern unsigned int myiInst;
 extern unsigned int myindexHC;

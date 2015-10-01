@@ -23,28 +23,36 @@
 #define REMORA_BOARD_V12  // Version 1.2
 
 //  Définir ici les modules utilisés sur la carte Remora
-//#define MOD_RF69      /* Module RF  */
+#define MOD_RF69      /* Module RF  */
 #define MOD_OLED      /* Afficheur  */
 #define MOD_TELEINFO  /* Teleinfo   */
 //#define MOD_RF_OREGON   /* Reception des sondes orégon */
 
 // Librairies du projet remora Pour Particle
 #ifdef SPARK
-#include "MCP23017.h"
-#include "SSD1306.h"
-#include "GFX.h"
-#include "ULPNode_RF_Protocol.h"
-#include "LibTeleinfo.h"
-#include "display.h"
-#include "i2c.h"
-#include "pilotes.h"
-#include "rfm.h"
-#include "tinfo.h"
-#include "linked_list.h"
-//#include "OLED_local.h"
-//#include "mfGFX_local.h"
+  #include "MCP23017.h"
+  #include "SSD1306.h"
+  #include "GFX.h"
+  #include "ULPNode_RF_Protocol.h"
+  #include "LibTeleinfo.h"
+  #include "WebServer.h"
 
-#define _yield()  SPARK_WLAN_Loop()
+  #include "display.h"
+  #include "i2c.h"
+  #include "pilotes.h"
+  #include "rfm.h"
+  #include "tinfo.h"
+  #include "linked_list.h"
+  #include "route.h"
+  #include "RadioHead.h"
+  #include "RH_RF69.h"
+  #include "RHDatagram.h"
+  #include "RHReliableDatagram.h"
+
+  //#include "OLED_local.h"
+  //#include "mfGFX_local.h"
+
+  #define _yield()  Particle.process()
 #endif
 
 // Librairies du projet remora Pour Particle
@@ -53,22 +61,22 @@
   #error "La version ESP8266 NodeMCU n'est pas compatible avec les cartes V1.1x"
   #endif
 
-// Définir ici les identifiants de
-// connexion à votre réseau Wifi
-#define DEFAULT_WIFI_SSID "************"
-#define DEFAULT_WIFI_PASS "************"
-#define DEFAULT_OTA_PORT  8266
-#define DEFAULT_HOSTNAME  "remora"
-#include "Arduino.h"
-#include "./MCP23017.h"
-//#include "./RFM69registers.h"
-//#include "./RFM69.h"
-#include "./SSD1306.h"
-#include "./GFX.h"
-#include "./ULPNode_RF_Protocol.h"
-#include "./LibTeleinfo.h"
+  // Définir ici les identifiants de
+  // connexion à votre réseau Wifi
+  #define DEFAULT_WIFI_SSID "************"
+  #define DEFAULT_WIFI_PASS "************"
+  #define DEFAULT_OTA_PORT  8266
+  #define DEFAULT_HOSTNAME  "remora"
+  #include "Arduino.h"
+  #include "./MCP23017.h"
+  //#include "./RFM69registers.h"
+  //#include "./RFM69.h"
+  #include "./SSD1306.h"
+  #include "./GFX.h"
+  #include "./ULPNode_RF_Protocol.h"
+  #include "./LibTeleinfo.h"
 
-#define _yield()  yield()
+  #define _yield()  yield()
 #endif
 
 // Includes du projets remora
@@ -92,6 +100,10 @@
   #define LedRGBOFF() RGB.color(0,0,0)
   #define LedRGBON(x) RGB.color(x)
 
+  // RFM69 Pin mapping
+  #define RF69_CS  SS // default SPI SS Pin
+  #define RF69_IRQ 2
+
 #elif defined (ESP8266)
   #define COLOR_RED     rgb_brightness, 0, 0
   #define COLOR_ORANGE  rgb_brightness, rgb_brightness>>1, 0
@@ -106,6 +118,10 @@
   //#define LedRGBON(x) { rgb_led.SetPixelColor(0,x); rgb_led.Show(); }
   #define LedRGBOFF() {}
   #define LedRGBON(x) {}
+
+  // RFM69 Pin mapping
+  #define RF69_CS   15
+  #define RF69_IRQ  2
 #endif
 
 // Ces modules ne sont pas disponibles sur les carte 1.0 et 1.1
@@ -126,7 +142,6 @@
 
 // Carte 1.2+
 #else
-
   #define LED_PIN    8
   #define RELAIS_PIN 9
 
@@ -145,9 +160,27 @@
 // Variables exported to other source file
 // ========================================
 // define var for whole project
+
+// status global de l'application
+extern uint16_t status;
+extern unsigned long uptime ;
+
+
+#ifdef SPARK
+  // Particle WebServer
+  //extern WebServer server("", 80);
+#endif
+
+#ifdef ESP8266
+  // ESP8266 WebServer
+  extern ESP8266WebServer server;
+#endif
+
+
 extern uint16_t status; // status global de l'application
 
 // Function exported for other source file
 // =======================================
+char * timeAgo(unsigned long);
 
 #endif

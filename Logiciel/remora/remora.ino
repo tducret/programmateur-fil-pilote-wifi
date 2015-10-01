@@ -20,39 +20,53 @@
 #include "remora.h"
 
 #ifdef SPARK
-#include "MCP23017.h"
-#include "SSD1306.h"
-#include "GFX.h"
-#include "ULPNode_RF_Protocol.h"
-#include "LibTeleinfo.h"
-#include "display.h"
-#include "i2c.h"
-#include "pilotes.h"
-#include "rfm.h"
-#include "tinfo.h"
-#include "linked_list.h"
+  #include "MCP23017.h"
+  #include "SSD1306.h"
+  #include "GFX.h"
+  #include "ULPNode_RF_Protocol.h"
+  #include "LibTeleinfo.h"
+  #include "WebServer.h"
+  #include "display.h"
+  #include "i2c.h"
+  #include "pilotes.h"
+  #include "rfm.h"
+  #include "tinfo.h"
+  #include "linked_list.h"
+  #include "route.h"
+  #include "RadioHead.h"
+  #include "RH_RF69.h"
+  #include "RHDatagram.h"
+  #include "RHReliableDatagram.h"
 #endif
-
 
 // Arduino IDE need include in main INO file
 #ifdef ESP8266
-#include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
-#include <ESP8266mDNS.h>
-#include <WiFiUDP.h>
-#include <Wire.h>
-#include <SPI.h>
-#include "./MCP23017.h"
-#include "./SSD1306.h"
-#include "./GFX.h"
-#include "./ULPNode_RF_Protocol.h"
-#include "./LibTeleinfo.h"
+  #include <ESP8266WiFi.h>
+  #include <ESP8266WebServer.h>
+  #include <ESP8266mDNS.h>
+  #include <WiFiUDP.h>
+  #include <Wire.h>
+  #include <SPI.h>
+  #include "./MCP23017.h"
+  #include "./SSD1306.h"
+  #include "./GFX.h"
+  #include "./ULPNode_RF_Protocol.h"
+  #include "./LibTeleinfo.h"
 #endif
 
 // Variables globales
 // ==================
 // status global de l'application
 uint16_t status = 0;
+unsigned long uptime = 0;
+// Nombre de deconexion cloud detectée
+int my_cloud_disconnect = 0;
+
+
+#ifdef SPARK
+  // Particle WebServer
+  WebServer server("", 80);
+#endif
 
 #ifdef ESP8266
   // ESP8266 WebServer
@@ -62,9 +76,6 @@ uint16_t status = 0;
   // Use WiFiClient class to create a connection to WEB server
   WiFiClient client;
 #endif
-
-// Nombre de deconexion cloud detectée
-int my_cloud_disconnect = 0;
 
 /* ======================================================================
 Function: spark_expose_cloud
@@ -247,6 +258,41 @@ int WifiHandleConn()
 #endif
 
 /* ======================================================================
+Function: timeAgo
+Purpose : format total seconds to human readable text
+Input   : second
+Output  : pointer to string
+Comments: -
+====================================================================== */
+char * timeAgo(unsigned long sec)
+{
+  static char buff[16];
+
+  // Clear buffer
+  buff[0] = '\0';
+
+  if (sec < 2) {
+    sprintf_P(buff,PSTR("just now"));
+  } else if (sec < 60) {
+    sprintf_P(buff,PSTR("%d seconds ago"), sec);
+  } else if (sec < 120) {
+    sprintf_P(buff,PSTR("1 minute ago"));
+  } else if (sec < 3600) {
+    sprintf_P(buff,PSTR("%d minutes ago"), sec/60);
+  } else if (sec < 7200) {
+    sprintf_P(buff,PSTR("1 hour ago"));
+  } else if (sec < 86400) {
+    sprintf_P(buff,PSTR("%d hours ago"), sec/3660);
+  } else if (sec < 172800) {
+    sprintf_P(buff,PSTR("yesterday"));
+  } else if (sec < 604800) {
+    sprintf_P(buff,PSTR("%d days ago"), sec/86400);
+  }
+  return buff;
+}
+
+
+/* ======================================================================
 Function: setup
 Purpose : prepare and init stuff, configuration, ..
 Input   : -
@@ -317,6 +363,15 @@ void setup()
     Serial.print("GW   : "); Serial.println(WiFi.gatewayIP());
     Serial.print("SSDI : "); Serial.println(WiFi.SSID());
     Serial.print("RSSI : "); Serial.print(WiFi.RSSI());Serial.println("dB");
+
+    //  WebServer / Command
+    //server.setDefaultCommand(&handleRoot);
+    //webserver.addCommand("json", &sendJSON);
+    //webserver.addCommand("tinfojsontbl", &tinfoJSONTable);
+    //webserver.setFailureCommand(&handleNotFound);
+
+    // start the webserver
+    //server.begin();
 
   #elif defined (ESP8266)
     // Init de la téléinformation
@@ -416,7 +471,6 @@ void loop()
 {
   static bool refreshDisplay = false;
   static bool lastcloudstate;
-  static unsigned long uptime = 0; // Nombre de seconde depuis boot
   static unsigned long previousMillis = 0;  // last time update
   unsigned long currentMillis = millis();
   bool currentcloudstate ;
@@ -487,6 +541,16 @@ void loop()
       LedRGBON(COLOR_RED);
     }
   }
+
+
+  #ifdef SPARK
+  char buff[64];
+  int len = 64;
+
+  // process incoming connections one at a time forever
+  server.processConnection(buff, &len);
+  #endif
+
 
   // Connection au Wifi ou Vérification
   #ifdef ESP8266
