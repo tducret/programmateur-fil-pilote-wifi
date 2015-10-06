@@ -27,7 +27,9 @@ Input   : -
 Output  : -
 Comments: -
 ====================================================================== */
-void handleRoot(WebServer &server, WebServer::ConnectionType type, char *url_tail, bool tail_complete)
+#ifdef NO_USE_FOR_NOW
+//void handleRoot(WebServer &server, WebServer::ConnectionType type, char *url_tail, bool tail_complete)
+void handleRoot(void)
 {
   String response="";
 
@@ -332,4 +334,6 @@ void handleNotFound(void)
   // Led off
   LedBluOFF();
 }
+#endif
+
 #endif

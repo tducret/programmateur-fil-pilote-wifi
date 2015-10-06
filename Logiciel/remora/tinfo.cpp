@@ -32,7 +32,7 @@ float ratio_delestage = DELESTAGE_RATIO;
 float ratio_relestage = RELESTAGE_RATIO;
 float myDelestLimit = 0.0;
 float myRelestLimit = 0.0;
-uint etatrelais       = 0; // Etat du relais
+int etatrelais       = 0; // Etat du relais
 
 unsigned long tinfo_led_timer = 0; // Led blink timer
 unsigned long tinfo_last_frame = 0; // dernière fois qu'on a recu une trame valide

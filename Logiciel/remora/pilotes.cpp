@@ -19,7 +19,7 @@
 #endif
 char etatFP[NB_FILS_PILOTES+1] = "";
 char memFP[NB_FILS_PILOTES+1] = ""; //Commandes des fils pilotes mémorisées (utile pour le délestage/relestage)
-uint8_t nivDelest = 0; // Niveau de délestage actuel (par défaut = 0, pas de délestage)
+int nivDelest = 0; // Niveau de délestage actuel (par défaut = 0, pas de délestage)
 // Correspond au nombre de fils pilotes délestés (entre 0 et nombre de zones)
 uint8_t plusAncienneZoneDelestee = 1;
 // Numéro de la zone qui est délestée depuis le plus de temps (entre 1 et nombre de zones)

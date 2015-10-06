@@ -40,7 +40,7 @@ extern char myPeriode[];
 extern char mytinfo[];
 extern char myAction[];
 
-extern uint     etatrelais;
+extern int      etatrelais;
 extern float    myDelestLimit;
 extern float    myRelestLimit;
 

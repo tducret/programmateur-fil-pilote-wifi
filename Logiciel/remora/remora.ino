@@ -104,24 +104,24 @@ void spark_expose_cloud(void)
     //Spark.variable("iperiode", (ptec_e *)&ptec, INT); // Période tarifaire en cours (numerique)
 
     // Récupération des valeurs d'étiquettes :
-    Spark.variable("tinfo", &mytinfo, STRING);
+    Particle.variable("tinfo", mytinfo, STRING);
 
   #endif
 
   // Déclaration des fonction "cloud" (4 fonctions au maximum)
-  Spark.function("fp",    fp);
-  Spark.function("setfp", setfp);
+  Particle.function("fp",    fp);
+  Particle.function("setfp", setfp);
 
   // Déclaration des variables "cloud"
-  Spark.variable("nivdelest", &nivDelest, INT); // Niveau de délestage (nombre de zones délestées)
+  Particle.variable("nivdelest", &nivDelest, INT); // Niveau de délestage (nombre de zones délestées)
   //Spark.variable("disconnect", &cloud_disconnect, INT);
-  Spark.variable("etatfp", &etatFP, STRING); // Etat actuel des fils pilotes
-  Spark.variable("memfp", &memFP, STRING); // Etat mémorisé des fils pilotes (utile en cas de délestage)
+  Particle.variable("etatfp", etatFP, STRING); // Etat actuel des fils pilotes
+  Particle.variable("memfp", memFP, STRING); // Etat mémorisé des fils pilotes (utile en cas de délestage)
 
   // relais pas disponible sur les carte 1.0
   #ifndef REMORA_BOARD_V10
-    Spark.function("relais", relais);
-    Spark.variable("etatrelais", &etatrelais, INT);
+    Particle.function("relais", relais);
+    Particle.variable("etatrelais", &etatrelais, INT);
   #endif
 }
 #endif
