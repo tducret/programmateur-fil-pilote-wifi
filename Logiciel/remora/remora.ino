@@ -25,7 +25,7 @@
   #include "GFX.h"
   #include "ULPNode_RF_Protocol.h"
   #include "LibTeleinfo.h"
-  #include "WebServer.h"
+  //#include "WebServer.h"
   #include "display.h"
   #include "i2c.h"
   #include "pilotes.h"
@@ -65,7 +65,7 @@ int my_cloud_disconnect = 0;
 
 #ifdef SPARK
   // Particle WebServer
-  WebServer server("", 80);
+  //WebServer server("", 80);
 #endif
 
 #ifdef ESP8266
@@ -486,12 +486,14 @@ void loop()
   #ifdef MOD_TELEINFO
     // Vérification de la reception d'une 1ere trame téléinfo
     tinfo_loop();
+    _yield();
   #endif
 
   #ifdef MOD_RF69
     // Vérification de la reception d'une trame RF
     if (status & STATUS_RFM)
       rfm_loop();
+      _yield();
   #endif
 
   #ifdef MOD_OLED
@@ -501,6 +503,7 @@ void loop()
     // Modification d'affichage et afficheur présent ?
     if (refreshDisplay && (status & STATUS_OLED))
       display_loop();
+      _yield();
   #endif
 
   // çà c'est fait
@@ -542,14 +545,13 @@ void loop()
     }
   }
 
-
-  #ifdef SPARK
-  char buff[64];
-  int len = 64;
+  //#ifdef SPARK
+  //char buff[64];
+  //int len = 64;
 
   // process incoming connections one at a time forever
-  server.processConnection(buff, &len);
-  #endif
+  //server.processConnection(buff, &len);
+  //#endif
 
 
   // Connection au Wifi ou Vérification

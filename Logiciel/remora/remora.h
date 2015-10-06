@@ -35,7 +35,7 @@
   #include "GFX.h"
   #include "ULPNode_RF_Protocol.h"
   #include "LibTeleinfo.h"
-  #include "WebServer.h"
+  //#include "WebServer.h"
 
   #include "display.h"
   #include "i2c.h"
