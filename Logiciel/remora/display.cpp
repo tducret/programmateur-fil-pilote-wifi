@@ -164,7 +164,8 @@ bool display_setup(void)
 {
   bool ret = false;
 
-  Serial.print("Initializing OLED...");
+  Serial.print("Initializing OLED...Searching...");
+  Serial.flush();
 
   // Par defaut affichage des infos de téléinfo
   screen_state = screen_teleinfo;
@@ -173,14 +174,18 @@ bool display_setup(void)
   if (!i2c_detect(OLED_I2C_ADDRESS)) {
     Serial.println("Not found!");
   } else {
-    Serial.println("OK!");
+    Serial.print("Setup...");
+    Serial.flush();
 
     // initialize with the I2C addr for the 128x64
     display.begin(OLED_I2C_ADDRESS);
     display.clearDisplay() ;
     display.display();
+    Serial.println("OK!");
     ret = true;
   }
+
+  Serial.flush();
 
   return (ret);
 }

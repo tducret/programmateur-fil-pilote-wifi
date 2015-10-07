@@ -202,6 +202,7 @@ bool tinfo_setup(bool wait_data)
   bool ret = false;
 
   Serial.print("Initializing Teleinfo...");
+  Serial.flush();
 
   #ifdef SPARK
   Serial1.begin(1200);  // Port série RX/TX on serial1 for Spark

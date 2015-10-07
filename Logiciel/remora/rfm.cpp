@@ -144,8 +144,10 @@ Comments: -
 ====================================================================== */
 bool rfm_setup(void)
 {
+  bool ret = false;
 
   Serial.print("Initializing RFM69...");
+  Serial.flush();
 
   // RF Radio initialization
   // =======================
@@ -155,27 +157,27 @@ bool rfm_setup(void)
   // No encryption
   if (!driver.init()) {
     Serial.println("Not found!");
-    return false;
+  } else {
+    Serial.println("OK!");
+
+    // If you are using a high power RF69, you *must* set a Tx power in the
+    // range 14 to 20 like this:
+    driver.setTxPower(20);
+
+    // set driver parameters
+    driver.setThisAddress(RFM69_NODEID);  // filtering address when receiving
+    driver.setHeaderFrom(RFM69_NODEID);   // Transmit From Node
+
+    // Init of our linked list of seen received nodes
+    nodes_list.next     = NULL ;
+    nodes_list.groupid  = 0 ;
+    nodes_list.nodeid   = 0 ;
+    nodes_list.rssi     = 0 ;
+    nodes_list.lastseen = 0 ;
   }
 
-  Serial.println("OK!");
-
-  // If you are using a high power RF69, you *must* set a Tx power in the
-  // range 14 to 20 like this:
-  driver.setTxPower(20);
-
-  // set driver parameters
-  driver.setThisAddress(RFM69_NODEID);  // filtering address when receiving
-  driver.setHeaderFrom(RFM69_NODEID);   // Transmit From Node
-
-  // Init of our linked list of seen received nodes
-  nodes_list.next     = NULL ;
-  nodes_list.groupid  = 0 ;
-  nodes_list.nodeid   = 0 ;
-  nodes_list.rssi     = 0 ;
-  nodes_list.lastseen = 0 ;
-
-  return (true);
+  Serial.flush();
+  return (ret);
 
 }
 

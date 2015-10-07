@@ -376,17 +376,20 @@ bool pilotes_setup(void)
 
   // Cartes Version 1.2+ pilotage part I/O Expander
   #else
-    Serial.print("Initializing MCP23017...");
+    Serial.print("Initializing MCP23017...Searching...");
+    Serial.flush();
 
     // Détection du MCP23017
     if (!i2c_detect(MCP23017_ADDRESS))
     {
       Serial.println("Not found!");
+      Serial.flush();
       return (false);
     }
     else
     {
-      Serial.println("OK!");
+      Serial.print("Setup...");
+      Serial.flush();
 
       // et l'initialiser
       mcp.begin();
@@ -394,6 +397,8 @@ bool pilotes_setup(void)
       // Mettre les 16 I/O PIN en sortie
       mcp.writeRegister(MCP23017_IODIRA,0x00);
       mcp.writeRegister(MCP23017_IODIRB,0x00);
+      Serial.println("OK!");
+      Serial.flush();
     }
   #endif
 
