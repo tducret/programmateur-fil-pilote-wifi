@@ -18,6 +18,7 @@ Changements apportés dans la révision 1.3 vs 1.2
 - Ajout d'un étage a MOSFET pour la téléinfo, pour une meilleure compatibilité di signal téléinfo
 - Ajout d'une RGB LED pour ESP8266
 - Ajout d'un pont diviseur sur le recepteur 433MHZ pour transformer sa sortie 5V en 3V3 pour l'ESP8266
+- Possibilité de mettre une base ESP8266 (NodeMCU) via cet [adaptateur][11]
 
 
 Description Détaillée
@@ -44,4 +45,5 @@ Description Détaillée
 [8]: http://www.anarduino.com/details.jsp?pid=136
 [9]: http://www.anarduino.com/details.jsp?pid=122
 [10]: http://www.adafruit.com/product/732
+[11]: https://github.com/hallard/Particle2NodeMCU
 
