@@ -64,7 +64,7 @@ Pour réaliser le module, vous aurez besoin de :
 
 ![Schéma implantation]
 
-*Nota : Il est bien utile d'avoir un exemplaire imprimé du [schéma d'implatation](https://github.com/thibdct/programmateur-fil-pilote-wifi/blob/master/Mat%C3%A9riel/1.3/ProgrammateurFilPilote_1.3_Schematic.png) près de soi lorsque l'on fait les soudures*
+*Nota : Il est bien utile d'avoir un exemplaire imprimé du schéma d'implantation près de soi lorsque l'on fait les soudures*
 
 ## Le circuit imprimé
 
