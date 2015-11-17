@@ -1,0 +1,540 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+body {
+  font-family: Helvetica, arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: white;
+  padding: 30px; }
+
+body > *:first-child {
+  margin-top: 0 !important; }
+body > *:last-child {
+  margin-bottom: 0 !important; }
+
+a {
+  color: #4183C4; }
+a.absent {
+  color: #cc0000; }
+a.anchor {
+  display: block;
+  padding-left: 30px;
+  margin-left: -30px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+  cursor: text;
+  position: relative; }
+
+h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA09pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoMTMuMCAyMDEyMDMwNS5tLjQxNSAyMDEyLzAzLzA1OjIxOjAwOjAwKSAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OUM2NjlDQjI4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OUM2NjlDQjM4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5QzY2OUNCMDg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5QzY2OUNCMTg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PsQhXeAAAABfSURBVHjaYvz//z8DJYCRUgMYQAbAMBQIAvEqkBQWXI6sHqwHiwG70TTBxGaiWwjCTGgOUgJiF1J8wMRAIUA34B4Q76HUBelAfJYSA0CuMIEaRP8wGIkGMA54bgQIMACAmkXJi0hKJQAAAABJRU5ErkJggg==) no-repeat 10px center;
+  text-decoration: none; }
+
+h1 tt, h1 code {
+  font-size: inherit; }
+
+h2 tt, h2 code {
+  font-size: inherit; }
+
+h3 tt, h3 code {
+  font-size: inherit; }
+
+h4 tt, h4 code {
+  font-size: inherit; }
+
+h5 tt, h5 code {
+  font-size: inherit; }
+
+h6 tt, h6 code {
+  font-size: inherit; }
+
+h1 {
+  font-size: 28px;
+  color: black; }
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #cccccc;
+  color: black; }
+
+h3 {
+  font-size: 18px; }
+
+h4 {
+  font-size: 16px; }
+
+h5 {
+  font-size: 14px; }
+
+h6 {
+  color: #777777;
+  font-size: 14px; }
+
+p, blockquote, ul, ol, dl, li, table, pre {
+  margin: 15px 0; }
+
+hr {
+  background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC) repeat-x 0 0;
+  border: 0 none;
+  color: #cccccc;
+  height: 4px;
+  padding: 0;
+}
+
+body > h2:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+body > h1:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+  body > h1:first-child + h2 {
+    margin-top: 0;
+    padding-top: 0; }
+body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0; }
+
+h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+  margin-top: 0; }
+
+li p.first {
+  display: inline-block; }
+li {
+  margin: 0; }
+ul, ol {
+  padding-left: 30px; }
+
+ul :first-child, ol :first-child {
+  margin-top: 0; }
+
+dl {
+  padding: 0; }
+  dl dt {
+    font-size: 14px;
+    font-weight: bold;
+    font-style: italic;
+    padding: 0;
+    margin: 15px 0 5px; }
+    dl dt:first-child {
+      padding: 0; }
+    dl dt > :first-child {
+      margin-top: 0; }
+    dl dt > :last-child {
+      margin-bottom: 0; }
+  dl dd {
+    margin: 0 0 15px;
+    padding: 0 15px; }
+    dl dd > :first-child {
+      margin-top: 0; }
+    dl dd > :last-child {
+      margin-bottom: 0; }
+
+blockquote {
+  border-left: 4px solid #dddddd;
+  padding: 0 15px;
+  color: #777777; }
+  blockquote > :first-child {
+    margin-top: 0; }
+  blockquote > :last-child {
+    margin-bottom: 0; }
+
+table {
+  padding: 0;border-collapse: collapse; }
+  table tr {
+    border-top: 1px solid #cccccc;
+    background-color: white;
+    margin: 0;
+    padding: 0; }
+    table tr:nth-child(2n) {
+      background-color: #f8f8f8; }
+    table tr th {
+      font-weight: bold;
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr td {
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr th :first-child, table tr td :first-child {
+      margin-top: 0; }
+    table tr th :last-child, table tr td :last-child {
+      margin-bottom: 0; }
+
+img {
+  max-width: 100%; }
+
+span.frame {
+  display: block;
+  overflow: hidden; }
+  span.frame > span {
+    border: 1px solid #dddddd;
+    display: block;
+    float: left;
+    overflow: hidden;
+    margin: 13px 0 0;
+    padding: 7px;
+    width: auto; }
+  span.frame span img {
+    display: block;
+    float: left; }
+  span.frame span span {
+    clear: both;
+    color: #333333;
+    display: block;
+    padding: 5px 0 0; }
+span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-center > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: center; }
+  span.align-center span img {
+    margin: 0 auto;
+    text-align: center; }
+span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px 0 0;
+    text-align: right; }
+  span.align-right span img {
+    margin: 0;
+    text-align: right; }
+span.float-left {
+  display: block;
+  margin-right: 13px;
+  overflow: hidden;
+  float: left; }
+  span.float-left span {
+    margin: 13px 0 0; }
+span.float-right {
+  display: block;
+  margin-left: 13px;
+  overflow: hidden;
+  float: right; }
+  span.float-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: right; }
+
+code, tt {
+  margin: 0 2px;
+  padding: 0 5px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px; }
+
+pre code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent; }
+
+.highlight pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+  pre code, pre tt {
+    background-color: transparent;
+    border: none; }
+
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:0 auto;
+    }
+}
+@media print {
+	table, pre {
+		page-break-inside: avoid;
+	}
+	pre {
+		word-wrap: break-word;
+	}
+}
+</style>
+<title>Tutoriel d'assemblage de Remora v1.3</title>
+
+</head>
+<body>
+<h1>Tutoriel d'assemblage de Remora v1.3</h1>
+
+<!--Liste de toutes les images utilisées-->
+
+
+<h2>Remora</h2>
+
+<p><em>Insérer ici une photo du module assemblé</em></p>
+
+<p>Remora, c'est un programmateur de chauffages par fils pilotes.</p>
+
+<ul>
+<li>Il peut contrôler 7 zones et un chauffe-eau (via 1 relais)</li>
+<li>Il se commande via des requêtes HTTP en WiFi</li>
+<li>Il est open source et open hardware</li>
+</ul>
+
+
+<h2>Contenu du kit</h2>
+
+<p><em>Insérer ici une photo du contenu du kit</em></p>
+
+<ul>
+<li>1 NodeMCU</li>
+<li>1 Boîtier RAIL DIN (4U : 71 x 90 x 58 mm)</li>
+<li>1 Circuit imprimé Remora (v1.3)</li>
+<li>1 Circuit imprimé Adaptateur NodeMCU->Remora (v1.1a)</li>
+<li>1 Alimentation 5V RAIL DIN (1U - 12W)</li>
+<li>14 Optotriacs</li>
+<li>15 Diodes</li>
+<li>1 MCP23017</li>
+<li>1 Support MCP23017</li>
+<li>2 Connecteur 1x12pt femelle Remora->NodeMCU</li>
+<li>1 Barrette 40 pins male</li>
+<li>1 Barrette 40 pins femelle</li>
+<li>1 LED rouge 3mm</li>
+<li>1 Transistors NPN</li>
+<li>1 Led RGB 5mm</li>
+<li>1 Relais</li>
+<li>2 Borniers 3pts</li>
+<li>6 Borniers 2 pts</li>
+<li>1 Optocoupleur Teleinfo</li>
+<li>1 Transistor BSS138</li>
+<li>4 Resistance 10KΩ (format 1206)</li>
+<li>5 Resistance 4.7KΩ (format 1206)</li>
+<li>15 Resistance 390Ω (format 1206)</li>
+<li>2 Condensateur 100nF (format 1206)</li>
+<li>1 Connecteur 1x4pt OLED femelle</li>
+<li>1 Connecteur Grove</li>
+</ul>
+
+
+<h2>Outillage</h2>
+
+<p>Pour réaliser le module, vous aurez besoin de :</p>
+
+<ul>
+<li>1 Fer à souder à pointe fine <sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup></li>
+<li>1 Bobine de fil d'étain (de préférence 0,5 mm)</li>
+<li>1 Multimètre (pour vérifier les soudures)</li>
+<li>1 Pince coupante</li>
+<li>1 Petite pince (ou brucelle)</li>
+<li>1 troisième main (facultatif mais bien utile)</li>
+</ul>
+
+
+<h2>Schéma d'implantation</h2>
+
+<p><img src="Images/schema-implantation-remora-v1.3.png" alt="Schéma implantation" /></p>
+
+<p><em>Nota : Il est bien utile d'avoir un exemplaire imprimé du <a href="https://github.com/thibdct/programmateur-fil-pilote-wifi/blob/master/Mat%C3%A9riel/1.3/ProgrammateurFilPilote_1.3_Schematic.png">schéma d'implatation</a> près de soi lorsque l'on fait les soudures</em></p>
+
+<h2>Le circuit imprimé</h2>
+
+<p><img src="Images/pcb-avant-remora-v1.3.png" alt="PCB face avant" /><br/>
+<strong>Face avant</strong></p>
+
+<p><img src="Images/pcb-arriere-remora-v1.3.png" alt="PCB face arrière" /><br/>
+<strong>Face arrière</strong></p>
+
+<table>
+<thead>
+<tr>
+<th>Identifiant du composant    </th>
+<th> Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1, R17, R19, R20           </td>
+<td> Résistance de 4,7KΩ</td>
+</tr>
+<tr>
+<td>R2, R18, R22                </td>
+<td> Résistances de 10KΩ</td>
+</tr>
+<tr>
+<td>R3 à R16, R21              </td>
+<td> Résistances de 390Ω</td>
+</tr>
+<tr>
+<td>D1 à D15                   </td>
+<td> Diodes de redressement</td>
+</tr>
+<tr>
+<td>T1                          </td>
+<td> Transistor NPN (2N3904)</td>
+</tr>
+<tr>
+<td>T2                          </td>
+<td> Transistor Opto BSS138</td>
+</tr>
+<tr>
+<td>OP1 à OP14                 </td>
+<td> Optotriacs</td>
+</tr>
+<tr>
+<td>C1, C2                      </td>
+<td> Condesateurs 100nF</td>
+</tr>
+<tr>
+<td>IC1                         </td>
+<td> MCP23017</td>
+</tr>
+<tr>
+<td>OK1                         </td>
+<td> Optocoupleur LTV-814S</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Non utilisés dans le kit : R23, R24</p>
+
+<h2>Soudure</h2>
+
+<p>L'objectif est de souder les composants dans un ordre nous permettant de ne pas être gêné.<br/>
+La stratégie est simple : <strong>on va souder les petits composants avant les gros, en commençant par la face avant, puis la face arrière.</strong></p>
+
+<h3>Face avant</h3>
+
+<hr />
+
+<p>Soudure de D1, D3, D5, D7, D9, D11 et D13 (<strong>Attention à la polarité !</strong>)</p>
+
+<hr />
+
+<p>Soudure de OP1, OP3, OP5, OP7, OP9, OP11 et OP13 (<strong>Attention à la polarité !</strong>)</p>
+
+<hr />
+
+<p>Soudure de R3, R5, R7, R9, R11, R13 et R15 (Pas de polarité pour les résistances)</p>
+
+<hr />
+
+<p>De la même manière, procédez aux soudures suivantes :</p>
+
+<p>Soudure de R18</p>
+
+<p>Soudure de R17</p>
+
+<p>Soudure de D15 (<strong>Attention à la polarité !</strong>)</p>
+
+<p>Soudure de R22</p>
+
+<p>Soudure de T2</p>
+
+<p>Soudure de R2</p>
+
+<p>Soudure de R1</p>
+
+<p>Soudure de R21</p>
+
+<p>Soudure de de C1 et C2</p>
+
+<p>Soudure de R19 et R20</p>
+
+<p>Soudure de OK1 (<strong>Attention à la polarité !</strong>)</p>
+
+<h3>Face arrière</h3>
+
+<p>Soudure de D2, D4, D6, D8, D10, D12, D14 (<strong>Attention à la polarité !</strong>)</p>
+
+<p>Soudure de OP2, OP4, OP6, OP8, OP10, OP12, OP14  (<strong>Attention à la polarité !</strong>)</p>
+
+<p>Soudure de R4, R6, R8, R10, R12, R14, R16</p>
+
+<p>Soudure de T1 (<strong>Attention à la polarité !</strong>)</p>
+
+<p>Soudure du support pour IC1</p>
+
+<p>Soudure des supports pour le Spark Core/Photon/NodeMCU</p>
+
+<p>Soudure du connecteur OLED</p>
+
+<p>Soudure du connecteur Grove</p>
+
+<p>Soudure du relais</p>
+
+<p>Soudure des borniers</p>
+
+<p>Soudure des LEDs</p>
+
+<h3>Astuces de soudure CMS</h3>
+
+<p>Le plus compliqué est de maintenir le composant en place pendant que l'on soude.
+Une astuce, le troisième bras et une pointe.<br/>
+<em>Insérer une photo ici</em></p>
+
+<h2>Câblage et tests</h2>
+
+<h3>Test des soudures</h3>
+
+<h3>Montage dans le tableau électrique</h3>
+
+<h3>Test de de bon fonctionnement sans le NodeMCU</h3>
+
+<h2>Programmation du NodeMCU</h2>
+
+<h2>Test du module complet</h2>
+
+<h3>Via l'API</h3>
+<div class="footnotes">
+<hr/>
+<ol>
+<li id="fn:1">
+<p>J'utilise un Antex XS25.<a href="#fnref:1" rev="footnote">&#8617;</a></p></li>
+</ol>
+</div>
+
+</body>
+</html>
