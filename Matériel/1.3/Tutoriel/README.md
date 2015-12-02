@@ -135,7 +135,6 @@ Soudure de de C1 et C2
 
 Soudure de R19 et R20
 
-Soudure de OK1 (**Attention à la polarité !**)
 
 ### Face arrière
 
@@ -145,22 +144,25 @@ Soudure de OP2, OP4, OP6, OP8, OP10, OP12, OP14  (**Attention à la polarité !*
 
 Soudure de R4, R6, R8, R10, R12, R14, R16
 
-Soudure de T1 (**Attention à la polarité !**)
-
 Soudure du support pour IC1
 
-Soudure des supports pour le Spark Core/Photon/NodeMCU
+Soudure de T1 (**Attention à la polarité !**)
+
+Soudure des supports pour le Spark Core/Photon/NodeMCU (plus facile en insérant dedans l'adaptateur NodeMCU)
 
 Soudure du connecteur OLED
 
 Soudure du connecteur Grove
 
-Soudure du relais
-
 Soudure des borniers
+
+Soudure du relais
 
 Soudure des LEDs
 
+### Retour sur la face avant
+
+Soudure de OK1 (**Attention à la polarité !**)
 
 ### Astuces de soudure CMS
 
