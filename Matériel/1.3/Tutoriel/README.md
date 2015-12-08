@@ -115,19 +115,17 @@ La stratégie est simple : **on va souder les petits composants avant les gros, 
 J'utilise ma "troisième main" et une simple pointe pour maintenir les composants de petite taille
 ![image](Images/Photo2.jpeg)
 
-**Autre astuce, la favorite de Charles qui n'a pas de 3eme main**
-L'idée est de préparer sur un des pad ou il y a le composant à souder, un peu de soudure. En fait il faut juste mettre un peu de soudure (vraiment un peu en chauffant plutôt le pad que la soudure, pas la peine de faire une boule) à faire fondre sur le pad (comme si on soudait le composant mais sans le mettre). Ensuite avec la pince préparer le composant et rechauffer à l'endroit de la soudure pour le "placer". A faire rapidement pour éviter un boule de soudure.
-Ensuite comme le composant tient en place, ses autres pad à souder se font rapidement avec le fer dans une main et la soudure dans l'autre.
-Perso je fais d'abord un pad pour chaque composant et une fois que j'ai fait tous les pad le reste s'enchaine très vite. Ce qui résumé donne :
+*Autre astuce, la favorite de Charles qui n'a pas de 3eme main*
+Regardez cette [video][3] à 1M50 c'est beaucoup plus clair que mes explications (pas besoin de flux au pinceau, pas d'inquiètude) et très bien détaillé. 
+Attenton contraitement à la vidéo, pour souder le 2eme pad il vaut mieux chauffer le pas plutot que mettre la soudure sur la panne du fer (sauf si vous avez du flux).
 
+Donc en résumé :
 - Soudure dans une main, fer dans l'autre et on met un peu de soudure sur une pastille du PCB de chaque composant à placer
 - Pince + composant dans une main, fer dans l'autre et on les place en chauffaut la soudure dejà placée
 - Soudure dans une main, fer dans l'autre et on soude les autres pastilles des composants déjà placés.
 
-Regardez cette [video][3] à 1M50 c'est beaucoup plus clair que mes explications (pas besoin de flux au pinceau, pas d'inquiètude) et très bien détaillé.
 
-
-Voici ce que ça donne de plus près
+Voici ce que ça donne de plus près, retour à la méthode de Thibault
 ![image](Images/Photo3.jpeg)
 
 Et une fois les 7 diodes terminées
