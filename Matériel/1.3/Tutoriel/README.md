@@ -326,12 +326,15 @@ TODO
 ## Programmation du NodeMCU
 
 Le logiciel à flasher dans le NodeMCU se trouve sur ce [repo github][1], c'est maintenant le nouveau repo officiel, l'ancien est toujour [disponible][2] pour historique.
-TODO
 
 ## Test du module complet
+
+Si vous recontrez des soucis de commande des fils pilotes (tout est ok mais l'état du radiateur ne correspond pas à l'état indiqué dans le logiciel) avec des Optocoupleurs blancs voici la [procédure][4] pour les passer en 3.3V.
+
 
 TODO
 
 [1]: https://github.com/hallard/remora_soft
 [2]: https://github.com/thibdct/programmateur-fil-pilote-wifi/tree/master/Logiciel/remora
 [3]: http://youtu.be/3NN7UGWYmBY
+[4]: https://community.hallard.me/topic/103/
