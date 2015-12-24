@@ -325,7 +325,7 @@ TODO
 
 ## Programmation du NodeMCU
 
-Le logiciel à flasher dans le NodeMCU se trouve sur ce [repo github][1], c'est maintenant le nouveau repo officiel, l'ancien est toujour [disponible][2] pour historique.
+Le logiciel à flasher dans le NodeMCU se trouve sur ce [repo github][1], c'est maintenant le nouveau repo officiel, l'ancien est toujours [disponible][2] pour historique.
 
 ## Test du module complet
 
