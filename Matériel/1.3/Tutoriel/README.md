@@ -73,10 +73,10 @@ Pour réaliser le module, vous aurez besoin de :
 
 ## Le circuit imprimé
 
-![PCB face avant]  
+![image](Images/remoara-pcb-top-v13.jpg)
 **Face avant**
 
-![PCB face arrière]  
+![image](Images/remoara-pcb-bot-v13.jpg)
 **Face arrière**
 
 Identifiant du composant	| Description
@@ -117,7 +117,7 @@ J'utilise ma "troisième main" et une simple pointe pour maintenir les composant
 
 *Autre astuce, la favorite de Charles qui n'a pas de 3eme main*
 Regardez cette [video][3] à 1M50 c'est beaucoup plus clair que mes explications (pas besoin de flux au pinceau, pas d'inquiètude) et très bien détaillé. 
-Attenton contraitement à la vidéo, pour souder le 2eme pad il vaut mieux chauffer le pas plutot que mettre la soudure sur la panne du fer (sauf si vous avez du flux).
+Attenton contraitement à la vidéo, pour souder le 2eme pad il vaut mieux chauffer le pad plutôt que mettre la soudure sur la panne du fer (sauf si vous avez du flux).
 
 Donc en résumé :
 - Soudure dans une main, fer dans l'autre et on met un peu de soudure sur une pastille du PCB de chaque composant à placer
