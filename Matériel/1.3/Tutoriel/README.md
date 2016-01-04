@@ -39,7 +39,7 @@ Remora, c'est un programmateur de chauffages par fils pilotes.
 - 1 Led RGB 5mm
 - 1 Relais
 - 2 Borniers 3pts
-- 6 Borniers 2 pts
+- 5 Borniers 2 pts
 - 1 Optocoupleur Teleinfo
 - 1 Transistor BSS138
 - 4 Resistance 10KΩ (format 1206)
