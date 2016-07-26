@@ -76,7 +76,7 @@ int setfp(String command)
     uint8_t fp = command[0]-'0';
     char cOrdre= command[1];
     if ( (fp < 1 || fp > NB_FILS_PILOTES) ||
-        (cOrdre!='C' && cOrdre!='E' && cOrdre!='H' && cOrdre!='A') && cOrdre!='1' && cOrdre!='2' )
+        (cOrdre!='C' && cOrdre!='E' && cOrdre!='H' && cOrdre!='A' && cOrdre!='1' && cOrdre!='2' )
     {
         // erreur
         Serial.println("Argument incorrect");
