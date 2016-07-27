@@ -28,7 +28,13 @@ unsigned long timerDelestRelest = 0; // Timer de délestage/relestage
 
 unsigned long counterHighStateFP[NB_FILS_PILOTES]; //Compteur de secondes dans l'état haut uniquement
 unsigned long counterLowStateFP[NB_FILS_PILOTES];  //Compteur de secondes dans l'état bas uniquement
-Timer* ptConfort12Timer; //Timer pour la mise à jour des compteurs toutes les secondes
+
+#ifdef SPARK
+  Timer* ptConfort12Timer; //Timer pour la mise à jour des compteurs toutes les secondes
+#endif
+#ifdef ESP8266
+  os_timer_t* ptConfort12Timer; //Timer pour la mise à jour des compteurs toutes les secondes
+#endif
 
 #if defined (REMORA_BOARD_V12)
   // Instanciation de l'I/O expander
@@ -181,7 +187,7 @@ Input   : -
 Output  : -
 Comments: -
 ====================================================================== */
-void updateFPCounter(void)
+void updateFPCounter(_timer_callback_arg)
 {
   for (uint8_t i=0; i<NB_FILS_PILOTES; i+=1)
   {
@@ -269,6 +275,8 @@ void updateFPCounter(void)
         break;
     }
   }
+
+  _yield();
 }
 
 /* ======================================================================
@@ -294,8 +302,16 @@ void initFP(void)
   }
 
   // lancement du timer pour la gestion des modes Confort-1 et Confort-2
-  ptConfort12Timer = new Timer(1000, updateFPCounter );
-  ptConfort12Timer->start();
+  #ifdef SPARK
+    ptConfort12Timer = new Timer(1000, updateFPCounter );
+    ptConfort12Timer->start();
+  #endif
+  #ifdef ESP8266
+    ptConfort12Timer = new os_timer_t;
+    os_timer_setfn(ptConfort12Timer, updateFPCounter, NULL);
+    os_timer_arm(ptConfort12Timer, 1000, true);
+  #endif
+
 }
 
 /* ======================================================================

@@ -53,6 +53,7 @@
   //#include "mfGFX_local.h"
 
   #define _yield()  Particle.process()
+  #define _timer_callback_arg void
 #endif
 
 // Librairies du projet remora Pour Particle
@@ -68,6 +69,7 @@
   #define DEFAULT_OTA_PORT  8266
   #define DEFAULT_HOSTNAME  "remora"
   #include "Arduino.h"
+  #include "user_interface.h" // pour les os_timer_t
   #include "./MCP23017.h"
   //#include "./RFM69registers.h"
   //#include "./RFM69.h"
@@ -77,6 +79,7 @@
   #include "./LibTeleinfo.h"
 
   #define _yield()  yield()
+  #define _timer_callback_arg void *pArg
 #endif
 
 // Includes du projets remora
