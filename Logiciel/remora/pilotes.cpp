@@ -275,8 +275,6 @@ void updateFPCounter(_timer_callback_arg)
         break;
     }
   }
-
-  _yield();
 }
 
 /* ======================================================================
