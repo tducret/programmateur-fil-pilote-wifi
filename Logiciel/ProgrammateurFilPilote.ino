@@ -5,7 +5,7 @@ Licence MIT
 */
 
 // Includes
-#include "TeleInfo/TeleInfo.h"
+#include "TeleInfo.h"
 
 // Defines
 #define NB_FILS_PILOTES 7
@@ -27,35 +27,36 @@ void delestage();
 int fpC(int i, char cOrdre);
 
 unsigned int delestageEnCours = 1;
-unsigned int nbDelestage = 0;
+int nbDelestage = 0;
 
 // Téléinfo
 TeleInfo ti; // objet téléinfo
 char c; // pour stocker un caractère reçu sur le port série
 bool trameComplete = false;
-unsigned int mypApp = TELEINFO_UINT_INVALIDE;
-unsigned int myiInst = TELEINFO_UINT_INVALIDE;
-unsigned int myindexHC = TELEINFO_UINT_INVALIDE;
-unsigned int myindexHP = TELEINFO_UINT_INVALIDE;
+int mypApp = TELEINFO_UINT_INVALIDE;
+int myiInst = TELEINFO_UINT_INVALIDE;
+int myindexHC = TELEINFO_UINT_INVALIDE;
+int myindexHP = TELEINFO_UINT_INVALIDE;
 unsigned int myisousc = TELEINFO_UINT_INVALIDE; // pour calculer la limite de délestage
 float myDelestLimit = 0.0;
 boolean init_teleinfo = false;
 char etatFP[20] = "";
 
+
 void setup()
 {
   // == Fils pilotes ==
   initCdeFilsPilotes();
-  Spark.function("fp", fpControl);
-  Spark.function("setfp", setFP);
-  Spark.variable("nbdelest", &nbDelestage, INT);
-  Spark.variable("etatfp", &etatFP, STRING);
+  Particle.function("fp", fpControl);
+  Particle.function("setfp", setFP);
+  Particle.variable("nbdelest", nbDelestage);
+  Particle.variable("etatfp", etatFP);
    
   // == Téléinfo ==
-  Spark.variable("papp", &mypApp, INT);
-  Spark.variable("iinst", &myiInst, INT);
-  Spark.variable("indexhc", &myindexHC, INT);
-  Spark.variable("indexhp", &myindexHP, INT);
+  Particle.variable("papp", mypApp);
+  Particle.variable("iinst", myiInst);
+  Particle.variable("indexhc", myindexHC);
+  Particle.variable("indexhp", myindexHP);
   
   Serial.begin(115200); // Port série USB
   Serial1.begin(1200);  // Port série RX/TX
@@ -87,10 +88,10 @@ void updateTeleinfo() {
     trameComplete = ti.decode(c);
     if (trameComplete)
     {
-      mypApp=ti.pApp();
-      myiInst=ti.iInst();
-      myindexHC=ti.indexHC();
-      myindexHP=ti.indexHP();
+      mypApp=(int) ti.pApp();
+      myiInst=(int) ti.iInst();
+      myindexHC=(int) ti.indexHC();
+      myindexHP=(int) ti.indexHP();
 	  
 	  if(!init_teleinfo) {
 		myisousc = ti.iSousc();
@@ -122,7 +123,6 @@ int fpControl(String command)
 // CAAAAAA => Tous OFF sauf le fil pilote 1
 
 	unsigned int i;
-	char cOrdre;
 	int returnValue = -1; // Init à -1 => Erreur
 	
 	command.trim();
@@ -145,7 +145,6 @@ int setFP(String command)
 // C = Confort, A = Arrêt, E = Eco, H = Hors gel
 // command = 1A => FP1 = Arrêt
 	unsigned int i;
-	char cOrdre;
 	
 	int returnValue = -1; // Init à -1 => Erreur
 	
