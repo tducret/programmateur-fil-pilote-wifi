@@ -26,19 +26,30 @@ uint8_t plusAncienneZoneDelestee = 1;
 // C'est la première zone à être délestée
 unsigned long timerDelestRelest = 0; // Timer de délestage/relestage
 
-// Instanciation de l'I/O expander
-Adafruit_MCP23017 mcp;
+unsigned long counterHighStateFP[NB_FILS_PILOTES]; //Compteur de secondes dans l'état haut uniquement
+unsigned long counterLowStateFP[NB_FILS_PILOTES];  //Compteur de secondes dans l'état bas uniquement
 
+#ifdef SPARK
+  Timer* ptConfort12Timer; //Timer pour la mise à jour des compteurs toutes les secondes
+#endif
+#ifdef ESP8266
+  os_timer_t* ptConfort12Timer; //Timer pour la mise à jour des compteurs toutes les secondes
+#endif
+
+#if defined (REMORA_BOARD_V12)
+  // Instanciation de l'I/O expander
+  Adafruit_MCP23017 mcp;
+#endif
 
 /* ======================================================================
 Function: setfp
 Purpose : selectionne le mode d'un des fils pilotes
 Input   : commande numéro du fil pilote + commande optionelle
-          C=Confort, A=Arrêt, E=Eco, H=Hors gel, 1=Eco-1, 2=Eco-2
+          C=Confort, A=Arrêt, E=Eco, H=Hors gel, 1=Confort-1, 2=Confort-2
           ex: 1A => FP1 Arrêt
-              41 => FP4 eco -1 (To DO)
+              41 => FP4 confort -1
               6C => FP6 confort
-              72 => FP7 eco -2 (To DO)
+              72 => FP7 confort -2
           Si la commande est absente la fonction retourne l'état du FP
           ex: 1 => si état FP1 est "arret" retourne code ASCII du "A" (65)
 Output  : 0 ou etat commande, si ok -1 sinon
@@ -71,7 +82,7 @@ int setfp(String command)
     uint8_t fp = command[0]-'0';
     char cOrdre= command[1];
     if ( (fp < 1 || fp > NB_FILS_PILOTES) ||
-        (cOrdre!='C' && cOrdre!='E' && cOrdre!='H' && cOrdre!='A') )
+        (cOrdre!='C' && cOrdre!='E' && cOrdre!='H' && cOrdre!='A' && cOrdre!='1' && cOrdre!='2' ))
     {
         // erreur
         Serial.println("Argument incorrect");
@@ -97,11 +108,11 @@ Function: setfp_interne
 Purpose : selectionne le mode d'un des fils pilotes
 Input   : numéro du fil pilote (1 à NB_FILS_PILOTE)
           ordre à appliquer
-          C=Confort, A=Arrêt, E=Eco, H=Hors gel, 1=Eco-1, 2=Eco-2, D=Délestage
+          C=Confort, A=Arrêt, E=Eco, H=Hors gel, 1=Confort-1, 2=Confort-2, D=Délestage
           ex: 1,'A' => FP1 Arrêt
-              4,'1' => FP4 eco -1 (To DO)
+              4,'1' => FP4 confort -1
               6,'C' => FP6 confort
-              7,'2' => FP7 eco -2 (To DO)
+              7,'2' => FP7 confort -2
               5,'D' => FP5 délestage (=> hors-gel et blocage des nouvelles commandes)
 Output  : 0 si ok -1 sinon
 Comments: non exposée par l'API spark car on y gère le délestage
@@ -110,7 +121,7 @@ int setfp_interne(uint8_t fp, char cOrdre)
 {
   // Vérifier que le numéro du fil pilote ne dépasse le MAX et
   // que la commande est correcte
-  // Pour le moment les ordres Eco-1 et Eco-2 ne sont pas traités
+  // Pour le moment les ordres Confort-1 et Confort-2 ne sont pas traités
   // 'D' correspond à délestage
 
   Serial.print("setfp_interne : fp=");
@@ -119,7 +130,7 @@ int setfp_interne(uint8_t fp, char cOrdre)
   Serial.println(cOrdre);
 
   if ( (fp < 1 || fp > NB_FILS_PILOTES) ||
-      (cOrdre!='C' && cOrdre!='E' && cOrdre!='H' && cOrdre!='A' && cOrdre!='D') )
+      (cOrdre!='C' && cOrdre!='E' && cOrdre!='H' && cOrdre!='A' && cOrdre!='1' && cOrdre!='2' && cOrdre!='D') )
   {
       // erreur
       return (-1);
@@ -146,10 +157,18 @@ int setfp_interne(uint8_t fp, char cOrdre)
         case 'H': fpcmd1=HIGH; fpcmd2=LOW;  break;
         // Arrêt => Commande 0/1
         case 'A': fpcmd1=LOW;  fpcmd2=HIGH; break;
-        // Eco - 1
-        case '1': { /* to DO */ } ; break;
-        // Eco - 2
-        case '2': { /* to DO */ }; break;
+        // Confort - 1 => 1/1 pendant 3 secondes puis 0/0 pendant 257 secondes
+        case '1':
+        // Confort - 2 => 1/1 pendant 7 secondes puis 0/0 pendant 253 secondes
+        case '2':
+        {
+          // on commence par un niveau haut
+          fpcmd1=HIGH; fpcmd2=HIGH;
+
+          counterHighStateFP[fp-1] = 1;
+          counterLowStateFP[fp-1]  = 0;
+        }
+        break;
         // Délestage => Hors gel => Commande 1/0
         case 'D': fpcmd1=HIGH; fpcmd2=LOW;  break;
     }
@@ -158,6 +177,103 @@ int setfp_interne(uint8_t fp, char cOrdre)
     _digitalWrite(SortiesFP[2*(fp-1)], fpcmd1);
     _digitalWrite(SortiesFP[2*(fp-1)+1], fpcmd2);
     return (0);
+  }
+}
+
+/* ======================================================================
+Function: updateFPCounter
+Purpose : met à jour les compteurs et change d'état les fils pilotes en mode Confort-1 et Confort-2
+Input   : -
+Output  : -
+Comments: -
+====================================================================== */
+void updateFPCounter(_timer_callback_arg)
+{
+  for (uint8_t i=0; i<NB_FILS_PILOTES; i+=1)
+  {
+    switch (etatFP[i])
+    {
+        // Confort - 1
+        case '1':
+        {
+          if ( counterLowStateFP[i] > 0)
+          { // si on est dans l'état bas
+            if ( counterLowStateFP[i] >= 297)
+            { // si on a atteint le temps de la periode basse, passage en periode haute
+              _digitalWrite(SortiesFP[2*i]  , HIGH);
+              _digitalWrite(SortiesFP[2*i+1], HIGH);
+
+              counterHighStateFP[i] = 1;
+              counterLowStateFP[i]  = 0;
+            }
+            else
+            { // sinon incrémentation du compteur bas
+              counterHighStateFP[i]  = 0;
+              counterLowStateFP[i]  += 1;
+            }
+          }
+          else
+          { // sinon on est dans l'état haut
+            if ( counterHighStateFP[i] >= 3)
+            { // si on a atteint le temps de la periode haute, passage en periode basse
+              _digitalWrite(SortiesFP[2*i]  , LOW);
+              _digitalWrite(SortiesFP[2*i+1], LOW);
+
+              counterHighStateFP[i] = 0;
+              counterLowStateFP[i]  = 1;
+            }
+            else
+            { // sinon incrémentation du compteur haut
+              counterHighStateFP[i] += 1;
+              counterLowStateFP[i]   = 0;
+            }
+          }
+        }
+        break;
+        // Confort - 2
+        case '2':
+        {
+          if ( counterLowStateFP[i] > 0)
+          { // si on est dans l'état bas
+            if ( counterLowStateFP[i] >= 293)
+            { // si on a atteint le temps de la periode basse, passage en periode haute
+              _digitalWrite(SortiesFP[2*i]  , HIGH);
+              _digitalWrite(SortiesFP[2*i+1], HIGH);
+
+              counterHighStateFP[i] = 1;
+              counterLowStateFP[i]  = 0;
+            }
+            else
+            { // sinon incrémentation du compteur bas
+              counterHighStateFP[i]  = 0;
+              counterLowStateFP[i]  += 1;
+            }
+          }
+          else
+          { // sinon on est dans l'état haut
+            if ( counterHighStateFP[i] >= 7)
+            { // si on a atteint le temps de la periode haute, passage en periode basse
+              _digitalWrite(SortiesFP[2*i]  , LOW);
+              _digitalWrite(SortiesFP[2*i+1], LOW);
+
+              counterHighStateFP[i] = 0;
+              counterLowStateFP[i]  = 1;
+            }
+            else
+            { // sinon incrémentation du compteur haut
+              counterHighStateFP[i] += 1;
+              counterLowStateFP[i]   = 0;
+            }
+          }
+        }
+        break;
+        default:
+        { // on réinitialise dans les autres modes
+          counterHighStateFP[i] = 0;
+          counterLowStateFP[i]  = 0;
+        }
+        break;
+    }
   }
 }
 
@@ -173,12 +289,27 @@ void initFP(void)
   // buffer contenant la commande à passer à setFP
   char cmd[] = "xH" ;
 
-  // On positionne tous les FP en Hors-Gel
+  // On positionne tous les FP en Hors-Gel et on initialise les compteurs à 0
   for (uint8_t i=1; i<=NB_FILS_PILOTES; i+=1)
   {
     cmd[0]='0' + i;
     setfp(cmd);
+
+    counterHighStateFP[i-1] = 0;
+    counterLowStateFP[i-1]  = 0;
   }
+
+  // lancement du timer pour la gestion des modes Confort-1 et Confort-2
+  #ifdef SPARK
+    ptConfort12Timer = new Timer(1000, updateFPCounter );
+    ptConfort12Timer->start();
+  #endif
+  #ifdef ESP8266
+    ptConfort12Timer = new os_timer_t;
+    os_timer_setfn(ptConfort12Timer, updateFPCounter, NULL);
+    os_timer_arm(ptConfort12Timer, 1000, true);
+  #endif
+
 }
 
 /* ======================================================================
@@ -273,7 +404,7 @@ void decalerDelestage(void)
 Function: fp
 Purpose : selectionne le mode d'un ou plusieurs les fils pilotes d'un coup
 Input   : liste des commandes
-          -=rien, C=Confort, A=Arrêt, E=Eco, H=Hors gel, 1=Eco-1, 2=Eco-2,
+          -=rien, C=Confort, A=Arrêt, E=Eco, H=Hors gel, 1=Confort-1, 2=Confort-2,
           ex: 1A => FP1 Arrêt
               CCCCCCC => Commande tous les fils pilote en mode confort (ON)
               AAAAAAA => Commande tous les fils pilote en mode arrêt
@@ -281,7 +412,7 @@ Input   : liste des commandes
               CAAAAAA => Tous OFF sauf le fil pilote 1 en confort
               A-AAAAA => Tous OFF sauf le fil pilote 2 inchangé
               E-CHA12 => FP2 Eco  , FP2 inchangé, FP3 confort, FP4 hors gel
-                        FP5 arrêt, FP6 Eco-1    , FP7 Eco-2
+                        FP5 arrêt, FP6 Confort-1    , FP7 Confort-2
 Output  : 0 si ok -1 sinon
 Comments: exposée par l'API spark donc attaquable par requête HTTP(S)
 ====================================================================== */
@@ -373,6 +504,13 @@ bool pilotes_setup(void)
     // 2*nbFilPilotes car 2 pins pour commander 1 fil pilote
     for (uint8_t i=0; i < (NB_FILS_PILOTES*2); i++)
       _pinMode(SortiesFP[i], OUTPUT); // Chaque commande de fil pilote est une sortie
+
+    #ifdef RELAIS_PIN
+      _pinMode(RELAIS_PIN, OUTPUT);
+    #endif
+    #ifdef LED_PIN
+      _pinMode(LED_PIN, OUTPUT);
+    #endif
 
   // Cartes Version 1.2+ pilotage part I/O Expander
   #else
